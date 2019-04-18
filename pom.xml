@@ -17,6 +17,7 @@
 
     <modules>
         <module>springboot-redis-pubsub</module>
+        <module>springboot-mongodb</module>
     </modules>
 
     <properties>
