@@ -18,6 +18,7 @@
     <modules>
         <module>springboot-redis-pubsub</module>
         <module>springboot-mongodb</module>
+        <module>springboot-thymeleaf</module>
     </modules>
 
     <properties>
