@@ -19,6 +19,7 @@
         <module>springboot-redis-pubsub</module>
         <module>springboot-mongodb</module>
         <module>springboot-thymeleaf</module>
+        <module>springboot-mybatis</module>
     </modules>
 
     <properties>
@@ -26,6 +27,8 @@
         <spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
         <spring-boot.version>2.1.4.RELEASE</spring-boot.version>
         <redisson.version>3.10.6</redisson.version>
+        <mybatis.version>2.0.1</mybatis.version>
+        <mybatis-plus.version>3.1.0</mybatis-plus.version>
     </properties>
 
     <!--微服务的监控，完成监控治理-->
@@ -68,6 +71,19 @@
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson-spring-boot-starter</artifactId>
                 <version>${redisson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-boot-starter -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
             </dependency>
 
         </dependencies>
