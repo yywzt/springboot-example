@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.yyw.mapper.redEnvelope.QunMapper">
+  <resultMap id="BaseResultMap" type="com.example.yyw.model.redEnvelope.Qun">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="qun_name" jdbcType="VARCHAR" property="qunName" />
+    <result column="creation_date" jdbcType="TIMESTAMP" property="creationDate" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="updation_date" jdbcType="TIMESTAMP" property="updationDate" />
+    <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
+    <result column="enabled_flag" jdbcType="TINYINT" property="enabledFlag" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, qun_name, creation_date, created_by, updation_date, updated_by, enabled_flag
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from qun
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from qun
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.example.yyw.model.redEnvelope.Qun">
+    insert into qun (id, qun_name, creation_date, 
+      created_by, updation_date, updated_by, 
+      enabled_flag)
+    values (#{id,jdbcType=BIGINT}, #{qunName,jdbcType=VARCHAR}, #{creationDate,jdbcType=TIMESTAMP}, 
+      #{createdBy,jdbcType=VARCHAR}, #{updationDate,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=VARCHAR}, 
+      #{enabledFlag,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.yyw.model.redEnvelope.Qun">
+    insert into qun
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="qunName != null">
+        qun_name,
+      </if>
+      <if test="creationDate != null">
+        creation_date,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="updationDate != null">
+        updation_date,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="enabledFlag != null">
+        enabled_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="qunName != null">
+        #{qunName,jdbcType=VARCHAR},
+      </if>
+      <if test="creationDate != null">
+        #{creationDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updationDate != null">
+        #{updationDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="enabledFlag != null">
+        #{enabledFlag,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.yyw.model.redEnvelope.Qun">
+    update qun
+    <set>
+      <if test="qunName != null">
+        qun_name = #{qunName,jdbcType=VARCHAR},
+      </if>
+      <if test="creationDate != null">
+        creation_date = #{creationDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updationDate != null">
+        updation_date = #{updationDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="enabledFlag != null">
+        enabled_flag = #{enabledFlag,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.yyw.model.redEnvelope.Qun">
+    update qun
+    set qun_name = #{qunName,jdbcType=VARCHAR},
+      creation_date = #{creationDate,jdbcType=TIMESTAMP},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      updation_date = #{updationDate,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=VARCHAR},
+      enabled_flag = #{enabledFlag,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

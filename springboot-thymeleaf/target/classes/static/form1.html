@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>表单提交批量数据</title>
+</head>
+<body>
+    <form id="addForm" action="/form/submitForm1" method="post">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" >新增用户</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>ID：</label>
+                    <input type="text" name="id" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>名称：</label>
+                    <input type="text" name="name" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>编码：</label>
+                    <input type="text" name="code" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label>ID：</label>
+                    <input type="text" name="id" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>名称：</label>
+                    <input type="text" name="name" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>编码：</label>
+                    <input type="text" name="code" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label>ID：</label>
+                    <input type="text" name="id" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>名称：</label>
+                    <input type="text" name="name" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>编码：</label>
+                    <input type="text" name="code" class="form-control" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-outline" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary btn-outline" id="submitAdd">保存</button>
+            </div>
+        </div>
+    </form>
+
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.form.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $.fn.serializeJson = function(){
+                var jsonData1 = {};
+                var serializeArray = this.serializeArray();
+                // 先转换成{"id": ["12","14"], "name": ["aaa","bbb"], "pwd":["pwd1","pwd2"]}这种形式
+                $(serializeArray).each(function () {
+                    if (jsonData1[this.name]) {
+                        if ($.isArray(jsonData1[this.name])) {
+                            jsonData1[this.name].push(this.value);
+                        } else {
+                            jsonData1[this.name] = [jsonData1[this.name], this.value];
+                        }
+                    } else {
+                        jsonData1[this.name] = this.value;
+                    }
+                });
+                // 再转成[{"id": "12", "name": "aaa", "pwd":"pwd1"},{"id": "14", "name": "bb", "pwd":"pwd2"}]的形式
+                var vCount = 0;
+                // 计算json内部的数组最大长度
+                for(var item in jsonData1){
+                    var tmp = $.isArray(jsonData1[item]) ? jsonData1[item].length : 1;
+                    vCount = (tmp > vCount) ? tmp : vCount;
+                }
+
+                if(vCount > 1) {
+                    var jsonData2 = new Array();
+                    for(var i = 0; i < vCount; i++){
+                        var jsonObj = {};
+                        for(var item in jsonData1) {
+                            jsonObj[item] = jsonData1[item][i];
+                        }
+                        jsonData2.push(jsonObj);
+                    }
+                    return JSON.stringify(jsonData2);
+                }else{
+                    return "[" + JSON.stringify(jsonData1) + "]";
+                }
+            };
+
+            $("#submitAdd").click(function () {
+                $("#submitAdd").prop('disabled',true);
+                var data = $("#addForm").serializeJson();
+                console.log(data);
+                $.ajax({
+                    type: 'post',
+                    url: '/form/submitForm1',
+                    contentType : 'application/json;charset=utf-8', //设置请求头信息
+                    dataType:"json",
+                    data: data,
+                    success: function(data) {
+                        // your code
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

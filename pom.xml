@@ -20,6 +20,7 @@
         <module>springboot-mongodb</module>
         <module>springboot-thymeleaf</module>
         <module>springboot-mybatis</module>
+        <module>springboot-simple</module>
     </modules>
 
     <properties>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.yyw.mapper.redEnvelope.RedEnvelopeDetailMapper">
+  <resultMap id="BaseResultMap" type="com.example.yyw.model.redEnvelope.RedEnvelopeDetail">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="red_envelope_id" jdbcType="BIGINT" property="redEnvelopeId" />
+    <result column="receive_id" jdbcType="BIGINT" property="receiveId" />
+    <result column="receive_date" jdbcType="TIMESTAMP" property="receiveDate" />
+    <result column="receive_money" jdbcType="DECIMAL" property="receiveMoney" />
+    <result column="creation_date" jdbcType="TIMESTAMP" property="creationDate" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="updation_date" jdbcType="TIMESTAMP" property="updationDate" />
+    <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
+    <result column="enabled_flag" jdbcType="TINYINT" property="enabledFlag" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, red_envelope_id, receive_id, receive_date, receive_money, creation_date, created_by, 
+    updation_date, updated_by, enabled_flag
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from red_envelope_detail
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from red_envelope_detail
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.example.yyw.model.redEnvelope.RedEnvelopeDetail">
+    insert into red_envelope_detail (id, red_envelope_id, receive_id, 
+      receive_date, receive_money, creation_date, 
+      created_by, updation_date, updated_by, 
+      enabled_flag)
+    values (#{id,jdbcType=BIGINT}, #{redEnvelopeId,jdbcType=BIGINT}, #{receiveId,jdbcType=BIGINT}, 
+      #{receiveDate,jdbcType=TIMESTAMP}, #{receiveMoney,jdbcType=DECIMAL}, #{creationDate,jdbcType=TIMESTAMP}, 
+      #{createdBy,jdbcType=VARCHAR}, #{updationDate,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=VARCHAR}, 
+      #{enabledFlag,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.yyw.model.redEnvelope.RedEnvelopeDetail">
+    insert into red_envelope_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="redEnvelopeId != null">
+        red_envelope_id,
+      </if>
+      <if test="receiveId != null">
+        receive_id,
+      </if>
+      <if test="receiveDate != null">
+        receive_date,
+      </if>
+      <if test="receiveMoney != null">
+        receive_money,
+      </if>
+      <if test="creationDate != null">
+        creation_date,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="updationDate != null">
+        updation_date,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="enabledFlag != null">
+        enabled_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="redEnvelopeId != null">
+        #{redEnvelopeId,jdbcType=BIGINT},
+      </if>
+      <if test="receiveId != null">
+        #{receiveId,jdbcType=BIGINT},
+      </if>
+      <if test="receiveDate != null">
+        #{receiveDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="receiveMoney != null">
+        #{receiveMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="creationDate != null">
+        #{creationDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updationDate != null">
+        #{updationDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="enabledFlag != null">
+        #{enabledFlag,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.yyw.model.redEnvelope.RedEnvelopeDetail">
+    update red_envelope_detail
+    <set>
+      <if test="redEnvelopeId != null">
+        red_envelope_id = #{redEnvelopeId,jdbcType=BIGINT},
+      </if>
+      <if test="receiveId != null">
+        receive_id = #{receiveId,jdbcType=BIGINT},
+      </if>
+      <if test="receiveDate != null">
+        receive_date = #{receiveDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="receiveMoney != null">
+        receive_money = #{receiveMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="creationDate != null">
+        creation_date = #{creationDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updationDate != null">
+        updation_date = #{updationDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="enabledFlag != null">
+        enabled_flag = #{enabledFlag,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.yyw.model.redEnvelope.RedEnvelopeDetail">
+    update red_envelope_detail
+    set red_envelope_id = #{redEnvelopeId,jdbcType=BIGINT},
+      receive_id = #{receiveId,jdbcType=BIGINT},
+      receive_date = #{receiveDate,jdbcType=TIMESTAMP},
+      receive_money = #{receiveMoney,jdbcType=DECIMAL},
+      creation_date = #{creationDate,jdbcType=TIMESTAMP},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      updation_date = #{updationDate,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=VARCHAR},
+      enabled_flag = #{enabledFlag,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

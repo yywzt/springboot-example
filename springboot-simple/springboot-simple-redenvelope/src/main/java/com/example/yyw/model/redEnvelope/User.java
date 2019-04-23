@@ -1,0 +1,43 @@
+package com.example.yyw.model.redEnvelope;
+
+import com.example.yyw.model.GenericModel;
+import lombok.Data;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * @Title user表的实体类
+ * @Description 
+ * @version 1.0
+ * @Author yanzt
+ * @Date 2019-04-23 16:05:32
+ */
+@Data
+public class User extends GenericModel<Long> implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     *  字段名称：用户名
+     * 
+     * 数据库字段信息：user_name VARCHAR(255)
+     */
+    private String userName;
+
+    /**
+     *  字段名称：真实姓名
+     * 
+     * 数据库字段信息：real_name VARCHAR(255)
+     */
+    private String realName;
+
+    /**
+     *  字段名称：余额
+     * 
+     * 数据库字段信息：money DECIMAL(16)
+     */
+    private BigDecimal money;
+
+}
