@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Transient;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Timestamp;
 
 /**
  * @Title red_envelope表的实体类
@@ -41,7 +41,7 @@ public class RedEnvelope extends GenericModel<Long> implements Serializable {
      * 
      * 数据库字段信息：send_date TIMESTAMP(19)
      */
-    private Date sendDate;
+    private Timestamp sendDate;
 
     /**
      *  字段名称：接收者id(类型为私发)

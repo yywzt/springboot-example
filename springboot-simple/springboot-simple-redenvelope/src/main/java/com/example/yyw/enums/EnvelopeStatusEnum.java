@@ -8,11 +8,11 @@ package com.example.yyw.enums;
 public enum EnvelopeStatusEnum {
 
     /**可领取*/
-    Available(1,"可领取"),
+    AVAILABLE(1,"可领取"),
     /**领完了*/
-    Finished(2,"领完了"),
+    FINISHED(2,"领完了"),
     /**已过期*/
-    expired(3,"已过期");
+    EXPIRED(3,"已过期");
 
     private Integer code;
     private String value;

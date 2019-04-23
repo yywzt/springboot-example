@@ -17,16 +17,26 @@
     id, red_envelope_id, receive_id, receive_date, receive_money, creation_date, created_by, 
     updation_date, updated_by, enabled_flag
   </sql>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from red_envelope_detail
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+
+    <select id="selectByEnvelopeIdAndReceiveId" resultType="com.example.yyw.model.redEnvelope.RedEnvelopeDetail">
+      select
+      <include refid="Base_Column_List" />
+      from red_envelope_detail
+      where red_envelope_id = #{redEnvelopeId,jdbcType=BIGINT} and receive_id = #{receiveId,jdbcType=BIGINT} and enabled_flag = #{enabledFlag,jdbcType=TINYINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from red_envelope_detail
     where id = #{id,jdbcType=BIGINT}
   </delete>
+
   <insert id="insert" parameterType="com.example.yyw.model.redEnvelope.RedEnvelopeDetail">
     insert into red_envelope_detail (id, red_envelope_id, receive_id, 
       receive_date, receive_money, creation_date, 
@@ -37,6 +47,7 @@
       #{createdBy,jdbcType=VARCHAR}, #{updationDate,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=VARCHAR}, 
       #{enabledFlag,jdbcType=TINYINT})
   </insert>
+
   <insert id="insertSelective" parameterType="com.example.yyw.model.redEnvelope.RedEnvelopeDetail">
     insert into red_envelope_detail
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -104,6 +115,7 @@
       </if>
     </trim>
   </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.example.yyw.model.redEnvelope.RedEnvelopeDetail">
     update red_envelope_detail
     <set>
@@ -137,6 +149,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
+
   <update id="updateByPrimaryKey" parameterType="com.example.yyw.model.redEnvelope.RedEnvelopeDetail">
     update red_envelope_detail
     set red_envelope_id = #{redEnvelopeId,jdbcType=BIGINT},
@@ -150,4 +163,5 @@
       enabled_flag = #{enabledFlag,jdbcType=TINYINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
 </mapper>

@@ -19,25 +19,38 @@
     <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
     <result column="enabled_flag" jdbcType="TINYINT" property="enabledFlag" />
   </resultMap>
+
   <sql id="Base_Column_List">
     id, envelope_type, send_id, send_date, receive_id, qun_id, message, amount, `count`,
-    remain_count,status,  creation_date, created_by, updation_date, updated_by, enabled_flag
+    remain_count,`status`,  creation_date, created_by, updation_date, updated_by, enabled_flag
   </sql>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from red_envelope
     where id = #{id,jdbcType=BIGINT}
   </select>
+
+  <!-- 根据红包id,接收者id、红包类型、有效标识查找红包 -->
+  <select id="selectByIdAndReceiveIdAndEnvelopeTypeAndEnabledStatus" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />envelopeType
+    from red_envelope
+    where id = #{id,jdbcType=BIGINT} and receive_id = #{receiveId,jdbcType=BIGINT}
+     and envelope_type = #{envelopeType,jdbcType=INTEGER} and enabled_flag = #{enabledFlag,jdbcType=TINYINT}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from red_envelope
     where id = #{id,jdbcType=BIGINT}
   </delete>
+
   <insert id="insert" parameterType="com.example.yyw.model.redEnvelope.RedEnvelope">
     insert into red_envelope (id, envelope_type, send_id, 
       send_date, receive_id, qun_id, 
       message, amount, `count`,
-      remain_count,status,  creation_date, created_by,
+      remain_count,`status`,  creation_date, created_by,
       updation_date, updated_by, enabled_flag
       )
     values (#{id,jdbcType=BIGINT}, #{envelopeType,jdbcType=INTEGER}, #{sendId,jdbcType=BIGINT}, 
@@ -47,6 +60,7 @@
       #{updationDate,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=VARCHAR}, #{enabledFlag,jdbcType=TINYINT}
       )
   </insert>
+
   <insert id="insertSelective" parameterType="com.example.yyw.model.redEnvelope.RedEnvelope">
     insert into red_envelope
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -150,6 +164,7 @@
       </if>
     </trim>
   </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.example.yyw.model.redEnvelope.RedEnvelope">
     update red_envelope
     <set>
@@ -181,7 +196,7 @@
         remain_count = #{remainCount,jdbcType=INTEGER},
       </if>
       <if test="status != null">
-        status = #{status,jdbcType=INTEGER},
+        `status` = #{status,jdbcType=INTEGER},
       </if>
       <if test="creationDate != null">
         creation_date = #{creationDate,jdbcType=TIMESTAMP},
@@ -201,6 +216,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
+
   <update id="updateByPrimaryKey" parameterType="com.example.yyw.model.redEnvelope.RedEnvelope">
     update red_envelope
     set envelope_type = #{envelopeType,jdbcType=INTEGER},
@@ -212,7 +228,7 @@
       amount = #{amount,jdbcType=DECIMAL},
       `count` = #{count,jdbcType=INTEGER},
       remain_count = #{remainCount,jdbcType=INTEGER},
-      status = #{status,jdbcType=INTEGER},
+      `status` = #{status,jdbcType=INTEGER},
       creation_date = #{creationDate,jdbcType=TIMESTAMP},
       created_by = #{createdBy,jdbcType=VARCHAR},
       updation_date = #{updationDate,jdbcType=TIMESTAMP},
@@ -220,4 +236,12 @@
       enabled_flag = #{enabledFlag,jdbcType=TINYINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <update id="updateRedEnvelopeStatusAndRemainCount" parameterType="com.example.yyw.model.redEnvelope.RedEnvelope">
+    update red_envelope
+    SET `status` = #{status,jdbcType=INTEGER},remain_count = #{remainCount,jdbcType=INTEGER}
+    ,updation_date = #{updationDate,jdbcType=TIMESTAMP},updated_by = #{updatedBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
 </mapper>

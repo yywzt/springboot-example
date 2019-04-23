@@ -35,6 +35,7 @@ public class RedEnvelopeController {
     public ResponseData sendSingleRedEnvelope(@Validated RedEnvelopeDto redEnvelopeDto){
         return redEnvelopeService.sendSingleRedEnvelope(redEnvelopeDto);
     }
+
     /**
      * 群发红包
      * @param redEnvelopeDto
@@ -43,14 +44,25 @@ public class RedEnvelopeController {
     public ResponseData sendQunRedEnvelope(@Validated RedEnvelopeDto redEnvelopeDto){
         return redEnvelopeService.sendQunRedEnvelope(redEnvelopeDto);
     }
+
     /**
-     * 群发红包
+     * 领取私发红包
      * @param id 红包id
      * @param uid 领取人id
      * */
-    @RequestMapping(value = "/receivingRedEnvelope",method = RequestMethod.POST)
-    public ResponseData receivingRedEnvelope(@RequestParam Long id,@RequestParam Long uid){
-        return redEnvelopeService.receivingRedEnvelope(id,uid);
+    @RequestMapping(value = "/receivingSingleRedEnvelope",method = RequestMethod.POST)
+    public ResponseData receivingSingleRedEnvelope(@RequestParam Long id,@RequestParam Long uid){
+        return redEnvelopeService.receivingSingleRedEnvelope(id,uid);
+    }
+
+    /**
+     * 领取群发红包
+     * @param id 红包id
+     * @param uid 领取人id
+     * */
+    @RequestMapping(value = "/receivingQunRedEnvelope",method = RequestMethod.POST)
+    public ResponseData receivingQunRedEnvelope(@RequestParam Long id,@RequestParam Long uid){
+        return redEnvelopeService.receivingQunRedEnvelope(id,uid);
     }
 
 }

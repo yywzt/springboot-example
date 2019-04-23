@@ -5,7 +5,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Timestamp;
 
 /**
  * @Title red_envelope_detail表的实体类
@@ -38,7 +38,7 @@ public class RedEnvelopeDetail extends GenericModel<Long> implements Serializabl
      * 
      * 数据库字段信息：receive_date TIMESTAMP(19)
      */
-    private Date receiveDate;
+    private Timestamp receiveDate;
 
     /**
      *  字段名称：领取金额

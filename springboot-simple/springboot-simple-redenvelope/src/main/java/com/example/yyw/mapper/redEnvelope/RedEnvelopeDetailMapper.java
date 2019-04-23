@@ -46,4 +46,6 @@ public interface RedEnvelopeDetailMapper {
      * @return int
      */
     int updateByPrimaryKey(RedEnvelopeDetail record);
+
+    RedEnvelopeDetail selectByEnvelopeIdAndReceiveId(Long redEnvelopeId, Long receiveId,Long enabledFlag);
 }
