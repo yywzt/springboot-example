@@ -1,7 +1,0 @@
-server:
-  port: 18082
-
-spring:
-  thymeleaf:
-    prefix: classpath:/static/
-    cache: false
