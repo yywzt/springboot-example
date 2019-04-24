@@ -4,7 +4,7 @@ server:
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://139.199.179.164:3306/boot-example?userUnicode=true&characterEncoding=UTF8&useSSL=false
+    url: jdbc:mysql://127.0.0.1:3306/boot-example?userUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=GMT%2B8
     username: root
     password: root
   redis:
@@ -33,33 +33,33 @@ logging:
     root: info
     #\u6253\u5370sql \u524D\u7F00\u4E3Amapper\u7684\u5168\u8DEF\u5F84
     com.example.yyw: debug
-#    com.example.yyw.mapper.redEnvelope: debug
+  #    com.example.yyw.mapper.redEnvelope: debug
   # \u4E0D\u6307\u5B9A\u8DEF\u5F84\u5728\u5F53\u524D\u9879\u76EE\u4E0B\u751F\u6210springboot.log\u65E5\u5FD7
 #  file: log.log
 
 
-redisson:
-  threads: 10
-  nettyThreads: 10
-  codec: org.redisson.codec.JsonJacksonCodec
-  useLinuxNativeEpoll: false
-  singleServerConfig:
-    idleConnectionTimeout: 10000
-    pingTimeout: 1000
-    connectTimeout: 10000
-    timeout: 3000
-    retryAttempts: 3
-    retryInterval: 1500
-    reconnectionTimeout: 3000
-    failedAttempts: 3
-    password: root
-    subscriptionsPerConnection: 5
-    clientName: null
-    address: "redis://127.0.0.1:6379"
-    subscriptionConnectionMinimumIdleSize: 1
-    subscriptionConnectionPoolSize: 50
-    connectionMinimumIdleSize: 10
-    connectionPoolSize: 64
-    database: 2
-    dnsMonitoring: false
-    dnsMonitoringInterval: 5000
+#redisson:
+#  threads: 10
+#  nettyThreads: 10
+#  codec: org.redisson.codec.JsonJacksonCodec
+#  useLinuxNativeEpoll: false
+#  singleServerConfig:
+#    idleConnectionTimeout: 10000
+#    pingTimeout: 1000
+#    connectTimeout: 10000
+#    timeout: 3000
+#    retryAttempts: 3
+#    retryInterval: 1500
+#    reconnectionTimeout: 3000
+#    failedAttempts: 3
+#    password: root
+#    subscriptionsPerConnection: 5
+#    clientName: null
+#    address: "redis://127.0.0.1:6379"
+#    subscriptionConnectionMinimumIdleSize: 1
+#    subscriptionConnectionPoolSize: 50
+#    connectionMinimumIdleSize: 10
+#    connectionPoolSize: 64
+#    database: 2
+#    dnsMonitoring: false
+#    dnsMonitoringInterval: 5000

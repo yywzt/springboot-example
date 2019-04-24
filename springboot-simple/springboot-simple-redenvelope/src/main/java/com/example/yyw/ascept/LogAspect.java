@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.UUID;
 
 /**
@@ -50,7 +51,7 @@ public class LogAspect {
 
     @After("log()")
     public void doAfter(JoinPoint joinPoint){
-        System.out.println("后置通知");
+//        System.out.println("后置通知");
     }
 
     public void loginfo(JoinPoint joinPoint,String returnValue){
@@ -62,29 +63,59 @@ public class LogAspect {
         // 记录下请求内容
         String remoteAddr = request.getRemoteAddr();
         sb.append("RemoteAddr : ").append(remoteAddr).append("\n");
+        String URL = request.getRequestURL().toString();
+        sb.append("URL : ").append(URL).append("\n");
+        String HTTP_METHOD = request.getMethod();
+        sb.append("HTTP_METHOD : ").append(HTTP_METHOD).append("\n");
+        // 如果是表单，参数值是普通键值对。如果是application/json，则request.getParameter是取不到的。
+        String HTTP_HEAD_Type = request.getHeader("Content-Type");
+        sb.append("HTTP_HEAD_Type : ").append(HTTP_HEAD_Type).append("\n");
         String controller = joinPoint.getTarget().getClass().getName();
         sb.append("Controller : ").append(controller).append("\n");
+        String CLASS_METHOD = joinPoint.getSignature().getName();
+        sb.append("CLASS_METHOD : ").append(CLASS_METHOD).append("\n");
 
-
-        log.info("URL : " + request.getRequestURL().toString());
-        log.info("HTTP_METHOD : " + request.getMethod());
-        // 如果是表单，参数值是普通键值对。如果是application/json，则request.getParameter是取不到的。
-        log.info("HTTP_HEAD Type : " + request.getHeader("Content-Type"));
-        log.info("CLASS_METHOD : " + joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
-        if ("application/json".equals(request.getHeader("Content-Type"))) {
-            // 记录application/json时的传参，SpringMVC中使用@RequestBody接收的值
-            log.info(getRequestPayload(request));
-        } else {
-            //记录请求的键值对
-            for (String key : request.getParameterMap().keySet()) {
-                log.info(key + "----" + request.getParameter(key));
-            }
-        }
+        sb.append("Parameter   : " + buildParameterString(request) + "\n");
+        sb.append("return value: ").append(returnValue).append("\n");
         long times = System.currentTimeMillis() - startTime.get();
         sb.append("times(ms)   : ").append((times)).append("ms").append("\n");
         sb.append("--------------------------------------------------------------------------------\n");
+        log.info(sb.toString());
+    }
 
-        System.out.println("前置通知");
+    private String buildParameterString(HttpServletRequest request) {
+        if ("application/json".equals(request.getHeader("Content-Type"))) {
+            // 记录application/json时的传参，SpringMVC中使用@RequestBody接收的值
+            return getRequestPayload(request);
+        } else {
+            //记录请求的键值对
+            if (null == request) {
+                return "";
+            }
+            Enumeration<String> e = request.getParameterNames();
+            StringBuilder parameterStr = new StringBuilder();
+            while (e.hasMoreElements()) {
+                String key = e.nextElement();
+                String[] values = request.getParameterValues(key);
+                if (values.length == 1) {
+                    parameterStr.append(key).append("=").append(values[0]);
+                } else {
+                    parameterStr.append(key).append("[]={");
+                    for (int i = 0; i < values.length; i++) {
+                        if (i > 0) {
+                            parameterStr.append(",");
+                        }
+                        parameterStr.append(values[i]);
+                    }
+                    parameterStr.append("}");
+                }
+                parameterStr.append("  ");
+            }
+            return parameterStr.toString();
+            /*for (String key : request.getParameterMap().keySet()) {
+                log.info(key + "----" + request.getParameter(key));
+            }*/
+        }
     }
 
     private String getRequestPayload(HttpServletRequest req) {

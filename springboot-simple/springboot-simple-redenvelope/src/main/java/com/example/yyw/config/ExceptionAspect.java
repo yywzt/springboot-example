@@ -1,6 +1,7 @@
 package com.example.yyw.config;
 
 import com.example.yyw.constant.ResponseData;
+import com.example.yyw.exception.DefaultException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -62,8 +63,8 @@ public class ExceptionAspect {
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	public ResponseData handleHttpRequestMethodNotSupportedException(
 	        HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
-		log.error("request_method_not_supported...", e);
-		ResponseData info = ResponseData.failure("request_method_not_supported");
+		log.error("Request method 'GET' not supported...", e);
+		ResponseData info = ResponseData.failure(e.getMessage());
         return info;
 	}
 
@@ -114,6 +115,17 @@ public class ExceptionAspect {
 		}
 		log.error("paremeter validation failure... : {}", msg);
 		ResponseData info = ResponseData.failure(Arrays.toString(msg.toArray()));
+		return info;
+	}
+
+	/**
+	 * 500 - Internal Server Error
+	 */
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ExceptionHandler(DefaultException.class)
+	public ResponseData handleDefaultException(DefaultException e,HttpServletRequest request) {
+		log.error("Internal Server Error : {}",e);
+		ResponseData info = ResponseData.failure("Internal Server Error : " + e.getMessage());
 		return info;
 	}
 }

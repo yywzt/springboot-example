@@ -12,20 +12,31 @@
     <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
     <result column="enabled_flag" jdbcType="TINYINT" property="enabledFlag" />
   </resultMap>
+
   <sql id="Base_Column_List">
     id, user_name, real_name, money, creation_date, created_by, updation_date, updated_by, 
     enabled_flag
   </sql>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from user
     where id = #{id,jdbcType=BIGINT}
   </select>
+
+  <select id="selectByUserName" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where user_name = #{userName,jdbcType=VARCHAR} and enabled_flag = #{enabledFlag,jdbcType=TINYINT}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from user
     where id = #{id,jdbcType=BIGINT}
   </delete>
+
   <insert id="insert" parameterType="com.example.yyw.model.redEnvelope.User">
     insert into user (id, user_name, real_name, 
       money, creation_date, created_by, 
@@ -36,6 +47,7 @@
       #{updationDate,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=VARCHAR}, #{enabledFlag,jdbcType=TINYINT}
       )
   </insert>
+
   <insert id="insertSelective" parameterType="com.example.yyw.model.redEnvelope.User">
     insert into user
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -97,6 +109,7 @@
       </if>
     </trim>
   </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.example.yyw.model.redEnvelope.User">
     update user
     <set>
@@ -127,6 +140,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
+
   <update id="updateByPrimaryKey" parameterType="com.example.yyw.model.redEnvelope.User">
     update user
     set user_name = #{userName,jdbcType=VARCHAR},
@@ -139,4 +153,12 @@
       enabled_flag = #{enabledFlag,jdbcType=TINYINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <update id="updateMoneyById">
+      update user
+    set money = money + #{money,jdbcType=DECIMAL} ,
+      updation_date = now(),
+      updated_by = #{updatedBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+    </update>
 </mapper>

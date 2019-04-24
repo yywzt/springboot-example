@@ -2,6 +2,9 @@ package com.example.yyw.mapper.redEnvelope;
 
 import com.example.yyw.model.redEnvelope.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.math.BigDecimal;
 
 @Mapper
 public interface UserMapper {
@@ -46,4 +49,14 @@ public interface UserMapper {
      * @return int
      */
     int updateByPrimaryKey(User record);
+
+    /**
+     * 用户增加金额
+     * @param id
+     * @param money 增加的金额
+     * @return
+     */
+    int updateMoneyById(@Param("id") Long id, @Param("money") BigDecimal money,@Param("updatedBy") String updatedBy);
+
+    User selectByUserName(@Param("userName") String userName, @Param("enabledFlag") Long enabledFlag);
 }

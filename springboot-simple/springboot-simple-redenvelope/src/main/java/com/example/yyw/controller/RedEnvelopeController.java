@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
  * @describe
  */
 @RestController
+@RequestMapping("/redEnvelope")
 public class RedEnvelopeController {
 
     @Autowired
@@ -22,7 +23,7 @@ public class RedEnvelopeController {
      * 红包详情
      * @param id 红包id
      * */
-    @RequestMapping(value = "/getRedEnvelope/{id}",method = RequestMethod.GET)
+    @GetMapping(value = "/getRedEnvelope/{id}")
     public ResponseData getRedEnvelope(@PathVariable("id") Long id){
         return redEnvelopeService.getRedEnvelope(id);
     }
@@ -31,7 +32,7 @@ public class RedEnvelopeController {
      * 私发红包
      * @param redEnvelopeDto
      * */
-    @RequestMapping(value = "/sendSingleRedEnvelope",method = RequestMethod.POST)
+    @PostMapping(value = "/sendSingleRedEnvelope")
     public ResponseData sendSingleRedEnvelope(@Validated RedEnvelopeDto redEnvelopeDto){
         return redEnvelopeService.sendSingleRedEnvelope(redEnvelopeDto);
     }
@@ -40,7 +41,7 @@ public class RedEnvelopeController {
      * 群发红包
      * @param redEnvelopeDto
      * */
-    @RequestMapping(value = "/sendQunRedEnvelope",method = RequestMethod.POST)
+    @PostMapping(value = "/sendQunRedEnvelope")
     public ResponseData sendQunRedEnvelope(@Validated RedEnvelopeDto redEnvelopeDto){
         return redEnvelopeService.sendQunRedEnvelope(redEnvelopeDto);
     }
@@ -50,7 +51,7 @@ public class RedEnvelopeController {
      * @param id 红包id
      * @param uid 领取人id
      * */
-    @RequestMapping(value = "/receivingSingleRedEnvelope",method = RequestMethod.POST)
+    @PostMapping(value = "/receivingSingleRedEnvelope")
     public ResponseData receivingSingleRedEnvelope(@RequestParam Long id,@RequestParam Long uid){
         return redEnvelopeService.receivingSingleRedEnvelope(id,uid);
     }
@@ -60,7 +61,7 @@ public class RedEnvelopeController {
      * @param id 红包id
      * @param uid 领取人id
      * */
-    @RequestMapping(value = "/receivingQunRedEnvelope",method = RequestMethod.POST)
+    @PostMapping(value = "/receivingQunRedEnvelope")
     public ResponseData receivingQunRedEnvelope(@RequestParam Long id,@RequestParam Long uid){
         return redEnvelopeService.receivingQunRedEnvelope(id,uid);
     }

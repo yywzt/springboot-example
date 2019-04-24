@@ -5,8 +5,10 @@ import com.example.yyw.constant.ResponseData;
 import com.example.yyw.dto.RedEnvelopeDto;
 import com.example.yyw.enums.EnvelopeEnum;
 import com.example.yyw.enums.EnvelopeStatusEnum;
+import com.example.yyw.exception.DefaultException;
 import com.example.yyw.mapper.redEnvelope.RedEnvelopeDetailMapper;
 import com.example.yyw.mapper.redEnvelope.RedEnvelopeMapper;
+import com.example.yyw.mapper.redEnvelope.UserMapper;
 import com.example.yyw.model.redEnvelope.RedEnvelope;
 import com.example.yyw.model.redEnvelope.RedEnvelopeDetail;
 import com.example.yyw.util.DateUtil;
@@ -29,6 +31,8 @@ public class RedEnvelopeService {
     private RedEnvelopeMapper redEnvelopeMapper;
     @Autowired
     private RedEnvelopeDetailMapper redEnvelopeDetailMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     public RedEnvelopeMapper getRedEnvelopeMapper() {
         return redEnvelopeMapper;
@@ -88,14 +92,16 @@ public class RedEnvelopeService {
         redEnvelope.setRemainCount(redEnvelope.getCount());
         redEnvelope.setCreationDate(DateUtil.getNowTimestamp());
         redEnvelope.setCreatedBy(Constants.DEFAULTCREATEBY);
-        int i = redEnvelopeMapper.insertSelective(redEnvelope);
-        return ResponseData.success(redEnvelopeDto);
+        if(redEnvelopeMapper.insertSelective(redEnvelope) >= 1){
+            return ResponseData.success(redEnvelopeDto);
+        }
+        return ResponseData.failure();
     }
 
     /**
      * 领取私发红包
      * */
-    @Transactional
+    @Transactional(rollbackFor = DefaultException.class)
     public ResponseData receivingSingleRedEnvelope(Long id, Long uid) {
         RedEnvelopeDetail envelopeDetail = redEnvelopeDetailMapper.selectByEnvelopeIdAndReceiveId(id, uid,Constants.ENABLEDFLAG);
         if(envelopeDetail != null){
@@ -114,13 +120,21 @@ public class RedEnvelopeService {
                 redEnvelopeDetail.setReceiveMoney(redEnvelope.getAmount());
                 redEnvelopeDetail.setCreationDate(DateUtil.getNowTimestamp());
                 redEnvelopeDetail.setCreatedBy(Constants.DEFAULTCREATEBY);
-                redEnvelopeDetailMapper.insertSelective(redEnvelopeDetail);
+                if(redEnvelopeDetailMapper.insertSelective(redEnvelopeDetail) <= 0){
+                    throw new DefaultException("领取失败");
+                }
                 //更新红包状态
                 redEnvelope.setStatus(EnvelopeStatusEnum.FINISHED.getCode());
                 redEnvelope.setRemainCount(redEnvelope.getRemainCount() - 1);
                 redEnvelope.setUpdationDate(DateUtil.getNowTimestamp());
                 redEnvelope.setUpdatedBy(Constants.DEFAULTUPDATEBY);
-                redEnvelopeMapper.updateRedEnvelopeStatusAndRemainCount(redEnvelope);
+                if(redEnvelopeMapper.updateRedEnvelopeStatusAndRemainCount(redEnvelope) <= 0){
+                    throw new DefaultException("领取失败");
+                }
+                //用户金额增加
+                if(userMapper.updateMoneyById(uid,redEnvelope.getAmount(),Constants.DEFAULTUPDATEBY) <= 0){
+                    throw new DefaultException("领取失败");
+                }
                 return ResponseData.success(redEnvelopeDetail);
             }
         }

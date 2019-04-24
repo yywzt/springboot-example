@@ -3,6 +3,8 @@ package com.example.yyw.model.redEnvelope;
 import com.example.yyw.model.GenericModel;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -24,6 +26,7 @@ public class User extends GenericModel<Long> implements Serializable {
      * 
      * 数据库字段信息：user_name VARCHAR(255)
      */
+    @NotBlank(message = "用户名不能为空")
     private String userName;
 
     /**

@@ -4,6 +4,7 @@ import com.example.yyw.model.GenericModel;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -25,6 +26,7 @@ public class Qun extends GenericModel<Long> implements Serializable {
      * 
      * 数据库字段信息：qun_name VARCHAR(255)
      */
+    @NotBlank(message = "群组名称不能为空")
     private String qunName;
 
 }

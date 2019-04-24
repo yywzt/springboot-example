@@ -54,4 +54,13 @@ public class ResponseData<T> {
 	public Object getData() {
 		return data;
 	}
+
+	@Override
+	public String toString() {
+		return "ResponseData{" +
+				"success=" + success +
+				", message='" + message + '\'' +
+				", data=" + data +
+				'}';
+	}
 }
