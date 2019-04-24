@@ -28,6 +28,15 @@ mybatis:
     default-statement-timeout: 30
 #  mapper-locations:
 
+logging:
+  level:
+    root: info
+    #\u6253\u5370sql \u524D\u7F00\u4E3Amapper\u7684\u5168\u8DEF\u5F84
+    com.example.yyw: debug
+#    com.example.yyw.mapper.redEnvelope: debug
+  # \u4E0D\u6307\u5B9A\u8DEF\u5F84\u5728\u5F53\u524D\u9879\u76EE\u4E0B\u751F\u6210springboot.log\u65E5\u5FD7
+#  file: log.log
+
 
 redisson:
   threads: 10
