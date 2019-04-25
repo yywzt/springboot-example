@@ -25,13 +25,6 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
 
-  <select id="selectByUserName" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from user
-    where user_name = #{userName,jdbcType=VARCHAR} and enabled_flag = #{enabledFlag,jdbcType=TINYINT}
-  </select>
-
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from user
     where id = #{id,jdbcType=BIGINT}
@@ -153,12 +146,4 @@
       enabled_flag = #{enabledFlag,jdbcType=TINYINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
-
-  <update id="updateMoneyById">
-      update user
-    set money = money + #{money,jdbcType=DECIMAL} ,
-      updation_date = now(),
-      updated_by = #{updatedBy,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-    </update>
 </mapper>

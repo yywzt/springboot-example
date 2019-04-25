@@ -19,8 +19,10 @@ public class Constants {
     public static final String SUCCESS = "操作成功";
     public static final String FAILURE = "操作失败";
 
-    /**
-     * 红包领取状态
-     */
+    //私发红包数量 1
+    public static final Integer ONE_SINGLE_RED_ENVE_LOPE_COUNT = 1;
+    //私发红包数量 0
+    public static final Integer ZERO_SINGLE_RED_ENVE_LOPE_COUNT = 0;
+    //红包领取状态
     public static final String RECEIVED = "你已经领取过此红包了";
 }

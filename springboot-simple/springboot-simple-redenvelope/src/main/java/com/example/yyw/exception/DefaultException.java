@@ -3,7 +3,7 @@ package com.example.yyw.exception;
 /**
  * @author yanzt
  * @date 2019/4/24 22:54
- * @describe
+ * @describe 自定义异常类
  */
 public class DefaultException extends RuntimeException {
 

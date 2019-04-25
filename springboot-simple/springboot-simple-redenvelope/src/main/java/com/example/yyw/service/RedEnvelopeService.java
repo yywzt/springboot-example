@@ -65,7 +65,7 @@ public class RedEnvelopeService {
         RedEnvelope redEnvelope = new RedEnvelope();
         BeanUtils.copyProperties(redEnvelopeDto,redEnvelope);
         log.info("msg: {}",redEnvelope);
-        redEnvelope.setCount(1);
+        redEnvelope.setCount(Constants.ONE_SINGLE_RED_ENVE_LOPE_COUNT);
         redEnvelope.setRemainCount(redEnvelope.getCount());
         redEnvelope.setCreationDate(DateUtil.getNowTimestamp());
         redEnvelope.setCreatedBy(Constants.DEFAULTCREATEBY);
@@ -125,7 +125,7 @@ public class RedEnvelopeService {
                 }
                 //更新红包状态
                 redEnvelope.setStatus(EnvelopeStatusEnum.FINISHED.getCode());
-                redEnvelope.setRemainCount(redEnvelope.getRemainCount() - 1);
+                redEnvelope.setRemainCount(Constants.ZERO_SINGLE_RED_ENVE_LOPE_COUNT);
                 redEnvelope.setUpdationDate(DateUtil.getNowTimestamp());
                 redEnvelope.setUpdatedBy(Constants.DEFAULTUPDATEBY);
                 if(redEnvelopeMapper.updateRedEnvelopeStatusAndRemainCount(redEnvelope) <= 0){

@@ -20,13 +20,6 @@
         where id = #{id,jdbcType=BIGINT}
     </select>
 
-    <select id="selectByQunName" resultType="com.example.yyw.model.redEnvelope.Qun">
-        select
-        <include refid="Base_Column_List"/>
-        from qun
-        where qun_name = #{qunName,jdbcType=VARCHAR} and enabled_flag = #{enabledFlag,jdbcType=TINYINT}
-    </select>
-
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from qun
     where id = #{id,jdbcType=BIGINT}

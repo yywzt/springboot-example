@@ -3,6 +3,7 @@ package com.example.yyw.mapper.redEnvelope;
 import com.example.yyw.model.redEnvelope.Qun;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface QunMapper {
@@ -48,5 +49,6 @@ public interface QunMapper {
      */
     int updateByPrimaryKey(Qun record);
 
+    @Select("select * from qun where qun_name = #{qunName} and enabled_flag = #{enabledFlag}")
     Qun selectByQunName(@Param("qunName") String qunName, @Param("enabledflag") Long enabledflag);
 }

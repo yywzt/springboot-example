@@ -1,12 +1,10 @@
 package com.example.yyw.service;
 
 import com.example.yyw.constant.Constants;
-import com.example.yyw.constant.RedisConstants;
 import com.example.yyw.constant.ResponseData;
 import com.example.yyw.mapper.redEnvelope.UserMapper;
 import com.example.yyw.model.redEnvelope.User;
 import com.example.yyw.util.DateUtil;
-import com.example.yyw.util.RedissonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +25,6 @@ public class UserService {
         return userMapper;
     }
 
-    RedissonUtils redissonUtils = RedissonUtils.getInstance();
-
     /**
      * 用户余额变更
      * @param id
@@ -39,7 +35,12 @@ public class UserService {
         return ResponseData.success();
     }
 
-    public ResponseData initUser(User user) {
+    /**
+     * 使用unique index避免用户名重复
+     * @param user
+     * @return
+     */
+    /*public ResponseData initUser(User user) {
         String key = RedisConstants.INITUSER + user.getUserName();
         try {
             if (redissonUtils.tryLock(key, RedisConstants.WAITTIME, RedisConstants.LEASETIME, RedisConstants.DEFAULT_TIME_UNIT)) {
@@ -56,6 +57,15 @@ public class UserService {
             }
         }finally {
             redissonUtils.unlock(key);
+        }
+        return ResponseData.failure();
+    }*/
+    public ResponseData initUser(User user) {
+        user.setMoney(BigDecimal.ZERO);
+        user.setCreationDate(DateUtil.getNowTimestamp());
+        user.setCreatedBy(Constants.DEFAULTCREATEBY);
+        if (userMapper.insertSelective(user) > 0) {
+            return ResponseData.success();
         }
         return ResponseData.failure();
     }
