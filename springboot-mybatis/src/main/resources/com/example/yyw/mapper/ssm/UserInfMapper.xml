@@ -116,12 +116,6 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <select id="findUserInfByUnameAndPasswd" parameterType="Object" resultMap="BaseResultMap">
-    select <include refid="Base_Column_List" />
-    from user_inf
-    where uname = #{uname} and passwd = #{passwd}
-  </select>
-
   <select id="findUserInfByUname" parameterType="Object" resultMap="ResultMap">
     SELECT
       u.*,r.id AS role_id,r.role_name,r.role_code

@@ -3,6 +3,7 @@ package com.example.yyw.mapper.ssm;
 import com.example.yyw.model.ssm.UserInf;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -50,7 +51,11 @@ public interface UserInfMapper {
      */
     int updateByPrimaryKey(UserInf record);
 
+    @Select("select * from user_inf where uname = #{uname} and passwd = #{passwd}")
     UserInf findUserInfByUnameAndPasswd(@Param("uname") String uname, @Param("passwd") String passwd);
+
+    @Select("select * from user_inf where uname = #{uname} and passwd = #{passwd}")
+    UserInf findUserInfByUnameAndPasswd2(String uname, String passwd);
 
 
 
