@@ -65,7 +65,7 @@ public class RedEnvelope extends GenericModel<Long> implements Serializable {
     private String message;
 
     /**
-     *  字段名称：红包总金额
+     *  字段名称：单个红包金额
      * 
      * 数据库字段信息：amount DECIMAL(16)
      */

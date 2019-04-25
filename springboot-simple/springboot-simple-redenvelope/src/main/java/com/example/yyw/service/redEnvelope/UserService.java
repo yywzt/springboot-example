@@ -1,9 +1,10 @@
-package com.example.yyw.service;
+package com.example.yyw.service.redEnvelope;
 
 import com.example.yyw.constant.Constants;
 import com.example.yyw.constant.ResponseData;
 import com.example.yyw.mapper.redEnvelope.UserMapper;
 import com.example.yyw.model.redEnvelope.User;
+import com.example.yyw.service.GenericService;
 import com.example.yyw.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ import java.math.BigDecimal;
  * @describe
  */
 @Service
-public class UserService {
+public class UserService extends GenericService<Long> {
 
     @Autowired
     private UserMapper userMapper;
@@ -61,12 +62,29 @@ public class UserService {
         return ResponseData.failure();
     }*/
     public ResponseData initUser(User user) {
+        User vo = userMapper.selectByUserName(user.getUserName(), Constants.ENABLEDFLAG);
+        if(vo != null){
+            return ResponseData.failure(Constants.EXISET_USER_NAME);
+        }
         user.setMoney(BigDecimal.ZERO);
-        user.setCreationDate(DateUtil.getNowTimestamp());
-        user.setCreatedBy(Constants.DEFAULTCREATEBY);
+        initBaseData(user,Constants.ISNOTUPDATE);
         if (userMapper.insertSelective(user) > 0) {
             return ResponseData.success();
         }
         return ResponseData.failure();
+    }
+
+    /**
+     * 校验用户是否存在且有效
+     * @param id 用户id
+     * @return
+     */
+    public ResponseData checkUser(Long id){
+        User user = userMapper.selectByPrimaryKey(id);
+        if(user != null && user.getEnabledFlag().equals(Constants.ENABLEDFLAG)){
+            return ResponseData.success(user);
+        }else{
+            return ResponseData.failure(Constants.USER_INVALID);
+        }
     }
 }

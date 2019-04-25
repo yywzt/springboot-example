@@ -2,7 +2,7 @@ package com.example.yyw.controller;
 
 import com.example.yyw.constant.ResponseData;
 import com.example.yyw.model.redEnvelope.User;
-import com.example.yyw.service.UserService;
+import com.example.yyw.service.redEnvelope.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;

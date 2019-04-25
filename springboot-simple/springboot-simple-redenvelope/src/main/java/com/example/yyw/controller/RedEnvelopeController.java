@@ -2,7 +2,7 @@ package com.example.yyw.controller;
 
 import com.example.yyw.constant.ResponseData;
 import com.example.yyw.dto.RedEnvelopeDto;
-import com.example.yyw.service.RedEnvelopeService;
+import com.example.yyw.service.redEnvelope.RedEnvelopeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +18,11 @@ public class RedEnvelopeController {
 
     @Autowired
     private RedEnvelopeService redEnvelopeService;
+
+    @GetMapping("/getAllRedEnvelope")
+    public ResponseData getAllRedEnvelope(){
+        return redEnvelopeService.getAllRedEnvelope();
+    }
 
     /**
      * 红包详情

@@ -31,6 +31,10 @@ public class ResponseData<T> {
 		return new ResponseData<T>(true,SUCCESS,null);
 	}
 
+	public static <T> ResponseData<T> success(String message) {
+		return new ResponseData<T>(true,message,null);
+	}
+
 	public static <T> ResponseData<T> success(Object data) {
 		return new ResponseData<T>(true,SUCCESS,data);
 	}

@@ -3,6 +3,7 @@ package com.example.yyw.config;
 import com.example.yyw.constant.ResponseData;
 import com.example.yyw.exception.DefaultException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
@@ -126,6 +127,17 @@ public class ExceptionAspect {
 	public ResponseData handleDefaultException(DefaultException e,HttpServletRequest request) {
 		log.error("Internal Server Error : {}",e);
 		ResponseData info = ResponseData.failure("Internal Server Error : " + e.getMessage());
+		return info;
+	}
+
+	/**
+	 * 500 - SQL Error
+	 */
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ExceptionHandler(DuplicateKeyException.class)
+	public ResponseData handleDefaultSQLException(DuplicateKeyException e,HttpServletRequest request) {
+		log.error("DuplicateKeyException Error : {}",e);
+		ResponseData info = ResponseData.failure("DuplicateKeyException Error : " + e.getMessage());
 		return info;
 	}
 }

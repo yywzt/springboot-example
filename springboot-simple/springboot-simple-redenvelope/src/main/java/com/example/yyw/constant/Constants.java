@@ -19,10 +19,22 @@ public class Constants {
     public static final String SUCCESS = "操作成功";
     public static final String FAILURE = "操作失败";
 
-    //私发红包数量 1
-    public static final Integer ONE_SINGLE_RED_ENVE_LOPE_COUNT = 1;
-    //私发红包数量 0
-    public static final Integer ZERO_SINGLE_RED_ENVE_LOPE_COUNT = 0;
-    //红包领取状态
-    public static final String RECEIVED = "你已经领取过此红包了";
+    public static final String EXISET_USER_NAME = "用户名已存在";
+    public static final String EXISET_QUN_NAME = "群组名称已存在";
+
+    public static final String USER_INVALID = "用户无效";
+    public static final String QUN_INVALID = "群组无效";
+    public static final String USER_OR_QUN_INVALID = "用户或群组无效";
+
+    public static final String EXISTED_IN_QUN = "你已经加入过该群组了";
+    public static final String NOTEXISTED_IN_QUN = "你不在该群组内";
+    public static final String JOININ_QUN_SUCCESS = "加入群组成功";
+    public static final String JOININ_QUN_FAILURE = "加入群组失败";
+    public static final String QUIT_QUN_SUCCESS = "退出群组成功";
+    public static final String QUIT_QUN_FAILURE = "退出群组失败";
+
+    public static final boolean ISUPDATE = true;
+    public static final boolean ISNOTUPDATE = false;
+
+
 }
