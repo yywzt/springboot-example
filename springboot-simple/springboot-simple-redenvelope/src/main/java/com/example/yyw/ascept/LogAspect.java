@@ -58,7 +58,7 @@ public class LogAspect {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = requestAttributes.getRequest();
         StringBuilder sb = new StringBuilder("\nSpringBoot action report -------------")
-                .append(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
+                .append(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date()))
                 .append(" ------------------------------\n");
         // 记录下请求内容
         String remoteAddr = request.getRemoteAddr();

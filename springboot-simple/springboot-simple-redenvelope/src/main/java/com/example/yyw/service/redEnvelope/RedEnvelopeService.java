@@ -169,53 +169,70 @@ public class RedEnvelopeService extends GenericService<Long> {
 
     /**
      * 领取私发红包
+     * 该方法不存在事务，避免事务提交前锁被释放
      * */
-    @Transactional(rollbackFor = DefaultException.class)
     public ResponseData receivingSingleRedEnvelope(Long id, Long uid) {
         ResponseData responseData = userService.checkUser(uid);
         if(!responseData.isSuccess()){
             return responseData;
         }
-        RedEnvelope redEnvelope = redEnvelopeMapper.selectByIdAndReceiveIdAndEnvelopeTypeAndEnabledStatus(id,uid,EnvelopeEnum.SINGLE.getCode(),Constants.ENABLEDFLAG);
-        //存在且是私发红包
-        if(redEnvelope != null){
-            //判断是否领取过了
-            RedEnvelopeDetail envelopeDetail = redEnvelopeDetailMapper.selectByEnvelopeIdAndReceiveId(id, uid,Constants.ENABLEDFLAG);
-            if(envelopeDetail != null){
-                return ResponseData.failure(RedEnvelopeConstants.RECEIVED);
+        String key = RedisConstants.GET_SINGLE_RED_ENVELOPE + id.toString();
+        try {
+            if(redissonUtils.tryLock(key,RedisConstants.WAITTIME,RedisConstants.LEASETIME,RedisConstants.DEFAULT_TIME_UNIT)) {
+                return receivedSingleEnvelope(id, uid);
             }
-            if(redEnvelope.getStatus().equals(EnvelopeStatusEnum.AVAILABLE.getCode())){
-                //领取详情model
-                RedEnvelopeDetail redEnvelopeDetail = new RedEnvelopeDetail();
-                redEnvelopeDetail.setRedEnvelopeId(redEnvelope.getId());
-                redEnvelopeDetail.setReceiveId(uid);
-                redEnvelopeDetail.setReceiveDate(DateUtil.getNowTimestamp());
-                redEnvelopeDetail.setReceiveMoney(redEnvelope.getAmount());
-                initBaseData(redEnvelopeDetail,Constants.ISNOTUPDATE);
-                if(redEnvelopeDetailMapper.insertSelective(redEnvelopeDetail) <= 0){
-                    throw new DefaultException(RedEnvelopeConstants.RECEIVE_FAILURE);
-                }
-                //更新红包状态
-                redEnvelope.setStatus(EnvelopeStatusEnum.FINISHED.getCode());
-                redEnvelope.setRemainCount(RedEnvelopeConstants.ZERO_SINGLE_RED_ENVE_LOPE_COUNT);
-                initBaseData(redEnvelope,Constants.ISUPDATE);
-                if(redEnvelopeMapper.updateRedEnvelopeStatusAndRemainCount(redEnvelope) <= 0){
-                    throw new DefaultException(RedEnvelopeConstants.RECEIVE_FAILURE);
-                }
-                //用户金额增加
-                if(userMapper.updateMoneyById(uid,redEnvelope.getAmount(),Constants.DEFAULTUPDATEBY) <= 0){
-                    throw new DefaultException(RedEnvelopeConstants.RECEIVE_FAILURE);
-                }
-                return ResponseData.success(redEnvelopeDetail);
-            }
+            return ResponseData.failure(RedEnvelopeConstants.RECEIVE_FAILURE);
+        } finally {
+            redissonUtils.unlock(key);
         }
-        return ResponseData.failure(redEnvelope == null?RedEnvelopeConstants.NOT_RED_ENVELOPE:redEnvelope.getEnvelopeStatusName());
+    }
+
+    @Transactional(rollbackFor = DefaultException.class)
+    public ResponseData receivedSingleEnvelope(Long id, Long uid){
+        try {
+            RedEnvelope redEnvelope = redEnvelopeMapper.selectByIdAndReceiveIdAndEnvelopeTypeAndEnabledStatus(id, uid, EnvelopeEnum.SINGLE.getCode(), Constants.ENABLEDFLAG);
+            //存在且是私发红包
+            if (redEnvelope != null) {
+                //判断是否领取过了
+                RedEnvelopeDetail envelopeDetail = redEnvelopeDetailMapper.selectByEnvelopeIdAndReceiveId(id, uid, Constants.ENABLEDFLAG);
+                if (envelopeDetail != null) {
+                    return ResponseData.failure(RedEnvelopeConstants.RECEIVED);
+                }
+                if (redEnvelope.getStatus().equals(EnvelopeStatusEnum.AVAILABLE.getCode())) {
+                    //领取详情model
+                    RedEnvelopeDetail redEnvelopeDetail = new RedEnvelopeDetail();
+                    redEnvelopeDetail.setRedEnvelopeId(redEnvelope.getId());
+                    redEnvelopeDetail.setReceiveId(uid);
+                    redEnvelopeDetail.setReceiveDate(DateUtil.getNowTimestamp());
+                    redEnvelopeDetail.setReceiveMoney(redEnvelope.getAmount());
+                    initBaseData(redEnvelopeDetail, Constants.ISNOTUPDATE);
+                    if (redEnvelopeDetailMapper.insertSelective(redEnvelopeDetail) <= 0) {
+                        throw new DefaultException(RedEnvelopeConstants.RECEIVE_FAILURE);
+                    }
+                    //更新红包状态
+                    redEnvelope.setStatus(EnvelopeStatusEnum.FINISHED.getCode());
+                    redEnvelope.setRemainCount(RedEnvelopeConstants.ZERO_SINGLE_RED_ENVE_LOPE_COUNT);
+                    initBaseData(redEnvelope, Constants.ISUPDATE);
+                    if (redEnvelopeMapper.updateRedEnvelopeStatusAndRemainCount(redEnvelope) <= 0) {
+                        throw new DefaultException(RedEnvelopeConstants.RECEIVE_FAILURE);
+                    }
+                    //用户金额增加
+                    if (userMapper.updateMoneyById(uid, redEnvelope.getAmount(), Constants.DEFAULTUPDATEBY) <= 0) {
+                        throw new DefaultException(RedEnvelopeConstants.RECEIVE_FAILURE);
+                    }
+                    return ResponseData.success(redEnvelopeDetail);
+                }
+            }
+            return ResponseData.failure(redEnvelope == null ? RedEnvelopeConstants.NOT_RED_ENVELOPE : redEnvelope.getEnvelopeStatusName());
+        } catch (Exception e) {
+            log.error("received single redEnvelope error : {}",e.getMessage());
+            throw new DefaultException(RedEnvelopeConstants.RECEIVE_FAILURE);
+        }
     }
 
     /**
      * 领取群发红包
      * */
-    @Transactional(rollbackFor = DefaultException.class)
     public ResponseData receivingQunRedEnvelope(Long id, Long uid) {
         ResponseData responseData = userService.checkUser(uid);
         if(!responseData.isSuccess()){
@@ -224,52 +241,62 @@ public class RedEnvelopeService extends GenericService<Long> {
         String key = RedisConstants.GET_QUN_RED_ENVELOPE + id.toString();
         try {
             if(redissonUtils.tryLock(key,RedisConstants.WAITTIME,RedisConstants.LEASETIME,RedisConstants.DEFAULT_TIME_UNIT)){
-                RedEnvelope redEnvelope = redEnvelopeMapper.selectByIdAndTypeAndEnabledFlag(id,EnvelopeEnum.QUN.getCode(),Constants.ENABLEDFLAG);
-                //存在且是群发红包
-                if(redEnvelope != null){
-                    //判断是否在该群组内
-                    boolean inQun = qunService.isInQun(redEnvelope.getQunId(),uid);
-                    if(!inQun){
-                        return ResponseData.failure(Constants.NOTEXISTED_IN_QUN);
-                    }
-                    //判断是否领取过了
-                    RedEnvelopeDetail envelopeDetail = redEnvelopeDetailMapper.selectByEnvelopeIdAndReceiveId(id, uid,Constants.ENABLEDFLAG);
-                    if(envelopeDetail != null){
-                        return ResponseData.failure(RedEnvelopeConstants.RECEIVED);
-                    }
-                    if(redEnvelope.getStatus().equals(EnvelopeStatusEnum.AVAILABLE.getCode()) && redEnvelope.getRemainCount() > 0){
-                        //领取详情model
-                        RedEnvelopeDetail redEnvelopeDetail = new RedEnvelopeDetail();
-                        redEnvelopeDetail.setRedEnvelopeId(redEnvelope.getId());
-                        redEnvelopeDetail.setReceiveId(uid);
-                        redEnvelopeDetail.setReceiveDate(DateUtil.getNowTimestamp());
-                        redEnvelopeDetail.setReceiveMoney(redEnvelope.getAmount());
-                        initBaseData(redEnvelopeDetail,Constants.ISNOTUPDATE);
-                        if(redEnvelopeDetailMapper.insertSelective(redEnvelopeDetail) <= 0){
-                            throw new DefaultException(RedEnvelopeConstants.RECEIVE_FAILURE);
-                        }
-                        //更新红包状态
-                        redEnvelope.setRemainCount(redEnvelope.getRemainCount() - 1);
-                        if(redEnvelope.getRemainCount() <= 0) {
-                            redEnvelope.setStatus(EnvelopeStatusEnum.FINISHED.getCode());
-                        }
-                        initBaseData(redEnvelope,Constants.ISUPDATE);
-                        if(redEnvelopeMapper.updateRedEnvelopeStatusAndRemainCount(redEnvelope) <= 0){
-                            throw new DefaultException(RedEnvelopeConstants.RECEIVE_FAILURE);
-                        }
-                        //用户金额增加
-                        if(userMapper.updateMoneyById(uid,redEnvelope.getAmount(),Constants.DEFAULTUPDATEBY) <= 0){
-                            throw new DefaultException(RedEnvelopeConstants.RECEIVE_FAILURE);
-                        }
-                        return ResponseData.success(redEnvelopeDetail);
-                    }
-                }
-                return ResponseData.failure(redEnvelope == null?RedEnvelopeConstants.NOT_RED_ENVELOPE:redEnvelope.getEnvelopeStatusName());
+                return receivedQunRedEnvelope(id, uid);
             }
+            return ResponseData.failure(RedEnvelopeConstants.RECEIVE_FAILURE);
         }finally {
             redissonUtils.unlock(key);
         }
-        return ResponseData.failure();
+    }
+
+    @Transactional(rollbackFor = DefaultException.class)
+    public ResponseData receivedQunRedEnvelope(Long id, Long uid){
+        try {
+            RedEnvelope redEnvelope = redEnvelopeMapper.selectByIdAndTypeAndEnabledFlag(id,EnvelopeEnum.QUN.getCode(),Constants.ENABLEDFLAG);
+            //存在且是群发红包
+            if(redEnvelope != null){
+                //判断是否在该群组内
+                boolean inQun = qunService.isInQun(redEnvelope.getQunId(),uid);
+                if(!inQun){
+                    return ResponseData.failure(Constants.NOTEXISTED_IN_QUN);
+                }
+                //判断是否领取过了
+                RedEnvelopeDetail envelopeDetail = redEnvelopeDetailMapper.selectByEnvelopeIdAndReceiveId(id, uid,Constants.ENABLEDFLAG);
+                if(envelopeDetail != null){
+                    return ResponseData.failure(RedEnvelopeConstants.RECEIVED);
+                }
+                if(redEnvelope.getStatus().equals(EnvelopeStatusEnum.AVAILABLE.getCode()) && redEnvelope.getRemainCount() > 0){
+                    //领取详情model
+                    RedEnvelopeDetail redEnvelopeDetail = new RedEnvelopeDetail();
+                    redEnvelopeDetail.setRedEnvelopeId(redEnvelope.getId());
+                    redEnvelopeDetail.setReceiveId(uid);
+                    redEnvelopeDetail.setReceiveDate(DateUtil.getNowTimestamp());
+                    redEnvelopeDetail.setReceiveMoney(redEnvelope.getAmount());
+                    initBaseData(redEnvelopeDetail,Constants.ISNOTUPDATE);
+                    if(redEnvelopeDetailMapper.insertSelective(redEnvelopeDetail) <= 0){
+                        throw new DefaultException(RedEnvelopeConstants.RECEIVE_FAILURE);
+                    }
+                    //更新红包状态
+                    redEnvelope.setRemainCount(redEnvelope.getRemainCount() - 1);
+                    if(redEnvelope.getRemainCount() <= 0) {
+                        redEnvelope.setStatus(EnvelopeStatusEnum.FINISHED.getCode());
+                    }
+                    initBaseData(redEnvelope,Constants.ISUPDATE);
+                    if(redEnvelopeMapper.updateRedEnvelopeStatusAndRemainCount(redEnvelope) <= 0){
+                        throw new DefaultException(RedEnvelopeConstants.RECEIVE_FAILURE);
+                    }
+                    //用户金额增加
+                    if(userMapper.updateMoneyById(uid,redEnvelope.getAmount(),Constants.DEFAULTUPDATEBY) <= 0){
+                        throw new DefaultException(RedEnvelopeConstants.RECEIVE_FAILURE);
+                    }
+                    return ResponseData.success(redEnvelopeDetail);
+                }
+            }
+            return ResponseData.failure(redEnvelope == null?RedEnvelopeConstants.NOT_RED_ENVELOPE:redEnvelope.getEnvelopeStatusName());
+        } catch (Exception e) {
+            log.error("received qun redEnvelope error : {}",e.getMessage());
+            throw new DefaultException(RedEnvelopeConstants.RECEIVE_FAILURE);
+        }
     }
 
 }
