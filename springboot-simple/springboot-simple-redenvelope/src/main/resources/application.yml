@@ -2,6 +2,8 @@ server:
   port: 18085
 
 spring:
+  application:
+    name: redEnvelope-service
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:mysql://127.0.0.1:3306/boot-example?userUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=GMT%2B8
@@ -19,6 +21,25 @@ spring:
     timeout: 5000
     database: 2
     password: root
+  boot:
+    admin:
+      client:
+        url: http://127.0.0.1:8080
+        username: "admin"
+        password: "admin"
+        instance:
+          metadata:
+            user.name: "admin"
+            user.password: "admin"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
 
 mybatis:
   configuration:
