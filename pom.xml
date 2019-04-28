@@ -30,6 +30,7 @@
         <redisson.version>3.10.6</redisson.version>
         <mybatis.version>2.0.1</mybatis.version>
         <mybatis-plus.version>3.1.0</mybatis-plus.version>
+        <tk.mybatis.mapper.version>2.1.5</tk.mybatis.mapper.version>
     </properties>
 
     <dependencies>
@@ -99,6 +100,12 @@
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
                 <version>${mybatis.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>tk.mybatis</groupId>
+                <artifactId>mapper-spring-boot-starter</artifactId>
+                <version>${tk.mybatis.mapper.version}</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-boot-starter -->

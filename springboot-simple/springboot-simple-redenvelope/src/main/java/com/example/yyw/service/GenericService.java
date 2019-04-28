@@ -14,10 +14,10 @@ public class GenericService<PK> {
     public void initBaseData(GenericModel<PK> genericModel, boolean isUpdate){
         if(isUpdate){
             genericModel.setUpdatedBy(Constants.DEFAULTUPDATEBY);
-            genericModel.setUpdationDate(DateUtil.getNowTimestamp());
+            genericModel.setUpdationDate(DateUtil.now());
         }else{
             genericModel.setCreatedBy(Constants.DEFAULTCREATEBY);
-            genericModel.setCreationDate(DateUtil.getNowTimestamp());
+            genericModel.setCreationDate(DateUtil.now());
         }
     }
 }

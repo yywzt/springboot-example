@@ -16,6 +16,12 @@ mybatis:
     default-statement-timeout: 30
 #  mapper-locations:
 
+mapper:
+  identity: MYSQL
+  mappers: tk.mybatis.mapper.common.BaseMapper
+  #设置 insert 和 update 中，是否判断字符串类型!=”
+  not-empty: true
+
 logging:
   level:
     root: info

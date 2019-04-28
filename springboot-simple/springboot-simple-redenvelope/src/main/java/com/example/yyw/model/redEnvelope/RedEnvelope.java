@@ -4,11 +4,10 @@ import com.example.yyw.enums.EnvelopeEnum;
 import com.example.yyw.enums.EnvelopeStatusEnum;
 import com.example.yyw.model.GenericModel;
 import lombok.Data;
-import org.springframework.data.annotation.Transient;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  * @Title red_envelope表的实体类
@@ -41,7 +40,7 @@ public class RedEnvelope extends GenericModel<Long> implements Serializable {
      * 
      * 数据库字段信息：send_date TIMESTAMP(19)
      */
-    private Timestamp sendDate;
+    private LocalDateTime sendDate;
 
     /**
      *  字段名称：接收者id(类型为私发)
@@ -91,11 +90,6 @@ public class RedEnvelope extends GenericModel<Long> implements Serializable {
      * 数据库字段信息：status INTEGER(2)
      */
     private Integer status;
-
-    @Transient
-    private String envelopeTypeName;
-    @Transient
-    private String envelopeStatusName;
 
     public String getEnvelopeTypeName(){
         EnvelopeEnum envelopeByCode = EnvelopeEnum.getEnvelopeByCode(getEnvelopeType());

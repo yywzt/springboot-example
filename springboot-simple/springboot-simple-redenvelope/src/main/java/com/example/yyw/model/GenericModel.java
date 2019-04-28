@@ -1,10 +1,12 @@
 package com.example.yyw.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  * Created by yanzhitao on 2018/7/16.
@@ -16,6 +18,8 @@ import java.sql.Timestamp;
 public class GenericModel<PK> implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected PK id;
 
     /**
@@ -26,8 +30,7 @@ public class GenericModel<PK> implements Serializable {
     /**
      * 创建日期
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    protected Timestamp creationDate;
+    protected LocalDateTime creationDate;
 
     /**
      * 修改人
@@ -37,8 +40,7 @@ public class GenericModel<PK> implements Serializable {
     /**
      * 修改日期
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+8")
-    protected Timestamp updationDate;
+    protected LocalDateTime updationDate;
 
     /**
      * 是否可用

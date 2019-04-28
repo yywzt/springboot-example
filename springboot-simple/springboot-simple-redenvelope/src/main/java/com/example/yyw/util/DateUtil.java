@@ -1,6 +1,9 @@
 package com.example.yyw.util;
 
-import java.sql.Timestamp;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -11,13 +14,25 @@ import java.util.Date;
  */
 public class DateUtil {
 
-    public static Timestamp getNowTimestamp(){
-        return new Timestamp(System.currentTimeMillis());
+    public static LocalDateTime now(){
+        LocalDateTime now = LocalDateTime.now();
+        return now;
     }
 
     public static Date getNowDate(){
         Calendar calendar=Calendar.getInstance();
         Date date=calendar.getTime();
         return date;
+    }
+
+    static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    public static String localDateTimeToString(LocalDateTime localDateTime){
+        return localDateTime.format(dateTimeFormatter);
+    }
+
+
+
+    public static void main(String[] args){
     }
 }
