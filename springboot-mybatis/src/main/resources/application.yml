@@ -15,3 +15,8 @@ mybatis:
     default-fetch-size: 100
     default-statement-timeout: 30
 #  mapper-locations:
+
+logging:
+  level:
+    root: info
+    com.example.yyw: debug

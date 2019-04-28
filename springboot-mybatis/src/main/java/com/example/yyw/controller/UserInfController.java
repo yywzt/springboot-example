@@ -24,7 +24,13 @@ public class UserInfController {
 
     @RequestMapping("/findAll")
     public List<UserInf> findAll(){
-        List<UserInf> all = userInfMapper.findAll();
+        List<UserInf> all = userInfMapper.selectAll();
+        log.info("userinf: {}",all);
+        return all;
+    }
+    @RequestMapping("/findUserInfByUname")
+    public UserInf findUserInfByUname(String username){
+        UserInf all = userInfMapper.findUserInfByUname(username);
         log.info("userinf: {}",all);
         return all;
     }
