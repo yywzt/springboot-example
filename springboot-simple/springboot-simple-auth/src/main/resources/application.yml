@@ -1,0 +1,48 @@
+server:
+  port: 9090
+
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://139.199.179.164:3306/ssm?userUnicode=true&characterEncoding=UTF8&useSSL=false
+    username: root
+    password: root
+#  boot:
+#    admin:
+#      client:
+#        url: http://127.0.0.1:8080
+#        username: "admin"
+#        password: "admin"
+#        instance:
+#          metadata:
+#            user.name: "admin"
+#            user.password: "admin"
+#
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: '*'
+#  endpoint:
+#    health:
+#      show-details: always
+
+mybatis:
+  configuration:
+    # 	是否开启自动驼峰命名规则（camel case）映射，即从经典数据库列名 A_COLUMN 到经典 Java 属性名 aColumn 的类似映射。
+    map-underscore-to-camel-case: true
+    default-fetch-size: 100
+    default-statement-timeout: 30
+#  mapper-locations:
+
+mapper:
+  identity: MYSQL
+  mappers: tk.mybatis.mapper.common.BaseMapper
+  #设置 insert 和 update 中，是否判断字符串类型!=”
+  not-empty: true
+
+logging:
+  level:
+    web: debug
+    root: info
+    com.example.yyw: debug
