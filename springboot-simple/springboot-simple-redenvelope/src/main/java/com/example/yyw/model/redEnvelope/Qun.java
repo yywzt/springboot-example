@@ -1,13 +1,10 @@
 package com.example.yyw.model.redEnvelope;
 
 import com.example.yyw.model.GenericModel;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.Date;
 
 /**
  * @Title qun表的实体类
