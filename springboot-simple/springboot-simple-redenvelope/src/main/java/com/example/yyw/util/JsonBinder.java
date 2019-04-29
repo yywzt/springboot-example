@@ -23,7 +23,7 @@ public class JsonBinder {
         //设置输出包含的属性
         mapper.setSerializationInclusion(inclusion);
         //设置输入时忽略JSON字符串中存在而Java对象实际没有的属性
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     /**
@@ -50,7 +50,7 @@ public class JsonBinder {
     /**
      * 如果JSON字符串为Null或"null"字符串,返回Null.
      * 如果JSON字符串为"[]",返回空集合.
-     *
+     * <p>
      * 如需读取集合如List/Map,且不是List<String>这种简单类型时使用如下语句:
      * List<MyBean> beanList = binder.getMapper().readValue(listString, new TypeReference<List<MyBean>>() {});
      */

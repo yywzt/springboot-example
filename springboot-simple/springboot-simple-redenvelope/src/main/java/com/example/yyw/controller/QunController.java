@@ -23,26 +23,29 @@ public class QunController {
     private QunService qunService;
 
     @PostMapping("/initQun")
-    public ResponseData initQun(@Validated Qun qun){
+    public ResponseData initQun(@Validated Qun qun) {
         return qunService.initQun(qun);
     }
 
     /**
      * 加群
+     *
      * @param userQun
      * @return
      */
     @PostMapping("/joinQun")
-    public ResponseData joinQun(@Validated UserQun userQun){
+    public ResponseData joinQun(@Validated UserQun userQun) {
         return qunService.joinQun(userQun);
     }
+
     /**
      * 退群
+     *
      * @param userQun
      * @return
      */
     @PostMapping("/quitQun")
-    public ResponseData quitQun(@Validated UserQun userQun){
+    public ResponseData quitQun(@Validated UserQun userQun) {
         return qunService.quitQun(userQun);
     }
 }

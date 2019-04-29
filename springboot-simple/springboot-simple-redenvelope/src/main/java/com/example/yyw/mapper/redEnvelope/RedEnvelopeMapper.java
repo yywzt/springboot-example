@@ -9,12 +9,12 @@ import tk.mybatis.mapper.common.BaseMapper;
 public interface RedEnvelopeMapper extends BaseMapper<RedEnvelope> {
 
     /**
-     * @describe 根据指定主键获取一条数据库记录
      * @param id
      * @param receiveId 接受者id
      * @return RedEnvelope
+     * @describe 根据指定主键获取一条数据库记录
      */
-    RedEnvelope selectByIdAndReceiveIdAndEnvelopeTypeAndEnabledStatus(Long id,Long receiveId,Integer envelopeType,Long enabledFlag);
+    RedEnvelope selectByIdAndReceiveIdAndEnvelopeTypeAndEnabledStatus(Long id, Long receiveId, Integer envelopeType, Long enabledFlag);
 
     int updateRedEnvelopeStatusAndRemainCount(RedEnvelope redEnvelope);
 

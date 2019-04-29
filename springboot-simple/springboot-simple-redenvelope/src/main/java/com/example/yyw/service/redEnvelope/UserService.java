@@ -28,16 +28,18 @@ public class UserService extends GenericService<Long> {
 
     /**
      * 用户余额变更
+     *
      * @param id
      * @param money >0:增加,<0:减少
      * @return
      */
-    public ResponseData addMoneyByUserId(Long id, BigDecimal money){
+    public ResponseData addMoneyByUserId(Long id, BigDecimal money) {
         return ResponseData.success();
     }
 
     /**
      * 使用unique index避免用户名重复
+     *
      * @param user
      * @return
      */
@@ -63,11 +65,11 @@ public class UserService extends GenericService<Long> {
     }*/
     public ResponseData initUser(User user) {
         User vo = userMapper.selectByUserName(user.getUserName(), Constants.ENABLEDFLAG);
-        if(vo != null){
+        if (vo != null) {
             return ResponseData.failure(Constants.EXISET_USER_NAME);
         }
         user.setMoney(BigDecimal.ZERO);
-        initBaseData(user,Constants.ISNOTUPDATE);
+        initBaseData(user, Constants.ISNOTUPDATE);
         if (userMapper.insertSelective(user) > 0) {
             return ResponseData.success();
         }
@@ -76,14 +78,15 @@ public class UserService extends GenericService<Long> {
 
     /**
      * 校验用户是否存在且有效
+     *
      * @param id 用户id
      * @return
      */
-    public ResponseData checkUser(Long id){
+    public ResponseData checkUser(Long id) {
         User user = userMapper.selectByPrimaryKey(id);
-        if(user != null && user.getEnabledFlag().equals(Constants.ENABLEDFLAG)){
+        if (user != null && user.getEnabledFlag().equals(Constants.ENABLEDFLAG)) {
             return ResponseData.success(user);
-        }else{
+        } else {
             return ResponseData.failure(Constants.USER_INVALID);
         }
     }

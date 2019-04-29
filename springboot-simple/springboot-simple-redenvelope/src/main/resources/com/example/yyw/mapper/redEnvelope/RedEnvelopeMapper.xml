@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.yyw.mapper.redEnvelope.RedEnvelopeMapper">
-  <resultMap id="BaseResultMap" type="com.example.yyw.model.redEnvelope.RedEnvelope">
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="envelope_type" jdbcType="INTEGER" property="envelopeType" />
-    <result column="send_id" jdbcType="BIGINT" property="sendId" />
-    <result column="send_date" jdbcType="TIMESTAMP" property="sendDate" />
-    <result column="receive_id" jdbcType="BIGINT" property="receiveId" />
-    <result column="qun_id" jdbcType="BIGINT" property="qunId" />
-    <result column="message" jdbcType="VARCHAR" property="message" />
-    <result column="amount" jdbcType="DECIMAL" property="amount" />
-    <result column="count" jdbcType="INTEGER" property="count" />
-    <result column="remain_count" jdbcType="INTEGER" property="remainCount" />
-    <result column="status" jdbcType="INTEGER" property="status" />
-    <result column="creation_date" jdbcType="TIMESTAMP" property="creationDate" />
-    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
-    <result column="updation_date" jdbcType="TIMESTAMP" property="updationDate" />
-    <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
-    <result column="enabled_flag" jdbcType="TINYINT" property="enabledFlag" />
-  </resultMap>
+    <resultMap id="BaseResultMap" type="com.example.yyw.model.redEnvelope.RedEnvelope">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="envelope_type" jdbcType="INTEGER" property="envelopeType"/>
+        <result column="send_id" jdbcType="BIGINT" property="sendId"/>
+        <result column="send_date" jdbcType="TIMESTAMP" property="sendDate"/>
+        <result column="receive_id" jdbcType="BIGINT" property="receiveId"/>
+        <result column="qun_id" jdbcType="BIGINT" property="qunId"/>
+        <result column="message" jdbcType="VARCHAR" property="message"/>
+        <result column="amount" jdbcType="DECIMAL" property="amount"/>
+        <result column="count" jdbcType="INTEGER" property="count"/>
+        <result column="remain_count" jdbcType="INTEGER" property="remainCount"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="creation_date" jdbcType="TIMESTAMP" property="creationDate"/>
+        <result column="created_by" jdbcType="VARCHAR" property="createdBy"/>
+        <result column="updation_date" jdbcType="TIMESTAMP" property="updationDate"/>
+        <result column="updated_by" jdbcType="VARCHAR" property="updatedBy"/>
+        <result column="enabled_flag" jdbcType="TINYINT" property="enabledFlag"/>
+    </resultMap>
 
-  <sql id="Base_Column_List">
-    id, envelope_type, send_id, send_date, receive_id, qun_id, message, amount, `count`,
-    remain_count,`status`,  creation_date, created_by, updation_date, updated_by, enabled_flag
-  </sql>
+    <sql id="Base_Column_List">
+        id, envelope_type, send_id, send_date, receive_id, qun_id, message, amount, `count`,
+        remain_count,`status`, creation_date, created_by, updation_date, updated_by, enabled_flag
+    </sql>
 
-  <!-- 根据红包id,接收者id、红包类型、有效标识查找红包 -->
-  <select id="selectByIdAndReceiveIdAndEnvelopeTypeAndEnabledStatus" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />envelopeType
-    from red_envelope
-    where id = #{id,jdbcType=BIGINT} and receive_id = #{receiveId,jdbcType=BIGINT}
-     and envelope_type = #{envelopeType,jdbcType=INTEGER} and enabled_flag = #{enabledFlag,jdbcType=TINYINT}
-  </select>
+    <!-- 根据红包id,接收者id、红包类型、有效标识查找红包 -->
+    <select id="selectByIdAndReceiveIdAndEnvelopeTypeAndEnabledStatus" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>envelopeType
+        from red_envelope
+        where id = #{id,jdbcType=BIGINT} and receive_id = #{receiveId,jdbcType=BIGINT}
+        and envelope_type = #{envelopeType,jdbcType=INTEGER} and enabled_flag = #{enabledFlag,jdbcType=TINYINT}
+    </select>
 
 </mapper>

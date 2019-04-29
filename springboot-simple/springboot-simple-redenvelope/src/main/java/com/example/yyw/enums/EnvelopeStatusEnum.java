@@ -7,19 +7,25 @@ package com.example.yyw.enums;
  */
 public enum EnvelopeStatusEnum {
 
-    /**可领取*/
-    AVAILABLE(1,"可领取"),
-    /**领完了*/
-    FINISHED(2,"领完了"),
-    /**已过期*/
-    EXPIRED(3,"已过期");
+    /**
+     * 可领取
+     */
+    AVAILABLE(1, "可领取"),
+    /**
+     * 领完了
+     */
+    FINISHED(2, "领完了"),
+    /**
+     * 已过期
+     */
+    EXPIRED(3, "已过期");
 
     private Integer code;
     private String value;
 
-    public static EnvelopeStatusEnum getEnvelopeStatusByCode(Integer code){
-        for (EnvelopeStatusEnum envelopeStatusEnum:EnvelopeStatusEnum.values()) {
-            if(envelopeStatusEnum.getCode().equals(code)){
+    public static EnvelopeStatusEnum getEnvelopeStatusByCode(Integer code) {
+        for (EnvelopeStatusEnum envelopeStatusEnum : EnvelopeStatusEnum.values()) {
+            if (envelopeStatusEnum.getCode().equals(code)) {
                 return envelopeStatusEnum;
             }
         }
@@ -46,5 +52,5 @@ public enum EnvelopeStatusEnum {
     public void setValue(String value) {
         this.value = value;
     }
-    
+
 }

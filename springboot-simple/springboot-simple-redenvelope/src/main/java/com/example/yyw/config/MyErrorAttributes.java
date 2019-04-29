@@ -22,9 +22,9 @@ public class MyErrorAttributes extends DefaultErrorAttributes {
         //获取系统已有的提示信息 timestamp status 等...
         Map<String, Object> map = super.getErrorAttributes(webRequest, includeStackTrace);
         //从request中获取自定义的数据
-        ResponseData info = (ResponseData) webRequest.getAttribute("info",0);
-        map.put("info",info);
-        log.error("error: {}",map);
+        ResponseData info = (ResponseData) webRequest.getAttribute("info", 0);
+        map.put("info", info);
+        log.error("error: {}", map);
         return map;
     }
 }

@@ -12,7 +12,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-    id, qun_name, creation_date, created_by, updation_date, updated_by, enabled_flag
-  </sql>
+        id, qun_name, creation_date, created_by, updation_date, updated_by, enabled_flag
+    </sql>
 
 </mapper>

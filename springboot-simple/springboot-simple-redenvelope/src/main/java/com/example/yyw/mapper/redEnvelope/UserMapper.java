@@ -20,7 +20,7 @@ public interface UserMapper extends BaseMapper<User> {
      * @return
      */
     @Update("update user set money = money + #{money} , updation_date = now(), updated_by = #{updatedBy} where id = #{id}")
-    int updateMoneyById(Long id, BigDecimal money,String updatedBy);
+    int updateMoneyById(Long id, BigDecimal money, String updatedBy);
 
     @Select("select * from user where user_name = #{userName} and enabled_flag = #{enabledFlag}")
     User selectByUserName(String userName, Long enabledFlag);

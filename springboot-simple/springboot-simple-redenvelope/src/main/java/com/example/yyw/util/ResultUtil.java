@@ -31,7 +31,7 @@ public class ResultUtil {
         Map<String, Object> result = new HashMap<>();
         result.put(Constants.RESULT_CODE, Constants.SUCCESS_CODE);
         result.put(Constants.RESULT_MESSAGE, Constants.SUCCESS);
-        result.put("data",data);
+        result.put("data", data);
         return JsonBinder.buildNonNullBinder().toJson(result);
     }
 
@@ -48,7 +48,7 @@ public class ResultUtil {
         return JsonBinder.buildNonNullBinder().toJson(result);
     }
 
-    public static String errorResult(String code ,String message) {
+    public static String errorResult(String code, String message) {
         Map<String, Object> result = new HashMap<>();
         result.put(Constants.RESULT_CODE, code);
         result.put(Constants.RESULT_MESSAGE, StringUtils.isBlank(message) ? Constants.FAILURE : message);

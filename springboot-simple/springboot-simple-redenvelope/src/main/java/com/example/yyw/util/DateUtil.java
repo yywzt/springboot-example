@@ -14,25 +14,24 @@ import java.util.Date;
  */
 public class DateUtil {
 
-    public static LocalDateTime now(){
+    public static LocalDateTime now() {
         LocalDateTime now = LocalDateTime.now();
         return now;
     }
 
-    public static Date getNowDate(){
-        Calendar calendar=Calendar.getInstance();
-        Date date=calendar.getTime();
+    public static Date getNowDate() {
+        Calendar calendar = Calendar.getInstance();
+        Date date = calendar.getTime();
         return date;
     }
 
     static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public static String localDateTimeToString(LocalDateTime localDateTime){
+    public static String localDateTimeToString(LocalDateTime localDateTime) {
         return localDateTime.format(dateTimeFormatter);
     }
 
 
-
-    public static void main(String[] args){
+    public static void main(String[] args) {
     }
 }

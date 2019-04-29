@@ -9,5 +9,5 @@ import tk.mybatis.mapper.common.BaseMapper;
 public interface QunMapper extends BaseMapper<Qun> {
 
     @Select("select * from qun where qun_name = #{qunName} and enabled_flag = #{enabledFlag}")
-    Qun selectByQunName(String qunName,  Long enabledFlag);
+    Qun selectByQunName(String qunName, Long enabledFlag);
 }

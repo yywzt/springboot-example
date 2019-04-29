@@ -16,8 +16,9 @@ public class RedEnvelopeDto implements Serializable {
 
     /**
      * 红包类型
+     *
      * @see com.example.yyw.enums.EnvelopeEnum
-     * */
+     */
     @NotNull(message = "红包类型不能为空")
     private Integer envelopeType;
 
@@ -26,12 +27,12 @@ public class RedEnvelopeDto implements Serializable {
 
     /**
      * 群发时没有意义
-     * */
+     */
     private Long receiveId;
 
     /**
      * 私发时没有意义
-     * */
+     */
     private Long qunId;
 
     private String message;
@@ -41,7 +42,7 @@ public class RedEnvelopeDto implements Serializable {
 
     /**
      * 私发时没有意义
-     * */
+     */
     private Integer count;
 
 }

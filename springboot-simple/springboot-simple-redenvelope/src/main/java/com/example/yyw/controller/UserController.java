@@ -22,7 +22,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/initUser")
-    public ResponseData initUser(@Validated User user){
+    public ResponseData initUser(@Validated User user) {
         return userService.initUser(user);
     }
 }

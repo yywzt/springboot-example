@@ -11,11 +11,11 @@ import com.example.yyw.util.DateUtil;
  */
 public class GenericService<PK> {
 
-    public void initBaseData(GenericModel<PK> genericModel, boolean isUpdate){
-        if(isUpdate){
+    public void initBaseData(GenericModel<PK> genericModel, boolean isUpdate) {
+        if (isUpdate) {
             genericModel.setUpdatedBy(Constants.DEFAULTUPDATEBY);
             genericModel.setUpdationDate(DateUtil.now());
-        }else{
+        } else {
             genericModel.setCreatedBy(Constants.DEFAULTCREATEBY);
             genericModel.setCreationDate(DateUtil.now());
         }

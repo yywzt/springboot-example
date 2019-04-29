@@ -7,5 +7,5 @@ import tk.mybatis.mapper.common.BaseMapper;
 @Mapper
 public interface RedEnvelopeDetailMapper extends BaseMapper<RedEnvelopeDetail> {
 
-    RedEnvelopeDetail selectByEnvelopeIdAndReceiveId(Long redEnvelopeId, Long receiveId,Long enabledFlag);
+    RedEnvelopeDetail selectByEnvelopeIdAndReceiveId(Long redEnvelopeId, Long receiveId, Long enabledFlag);
 }
