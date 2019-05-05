@@ -141,6 +141,20 @@
             </dependency>
             <!-- springboot-admin end -->
 
+            <!-- Java implementation of JSON Web Token (JWT) -->
+            <dependency>
+                <groupId>com.auth0</groupId>
+                <artifactId>java-jwt</artifactId>
+                <version>3.8.0</version>
+            </dependency>
+
+            <!-- shiro -->
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-spring-boot-web-starter</artifactId>
+                <version>1.4.0</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

@@ -1,6 +1,7 @@
 package com.example.yyw.service;
 
 import com.example.yyw.mapper.ssm.UserInfMapper;
+import com.example.yyw.model.ssm.UserInf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,10 @@ public class UserInfService {
 
     public UserInfMapper getUserInfMapper() {
         return userInfMapper;
+    }
+
+    public UserInf getUserInf(String username){
+        return getUserInfMapper().findUserInfByUname(username);
     }
 
 }

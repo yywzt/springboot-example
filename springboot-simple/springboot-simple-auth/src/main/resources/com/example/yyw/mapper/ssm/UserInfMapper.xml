@@ -26,7 +26,7 @@
     id, uname, passwd, gentel, email, city ,creation_date ,created_by ,updation_date ,updated_by ,enabled_flag
   </sql>
 
-  <select id="findUserInfByUname" parameterType="Object" resultMap="ResultMap">
+  <select id="findUserInfByUname" parameterType="java.lang.String" resultMap="ResultMap">
     SELECT
       u.*,r.id AS role_id,r.role_name,r.role_code
     FROM user_inf u

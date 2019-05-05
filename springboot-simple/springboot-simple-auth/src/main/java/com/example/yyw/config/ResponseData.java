@@ -1,4 +1,4 @@
-package com.example.yyw.util;
+package com.example.yyw.config;
 
 /**
  * Title: 统一响应结构 
@@ -12,51 +12,62 @@ package com.example.yyw.util;
  */
 public class ResponseData<T> {
 
-	private static final String OK = "ok";
-	private static final String ERROR = "static/error";
+	private static final String SUCCESS = "200";
+	private static final String FAILURE = "-1";
 
-	private boolean success;
+	private String code;
 	private String message;
 	private Object data;   // 响应内容
 
-	public ResponseData(boolean success) {
-		this.success = success;
+	ResponseData(String code) {
+		this.code = code;
 	}
 
-	public ResponseData(boolean success, String message) {
-		this.success = success;
-		this.message = message;
-	}
-
-	public ResponseData(boolean success, Object data) {
-		this.success = success;
+	ResponseData(String code, Object data) {
+		this.code = code;
 		this.data = data;
 	}
 
-	public ResponseData(boolean success, String message, Object data) {
-		this.success = success;
+	ResponseData(String code, String message) {
+		this.code = code;
+		this.message = message;
+	}
+
+	ResponseData(String code, String message, Object data) {
+		this.code = code;
 		this.message = message;
 		this.data = data;
 	}
 
 	public static <T> ResponseData<T> success() {
-		return new ResponseData<T>(true);
+		return new ResponseData<T>(SUCCESS);
+	}
+	public static <T> ResponseData<T> success(String message,Object data) {
+		return new ResponseData<T>(SUCCESS,message,data);
+	}
+
+	public static <T> ResponseData<T> success(String message) {
+		return new ResponseData<T>(SUCCESS,message);
 	}
 
 	public static <T> ResponseData<T> success(Object data) {
-		return new ResponseData<T>(true,data);
+		return new ResponseData<T>(SUCCESS,data);
 	}
 
 	public static <T> ResponseData<T> failure() {
-		return new ResponseData<T>(false);
+		return new ResponseData<T>(FAILURE);
 	}
 
 	public static <T> ResponseData<T> failure(String message) {
-		return new ResponseData<T>(false,message);
+		return new ResponseData<T>(FAILURE,message);
 	}
 
-	public boolean isSuccess() {
-		return success;
+	public static <T> ResponseData<T> failure(String code,String message) {
+		return new ResponseData<T>(code,message);
+	}
+
+	public String getCode() {
+		return code;
 	}
 
 	public String getMessage() {
