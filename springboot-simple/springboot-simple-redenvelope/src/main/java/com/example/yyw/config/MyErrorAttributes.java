@@ -3,7 +3,6 @@ package com.example.yyw.config;
 import com.example.yyw.constant.ResponseData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.Map;

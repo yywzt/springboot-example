@@ -5,7 +5,6 @@ import com.example.yyw.constant.ResponseData;
 import com.example.yyw.mapper.redEnvelope.UserMapper;
 import com.example.yyw.model.redEnvelope.User;
 import com.example.yyw.service.GenericService;
-import com.example.yyw.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

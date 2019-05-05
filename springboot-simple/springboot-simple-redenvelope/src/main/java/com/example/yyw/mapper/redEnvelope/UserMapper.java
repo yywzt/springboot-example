@@ -2,7 +2,6 @@ package com.example.yyw.mapper.redEnvelope;
 
 import com.example.yyw.model.redEnvelope.User;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import tk.mybatis.mapper.common.BaseMapper;
