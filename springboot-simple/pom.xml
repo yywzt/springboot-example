@@ -21,6 +21,7 @@
     <modules>
         <module>springboot-simple-redenvelope</module>
         <module>springboot-simple-auth</module>
+        <module>springboot-simple-xmly</module>
     </modules>
 
     <dependencies>
