@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.yyw.xmly.mapper.IXmlyTrackMapper">
+
+    <sql id="base_column">
+        id,
+        create_date as createDate,
+        modify_date as modifyDate,
+        status,
+        order_no as orderNo,
+        extend_category_origin_id as extendCategoryOriginId,
+        category_origin_id as categoryOriginId,
+        album_origin_id as albumOriginId,
+        origin_id as originId,
+        kind,
+        title,
+        tags,
+        introduce,
+        cover_url_small as coverUrlSmall,
+        cover_url_middle as coverUrlMiddle,
+        cover_url_large as coverUrlLarge,
+        duration,
+        play_count as playCount,
+        favorite_count as favoriteCount,
+        comment_count as commentCount,
+        download_count as downloadCount,
+        play_size24_m4a as playSize24M4a,
+        play_size64_m4a as playSize64M4a,
+        play_size_amr as playSizeAmr,
+        source,
+        update_at as updateAt,
+        created_at as createdAt
+    </sql>
+
+    <select id="findByCondition" parameterType="java.util.Map" resultType="com.bying.spark.model.xmly.XmlyTrack">
+        SELECT
+        <include refid="base_column"/>
+        FROM xmly_track WHERE 1 = 1
+        <if test="mapParams.id != null">
+            AND id = #{mapParams.id}
+        </if>
+        <if test="mapParams.originId != null">
+            AND origin_id = #{mapParams.originId}
+        </if>
+        <if test="mapParams.categoryOriginId != null">
+            AND category_origin_id = #{mapParams.categoryOriginId}
+        </if>
+        <if test="mapParams.albumOriginId != null">
+            AND album_origin_id = #{mapParams.albumOriginId}
+        </if>
+        <if test="mapParams.kind != null">
+            AND kind = #{mapParams.kind}
+        </if>
+        <if test="mapParams.status != null">
+            AND status = #{mapParams.status}
+        </if>
+        ORDER BY order_no DESC
+    </select>
+
+    <!-- 添加数据 -->
+    <insert id="batchSave" parameterType="java.util.List">
+        INSERT INTO xmly_track(
+        create_date,
+        modify_date,
+        status,
+        order_no,
+        extend_category_origin_id,
+        category_origin_id,
+        album_origin_id,
+        origin_id,
+        kind,
+        title,
+        tags,
+        introduce,
+        cover_url_small,
+        cover_url_middle,
+        cover_url_large,
+        duration,
+        play_count,
+        favorite_count,
+        comment_count,
+        download_count,
+        play_size24_m4a,
+        play_size64_m4a,
+        play_size_amr,
+        source,
+        update_at,
+        created_at
+        )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.createDate},
+            #{item.modifyDate},
+            #{item.status},
+            #{item.orderNo},
+            #{item.extendCategoryOriginId},
+            #{item.categoryOriginId},
+            #{item.albumOriginId},
+            #{item.originId},
+            #{item.kind},
+            #{item.title},
+            #{item.tags},
+            #{item.introduce},
+            #{item.coverUrlSmall},
+            #{item.coverUrlMiddle},
+            #{item.coverUrlLarge},
+            #{item.duration},
+            #{item.playCount},
+            #{item.favoriteCount},
+            #{item.commentCount},
+            #{item.downloadCount},
+            #{item.playSize24M4a},
+            #{item.playSize64M4a},
+            #{item.playSizeAmr},
+            #{item.source},
+            #{item.updateAt},
+            #{item.createdAt}
+            )
+        </foreach>
+    </insert>
+</mapper>

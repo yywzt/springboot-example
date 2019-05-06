@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.yyw.xmly.mapper.IXmlyAlbumMapper">
+    <sql id="base_column">
+        id,
+        create_date as createDate,
+        modify_date as modifyDate,
+        status,
+        order_no as orderNo,
+        extend_category_origin_id as extendCategoryOriginId,
+        category_origin_id as categoryOriginId,
+        origin_id as originId,
+        kind,
+        title,
+        tags,
+        introduce,
+        cover_url_small as coverUrlSmall,
+        cover_url_middle as coverUrlMiddle,
+        cover_url_large as coverUrlLarge,
+        play_count as playCount,
+        favorite_count as favoriteCount,
+        share_count as shareCount,
+        include_track_count as includeTrackCount,
+        is_finished as isFinished,
+        can_download as canDownload,
+        update_at as updateAt,
+        created_at as createdAt
+    </sql>
+
+    <select id="findByCondition" parameterType="java.util.Map" resultType="com.bying.spark.model.xmly.XmlyAlbum">
+        SELECT
+        <include refid="base_column"/>
+        FROM xmly_album WHERE 1 = 1
+        <if test="mapParams.id != null">
+            AND id = #{mapParams.id}
+        </if>
+        <if test="mapParams.originId != null">
+            AND origin_id = #{mapParams.originId}
+        </if>
+        <if test="mapParams.categoryOriginId != null">
+            AND category_origin_id = #{mapParams.categoryOriginId}
+        </if>
+        <if test="mapParams.extendCategoryOriginId != null">
+            AND extend_category_origin_id = #{mapParams.extendCategoryOriginId}
+        </if>
+        <if test="mapParams.kind != null">
+            AND kind = #{mapParams.kind}
+        </if>
+        <if test="mapParams.status != null">
+            AND status = #{mapParams.status}
+        </if>
+    </select>
+
+    <!-- 添加数据 -->
+    <insert id="batchSave" parameterType="java.util.List">
+        INSERT INTO xmly_album(
+        create_date,
+        modify_date,
+        status,
+        order_no,
+        extend_category_origin_id,
+        category_origin_id,
+        origin_id,
+        kind,
+        title,
+        tags,
+        introduce,
+        cover_url_small,
+        cover_url_middle,
+        cover_url_large,
+        play_count,
+        favorite_count,
+        share_count,
+        include_track_count,
+        is_finished,
+        can_download,
+        update_at,
+        created_at
+        )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.createDate},
+            #{item.modifyDate},
+            #{item.status},
+            #{item.orderNo},
+            #{item.extendCategoryOriginId},
+            #{item.categoryOriginId},
+            #{item.originId},
+            #{item.kind},
+            #{item.title},
+            #{item.tags},
+            #{item.introduce},
+            #{item.coverUrlSmall},
+            #{item.coverUrlMiddle},
+            #{item.coverUrlLarge},
+            #{item.playCount},
+            #{item.favoriteCount},
+            #{item.shareCount},
+            #{item.includeTrackCount},
+            #{item.isFinished},
+            #{item.canDownload},
+            #{item.updateAt},
+            #{item.createdAt}
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateStatus" parameterType="com.bying.spark.model.xmly.XmlyAlbum">
+          UPDATE xmly_album set status = #{xmlyAlbum.status} where id = #{xmlyAlbum.id}
+    </update>
+</mapper>

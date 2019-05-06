@@ -1,0 +1,35 @@
+package com.example.yyw.xmly.modal.xmly;
+
+import com.alibaba.fastjson.annotation.JSONField;
+import lombok.Data;
+
+import java.util.Date;
+
+/**
+ * @author buxianglong
+ * @date 2018/12/04
+ **/
+@Data
+public class XmlyCategory{
+    @JSONField(name = "ignore")
+    private Long id;
+    private Date createDate;
+    private Date modifyDate;
+    private Integer status;
+
+    @JSONField(name = "kind")
+    private String kind;
+    @JSONField(name = "id")
+    private Long originId;
+    @JSONField(name = "category_name")
+    private String name;
+    @JSONField(name = "cover_url_small")
+    private String coverUrlSmall;
+    @JSONField(name = "cover_url_middle")
+    private String coverUrlMiddle;
+    @JSONField(name = "cover_url_large")
+    private String coverUrlLarge;
+    @JSONField(name = "order_num")
+    private Integer orderNo;
+
+}
