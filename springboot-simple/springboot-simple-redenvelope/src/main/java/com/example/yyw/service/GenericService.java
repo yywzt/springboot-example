@@ -2,7 +2,7 @@ package com.example.yyw.service;
 
 import com.example.yyw.constant.Constants;
 import com.example.yyw.model.GenericModel;
-import com.example.yyw.util.DateUtil;
+import com.example.yyw.util.TimeUtil;
 
 /**
  * @author yanzhitao@xiaomalixing.com
@@ -14,10 +14,10 @@ public class GenericService<PK> {
     public void initBaseData(GenericModel<PK> genericModel, boolean isUpdate) {
         if (isUpdate) {
             genericModel.setUpdatedBy(Constants.DEFAULTUPDATEBY);
-            genericModel.setUpdationDate(DateUtil.now());
+            genericModel.setUpdationDate(TimeUtil.now());
         } else {
             genericModel.setCreatedBy(Constants.DEFAULTCREATEBY);
-            genericModel.setCreationDate(DateUtil.now());
+            genericModel.setCreationDate(TimeUtil.now());
         }
     }
 }

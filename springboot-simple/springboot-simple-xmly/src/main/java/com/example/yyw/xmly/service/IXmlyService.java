@@ -2,6 +2,8 @@ package com.example.yyw.xmly.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.example.yyw.util.HttpUtil;
+import com.example.yyw.util.ResultUtil;
 import com.example.yyw.xmly.enums.StatusEnum;
 import com.example.yyw.xmly.exception.BusinessException;
 import com.example.yyw.xmly.mapper.IXmlyAlbumMapper;
@@ -10,11 +12,11 @@ import com.example.yyw.xmly.mapper.IXmlyTrackMapper;
 import com.example.yyw.xmly.modal.xmly.XmlyAlbum;
 import com.example.yyw.xmly.modal.xmly.XmlyCategory;
 import com.example.yyw.xmly.modal.xmly.XmlyTrack;
-import com.example.yyw.xmly.util.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -22,11 +24,12 @@ import java.util.*;
 /**
  * 喜马拉雅业务处理
  *
- * @author buxianglong
+ * @author yanzhitao
  * @date 2018/12/04
  **/
 @Slf4j
 @Service
+@Transactional
 public class IXmlyService {
 
     private static final String OTHER_IF_URL = "http://127.0.0.1:19091";
@@ -43,7 +46,7 @@ public class IXmlyService {
      *
      * @throws BusinessException
      */
-    public void saveCategory() throws BusinessException {
+    public String saveCategory() throws BusinessException {
         String url = OTHER_IF_URL + "/ximalaya/category/list";
         String responseStr = HttpUtil.httpGet(url);
         if(StringUtils.isBlank(responseStr)){
@@ -64,6 +67,7 @@ public class IXmlyService {
             xmlyCategory.setStatus(StatusEnum.DEFAULT.getCode());
         });
         iXmlyCategoryMapper.batchSave(xmlyCategoryList);
+        return ResultUtil.successResult();
     }
 
     /**
@@ -72,7 +76,7 @@ public class IXmlyService {
      * @throws BusinessException
      */
 
-    public void saveAlbum() throws BusinessException{
+    public String saveAlbum() throws BusinessException{
         List<XmlyCategory> xmlyCategoryList = findXmlyCategory(StatusEnum.DEFAULT);
         for(XmlyCategory xmlyCategory : xmlyCategoryList){
             saveAlbumByCategory(xmlyCategory);
@@ -80,8 +84,10 @@ public class IXmlyService {
                 Thread.sleep(100);
             }catch(InterruptedException e){
                 e.printStackTrace();
+                log.error("saveAlbum error : {}", e.getMessage());
             }
         }
+        return ResultUtil.successResult();
     }
 
     private void saveAlbumByCategory(XmlyCategory xmlyCategory) throws BusinessException{
@@ -129,8 +135,7 @@ public class IXmlyService {
      *
      * @throws BusinessException
      */
-
-    public void saveTrack() throws BusinessException{
+    public String saveTrack() throws BusinessException{
         List<XmlyCategory> xmlyCategoryList = findXmlyCategory(null);
         for(XmlyCategory xmlyCategory : xmlyCategoryList){
             if(null == xmlyCategory){
@@ -151,6 +156,7 @@ public class IXmlyService {
                 }
             }
         }
+        return ResultUtil.successResult();
     }
 
     /**

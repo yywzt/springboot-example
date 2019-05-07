@@ -15,8 +15,8 @@ import com.example.yyw.model.redEnvelope.RedEnvelope;
 import com.example.yyw.model.redEnvelope.RedEnvelopeDetail;
 import com.example.yyw.model.redEnvelope.User;
 import com.example.yyw.service.GenericService;
-import com.example.yyw.util.DateUtil;
 import com.example.yyw.util.RedissonUtils;
+import com.example.yyw.util.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,7 +113,7 @@ public class RedEnvelopeService extends GenericService<Long> {
         log.info("msg: {}", redEnvelope);
         redEnvelope.setCount(RedEnvelopeConstants.ONE_SINGLE_RED_ENVE_LOPE_COUNT);
         redEnvelope.setRemainCount(redEnvelope.getCount());
-        redEnvelope.setSendDate(DateUtil.now());
+        redEnvelope.setSendDate(TimeUtil.now());
         initBaseData(redEnvelope, Constants.ISNOTUPDATE);
         if (redEnvelopeMapper.insertSelective(redEnvelope) <= 0) {
             throw new DefaultException(RedEnvelopeConstants.RED_ENVELOPE_SEND_FAILURE);
@@ -161,7 +161,7 @@ public class RedEnvelopeService extends GenericService<Long> {
         BeanUtils.copyProperties(redEnvelopeDto, redEnvelope);
         log.info("msg: {}", redEnvelope);
         redEnvelope.setRemainCount(redEnvelope.getCount());
-        redEnvelope.setSendDate(DateUtil.now());
+        redEnvelope.setSendDate(TimeUtil.now());
         initBaseData(redEnvelope, Constants.ISNOTUPDATE);
         if (redEnvelopeMapper.insertSelective(redEnvelope) <= 0) {
             throw new DefaultException(RedEnvelopeConstants.RED_ENVELOPE_SEND_FAILURE);
@@ -205,7 +205,7 @@ public class RedEnvelopeService extends GenericService<Long> {
                     RedEnvelopeDetail redEnvelopeDetail = new RedEnvelopeDetail();
                     redEnvelopeDetail.setRedEnvelopeId(redEnvelope.getId());
                     redEnvelopeDetail.setReceiveId(uid);
-                    redEnvelopeDetail.setReceiveDate(DateUtil.now());
+                    redEnvelopeDetail.setReceiveDate(TimeUtil.now());
                     redEnvelopeDetail.setReceiveMoney(redEnvelope.getAmount());
                     initBaseData(redEnvelopeDetail, Constants.ISNOTUPDATE);
                     if (redEnvelopeDetailMapper.insertSelective(redEnvelopeDetail) <= 0) {
@@ -272,7 +272,7 @@ public class RedEnvelopeService extends GenericService<Long> {
                     RedEnvelopeDetail redEnvelopeDetail = new RedEnvelopeDetail();
                     redEnvelopeDetail.setRedEnvelopeId(redEnvelope.getId());
                     redEnvelopeDetail.setReceiveId(uid);
-                    redEnvelopeDetail.setReceiveDate(DateUtil.now());
+                    redEnvelopeDetail.setReceiveDate(TimeUtil.now());
                     redEnvelopeDetail.setReceiveMoney(redEnvelope.getAmount());
                     initBaseData(redEnvelopeDetail, Constants.ISNOTUPDATE);
                     if (redEnvelopeDetailMapper.insertSelective(redEnvelopeDetail) <= 0) {

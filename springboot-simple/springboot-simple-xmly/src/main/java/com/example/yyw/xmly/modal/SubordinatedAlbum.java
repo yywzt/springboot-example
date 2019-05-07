@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
- * @author buxianglong
+ * @author yanzhitao
  **/
 @Data
 public class SubordinatedAlbum{

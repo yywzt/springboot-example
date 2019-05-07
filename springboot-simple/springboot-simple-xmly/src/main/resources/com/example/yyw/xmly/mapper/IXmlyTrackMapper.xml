@@ -32,7 +32,7 @@
         created_at as createdAt
     </sql>
 
-    <select id="findByCondition" parameterType="java.util.Map" resultType="com.bying.spark.model.xmly.XmlyTrack">
+    <select id="findByCondition" parameterType="java.util.Map" resultType="com.example.yyw.xmly.modal.xmly.XmlyTrack">
         SELECT
         <include refid="base_column"/>
         FROM xmly_track WHERE 1 = 1

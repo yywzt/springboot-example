@@ -16,6 +16,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>springboot-example-api</module>
         <module>springboot-redis-pubsub</module>
         <module>springboot-mongodb</module>
         <module>springboot-thymeleaf</module>

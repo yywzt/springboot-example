@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author buxianglong
- * @date 2018/12/04
+ * @author yanzhitao
+ * @date 2019/05/07
  **/
 @Mapper
 public interface IXmlyAlbumMapper extends BaseMapper<XmlyAlbum> {

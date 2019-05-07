@@ -6,8 +6,8 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * @author buxianglong
- * @date 2018/12/04
+ * @author yanzhitao
+ * @date 2019/05/07
  **/
 @Data
 public class XmlyAlbum{

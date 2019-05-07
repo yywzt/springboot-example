@@ -7,7 +7,7 @@ import lombok.Data;
 /**
  * 节目
  *
- * @author buxianglong
+ * @author yanzhitao
  **/
 @Data
 public class Track{

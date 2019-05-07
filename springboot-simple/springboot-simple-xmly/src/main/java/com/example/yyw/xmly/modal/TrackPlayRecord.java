@@ -6,7 +6,7 @@ import lombok.Data;
 /**
  * 喜马拉雅歌曲播放记录对象
  *
- * @author buxianglong
+ * @author yanzhitao
  **/
 @Data
 public class TrackPlayRecord{

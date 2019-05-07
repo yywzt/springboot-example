@@ -1,7 +1,7 @@
 package com.example.yyw.xmly.controller;
 
+import com.example.yyw.util.ToolUtil;
 import com.example.yyw.xmly.service.XiMaLaYaService;
-import com.example.yyw.xmly.util.ToolUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 喜马拉雅服务接口集合
  *
- * @author buxianglong
+ * @author yanzhitao
  **/
 @RestController
 @RequestMapping("/ximalaya")

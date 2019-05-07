@@ -27,7 +27,7 @@
         created_at as createdAt
     </sql>
 
-    <select id="findByCondition" parameterType="java.util.Map" resultType="com.bying.spark.model.xmly.XmlyAlbum">
+    <select id="findByCondition" parameterType="java.util.Map" resultType="com.example.yyw.xmly.modal.xmly.XmlyAlbum">
         SELECT
         <include refid="base_column"/>
         FROM xmly_album WHERE 1 = 1
@@ -106,7 +106,7 @@
         </foreach>
     </insert>
 
-    <update id="updateStatus" parameterType="com.bying.spark.model.xmly.XmlyAlbum">
+    <update id="updateStatus" parameterType="com.example.yyw.xmly.modal.xmly.XmlyAlbum">
           UPDATE xmly_album set status = #{xmlyAlbum.status} where id = #{xmlyAlbum.id}
     </update>
 </mapper>

@@ -8,32 +8,43 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>springboot-simple</artifactId>
+    <artifactId>springboot-example-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>springboot-simple</name>
-    <description>Spring Boot应用实例</description>
-    <packaging>pom</packaging>
+    <name>springboot-example-api</name>
+    <description>常用工具类</description>
 
     <properties>
         <java.version>1.8</java.version>
     </properties>
 
-    <modules>
-        <module>springboot-simple-redenvelope</module>
-        <module>springboot-simple-auth</module>
-        <module>springboot-simple-xmly</module>
-    </modules>
-
     <dependencies>
         <dependency>
-            <groupId>de.codecentric</groupId>
-            <artifactId>spring-boot-admin-starter-client</artifactId>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.example</groupId>
-            <artifactId>springboot-example-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-commons</artifactId>
         </dependency>
     </dependencies>
 

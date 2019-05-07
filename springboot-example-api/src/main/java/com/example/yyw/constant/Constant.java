@@ -1,4 +1,4 @@
-package com.example.yyw.xmly.util;
+package com.example.yyw.constant;
 
 public class Constant {
 

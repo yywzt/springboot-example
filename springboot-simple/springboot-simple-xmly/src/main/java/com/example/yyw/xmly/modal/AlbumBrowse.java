@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * @author buxianglong
+ * @author yanzhitao
  **/
 @Data
 public class AlbumBrowse{

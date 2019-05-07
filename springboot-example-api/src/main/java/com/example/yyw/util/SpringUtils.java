@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
 /**
- * @author yanzt
- * @date 2019/4/25 0:43
+ * @author yanzhitao@xiaomalixing.com
+ * @date 2019/5/7 16:25
  * @describe
  */
 @Configuration

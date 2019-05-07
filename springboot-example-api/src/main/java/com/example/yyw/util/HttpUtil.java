@@ -1,4 +1,4 @@
-package com.example.yyw.xmly.util;
+package com.example.yyw.util;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -16,6 +16,11 @@ import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
 
+/**
+ * @author yanzhitao@xiaomalixing.com
+ * @date 2019/5/7 16:25
+ * @describe
+ */
 public class HttpUtil {
 	
 	public static String httpGet(String url) {

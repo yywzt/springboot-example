@@ -2,6 +2,7 @@ package com.example.yyw.xmly.mapper;
 
 import com.example.yyw.xmly.modal.xmly.XmlyCategory;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import tk.mybatis.mapper.common.BaseMapper;
 
 import java.util.List;
@@ -15,9 +16,9 @@ import java.util.Map;
 @Mapper
 public interface IXmlyCategoryMapper extends BaseMapper<XmlyCategory> {
 
-    void batchSave(List<XmlyCategory> xmlyCategoryList);
+    void batchSave(@Param("list") List<XmlyCategory> xmlyCategoryList);
 
-    void updateStatus(XmlyCategory xmlyCategory);
+    void updateStatus(@Param("xmlyCategory") XmlyCategory xmlyCategory);
 
-    List<XmlyCategory> findByCondition(Map<String, Object> params);
+    List<XmlyCategory> findByCondition(@Param("mapParams") Map<String, Object> mapParams);
 }

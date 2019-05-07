@@ -1,9 +1,9 @@
 package com.example.yyw.xmly.service;
 
+import com.example.yyw.util.HttpUtil;
+import com.example.yyw.util.JsonBinder;
+import com.example.yyw.util.ToolUtil;
 import com.example.yyw.xmly.modal.*;
-import com.example.yyw.xmly.util.HttpUtil;
-import com.example.yyw.xmly.util.JsonBinder;
-import com.example.yyw.xmly.util.ToolUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -23,7 +23,7 @@ import static com.example.yyw.xmly.service.XiMaLaYaSignService.buildParams;
 /**
  * 喜马拉雅API服务
  *
- * @author buxianglong
+ * @author yanzhitao
  **/
 @Service
 public class XiMaLaYaService{

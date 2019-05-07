@@ -1,5 +1,6 @@
-package com.example.yyw.xmly.util;
+package com.example.yyw.util;
 
+import com.example.yyw.constant.Constant;
 import org.springframework.data.domain.Page;
 
 import java.text.ParseException;
@@ -10,7 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Administrator on 2017/5/10 0010.
+ * @author yanzhitao@xiaomalixing.com
+ * @date 2019/5/7 16:25
+ * @describe
  */
 public class ToolUtil {
 

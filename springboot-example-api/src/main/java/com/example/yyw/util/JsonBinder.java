@@ -1,16 +1,18 @@
 package com.example.yyw.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
- * @author yanzt
- * @date 2019/4/24 23:22
+ * @author yanzhitao@xiaomalixing.com
+ * @date 2019/5/7 16:25
  * @describe
  */
 @Slf4j
@@ -41,6 +43,13 @@ public class JsonBinder {
     }
 
     /**
+     * 创建只输出非空属性到Json字符串的Binder.
+     */
+    public static JsonBinder buildNonEmptyBinder() {
+        return new JsonBinder(JsonInclude.Include.NON_EMPTY);
+    }
+
+    /**
      * 创建只输出初始值被改变的属性到Json字符串的Binder.
      */
     public static JsonBinder buildNonDefaultBinder() {
@@ -61,6 +70,25 @@ public class JsonBinder {
 
         try {
             return mapper.readValue(jsonString, clazz);
+        } catch (IOException e) {
+            log.warn("parse json string error:" + jsonString, e);
+            return null;
+        }
+    }
+
+    /**
+     * 解析数组json字符串成对象List集合
+     * @param jsonString
+     * @param typeReference
+     * @param <T>
+     * @return
+     */
+    public <T> List<T> fromJson(String jsonString, TypeReference typeReference){
+        if (!org.springframework.util.StringUtils.hasLength(jsonString)) {
+            return null;
+        }
+        try {
+            return mapper.readValue(jsonString, typeReference);
         } catch (IOException e) {
             log.warn("parse json string error:" + jsonString, e);
             return null;

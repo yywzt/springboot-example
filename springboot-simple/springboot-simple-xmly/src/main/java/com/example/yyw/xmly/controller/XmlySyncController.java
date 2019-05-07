@@ -19,18 +19,18 @@ public class XmlySyncController {
     private IXmlyService iXmlyService;
 
     @RequestMapping("/saveCategory")
-    public void saveCategory() throws BusinessException {
-        iXmlyService.saveCategory();
+    public String saveCategory() throws BusinessException {
+        return iXmlyService.saveCategory();
     }
 
     @RequestMapping("/saveAlbum")
-    public void saveAlbum() throws BusinessException {
-        iXmlyService.saveAlbum();
+    public String saveAlbum() throws BusinessException {
+        return iXmlyService.saveAlbum();
     }
 
     @RequestMapping("/saveTrack")
-    public void saveTrack() throws BusinessException {
-        iXmlyService.saveTrack();
+    public String saveTrack() throws BusinessException {
+        return iXmlyService.saveTrack();
     }
 
 }

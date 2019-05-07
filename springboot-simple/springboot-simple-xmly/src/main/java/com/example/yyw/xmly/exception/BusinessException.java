@@ -1,7 +1,8 @@
 package com.example.yyw.xmly.exception;
 
 /**
- * Created by buxianglong on 2017/12/14.
+ * @author yanzhitao@xiaomalixing.com
+ * @date 2019-05-07
  */
 public class BusinessException extends Exception {
     private int code = 0;

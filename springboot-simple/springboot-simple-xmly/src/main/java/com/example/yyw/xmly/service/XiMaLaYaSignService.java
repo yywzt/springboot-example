@@ -17,7 +17,7 @@ import java.util.UUID;
 /**
  * 喜马拉雅签名服务
  *
- * @author buxianglong
+ * @author yanzhitao
  **/
 @Service
 public class XiMaLaYaSignService{
