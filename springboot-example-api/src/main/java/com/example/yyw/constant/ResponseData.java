@@ -1,4 +1,4 @@
-package com.example.yyw.config;
+package com.example.yyw.constant;
 
 /**
  * Title: 统一响应结构 

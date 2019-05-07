@@ -1,5 +1,6 @@
 package com.example.yyw.util;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -107,6 +108,10 @@ public class JsonBinder {
             log.warn("write to json string error:" + object, e);
             return null;
         }
+    }
+
+    public Object newToJson(Object object) {
+        return JSONObject.toJSON(object);
     }
 
 //	/**
