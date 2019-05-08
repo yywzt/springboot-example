@@ -9,6 +9,14 @@ spring:
     url: jdbc:mysql://139.199.179.164:3306/xmly?userUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=GMT%2B8
     username: root
     password: root
+  data:
+    mongodb:
+      host: 127.0.0.1
+      port: 27017
+      username: admin
+      password: admin
+      authentication-database: admin
+      database: test
 
 mybatis:
   configuration:

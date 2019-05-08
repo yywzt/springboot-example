@@ -6,15 +6,18 @@ import com.example.yyw.util.HttpUtil;
 import com.example.yyw.util.ResultUtil;
 import com.example.yyw.xmly.enums.StatusEnum;
 import com.example.yyw.xmly.exception.BusinessException;
-import com.example.yyw.xmly.mapper.IXmlyAlbumMapper;
-import com.example.yyw.xmly.mapper.IXmlyCategoryMapper;
-import com.example.yyw.xmly.mapper.IXmlyTrackMapper;
-import com.example.yyw.xmly.modal.xmly.XmlyAlbum;
-import com.example.yyw.xmly.modal.xmly.XmlyCategory;
-import com.example.yyw.xmly.modal.xmly.XmlyTrack;
+import com.example.yyw.xmly.modal.mongo.xmly.XmlyAlbumMongo;
+import com.example.yyw.xmly.modal.mongo.xmly.XmlyCategoryMongo;
+import com.example.yyw.xmly.modal.mongo.xmly.XmlyTrackMongo;
+import com.example.yyw.xmly.repository.XmlyAlbumMongoRepository;
+import com.example.yyw.xmly.repository.XmlyCategoryRepository;
+import com.example.yyw.xmly.repository.XmlyTrackMongoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -30,17 +33,20 @@ import java.util.*;
 @Slf4j
 @Service
 @Transactional
-public class IXmlyService {
+public class IXmlyMongoService {
 
     private static final String OTHER_IF_URL = "http://127.0.0.1:19091";
 
     @Autowired
-    private IXmlyAlbumMapper iXmlyAlbumMapper;
+    private XmlyCategoryRepository xmlyCategoryRepository;
     @Autowired
-    private IXmlyCategoryMapper iXmlyCategoryMapper;
+    private XmlyAlbumMongoRepository xmlyAlbumMongoRepository;
     @Autowired
-    private IXmlyTrackMapper iXmlyTrackMapper;
-    
+    private XmlyTrackMongoRepository xmlyTrackMongoRepository;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
     /**
      * 保存分类
      *
@@ -56,17 +62,17 @@ public class IXmlyService {
         if(!jsonObject.containsKey("data")){
             throw new BusinessException("第三方请求结果格式不正确，缺少data字段");
         }
-        List<XmlyCategory> xmlyCategoryList = jsonObject.getJSONArray("data").toJavaList(XmlyCategory.class);
-        if(CollectionUtils.isEmpty(xmlyCategoryList)){
+        List<XmlyCategoryMongo> xmlyCategoryMongoList = jsonObject.getJSONArray("data").toJavaList(XmlyCategoryMongo.class);
+        if(CollectionUtils.isEmpty(xmlyCategoryMongoList)){
             throw new BusinessException("分类为空");
         }
         Date currentDate = new Date();
-        xmlyCategoryList.forEach(xmlyCategory -> {
-            xmlyCategory.setCreateDate(currentDate);
-            xmlyCategory.setModifyDate(currentDate);
-            xmlyCategory.setStatus(StatusEnum.DEFAULT.getCode());
+        xmlyCategoryMongoList.forEach(xmlyCategoryMongo -> {
+            xmlyCategoryMongo.setCreateDate(currentDate);
+            xmlyCategoryMongo.setModifyDate(currentDate);
+            xmlyCategoryMongo.setStatus(StatusEnum.DEFAULT.getCode());
         });
-        iXmlyCategoryMapper.batchSave(xmlyCategoryList);
+        xmlyCategoryRepository.insert(xmlyCategoryMongoList);
         return ResultUtil.successResult();
     }
 
@@ -77,9 +83,9 @@ public class IXmlyService {
      */
 
     public Object saveAlbum() throws BusinessException{
-        List<XmlyCategory> xmlyCategoryList = findXmlyCategory(StatusEnum.DEFAULT);
-        for(XmlyCategory xmlyCategory : xmlyCategoryList){
-            saveAlbumByCategory(xmlyCategory);
+        List<XmlyCategoryMongo> xmlyCategoryMongoList = findXmlyCategoryMongo(StatusEnum.DEFAULT);
+        for(XmlyCategoryMongo xmlyCategoryMongo : xmlyCategoryMongoList){
+            saveAlbumByCategory(xmlyCategoryMongo);
             try{
                 Thread.sleep(100);
             }catch(InterruptedException e){
@@ -90,11 +96,11 @@ public class IXmlyService {
         return ResultUtil.successResult();
     }
 
-    private void saveAlbumByCategory(XmlyCategory xmlyCategory) throws BusinessException{
-        if(null == xmlyCategory){
+    private void saveAlbumByCategory(XmlyCategoryMongo xmlyCategoryMongo) throws BusinessException{
+        if(null == xmlyCategoryMongo){
             return;
         }
-        Long categoryId = xmlyCategory.getOriginId();
+        Long categoryId = xmlyCategoryMongo.getOriginId();
         int currentPage = 0;
         int pageSize = 200;
         while(true){
@@ -110,24 +116,24 @@ public class IXmlyService {
             if(!jsonObject.containsKey("list")){
                 throw new BusinessException("第三方请求结果格式不正确，缺少list字段");
             }
-            List<XmlyAlbum> xmlyAlbumList = jsonObject.getJSONArray("list").toJavaList(XmlyAlbum.class);
-            xmlyAlbumList.forEach(System.out::println);
+            List<XmlyAlbumMongo> xmlyAlbumMongoList = jsonObject.getJSONArray("list").toJavaList(XmlyAlbumMongo.class);
+            xmlyAlbumMongoList.forEach(System.out::println);
             Date currentDate = new Date();
-            xmlyAlbumList.forEach(xmlyAlbum -> {
+            xmlyAlbumMongoList.forEach(xmlyAlbum -> {
                 xmlyAlbum.setExtendCategoryOriginId(categoryId);
                 xmlyAlbum.setCreateDate(currentDate);
                 xmlyAlbum.setModifyDate(currentDate);
                 xmlyAlbum.setStatus(StatusEnum.DEFAULT.getCode());
             });
-            iXmlyAlbumMapper.batchSave(xmlyAlbumList);
+            xmlyAlbumMongoRepository.insert(xmlyAlbumMongoList);
             int totalPages = jsonObject.getIntValue("totalPages");
             currentPage++;
             if(totalPages <= currentPage){
                 break;
             }
         }
-        xmlyCategory.setStatus(StatusEnum.SUCCESS.getCode());
-        iXmlyCategoryMapper.updateStatus(xmlyCategory);
+        xmlyCategoryMongo.setStatus(StatusEnum.SUCCESS.getCode());
+        xmlyCategoryRepository.save(xmlyCategoryMongo);
     }
 
     /**
@@ -136,18 +142,18 @@ public class IXmlyService {
      * @throws BusinessException
      */
     public Object saveTrack() throws BusinessException{
-        List<XmlyCategory> xmlyCategoryList = findXmlyCategory(null);
-        for(XmlyCategory xmlyCategory : xmlyCategoryList){
-            if(null == xmlyCategory){
+        List<XmlyCategoryMongo> xmlyCategoryMongoList = findXmlyCategoryMongo(null);
+        for(XmlyCategoryMongo xmlyCategoryMongo : xmlyCategoryMongoList){
+            if(null == xmlyCategoryMongo){
                 continue;
             }
-            List<XmlyAlbum> xmlyAlbumList = findXmlyAlbumByCategory(xmlyCategory);
-            if(CollectionUtils.isEmpty(xmlyAlbumList)){
+            List<XmlyAlbumMongo> xmlyAlbumMongoList = findXmlyAlbumByCategoryMongo(xmlyCategoryMongo);
+            if(CollectionUtils.isEmpty(xmlyAlbumMongoList)){
                 continue;
             }
-            for(XmlyAlbum xmlyAlbum : xmlyAlbumList){
-                if(xmlyAlbum.getStatus().intValue() == StatusEnum.DEFAULT.getCode()){
-                    saveTrackByAlbum(xmlyAlbum);
+            for(XmlyAlbumMongo xmlyAlbumMongo : xmlyAlbumMongoList){
+                if(xmlyAlbumMongo.getStatus().intValue() == StatusEnum.DEFAULT.getCode()){
+                    saveTrackByAlbum(xmlyAlbumMongo);
                     try{
                         Thread.sleep(100);
                     }catch(InterruptedException e){
@@ -162,14 +168,14 @@ public class IXmlyService {
     /**
      * 按照专辑，保存节目
      *
-     * @param xmlyAlbum
+     * @param xmlyAlbumMongo
      */
-    private void saveTrackByAlbum(XmlyAlbum xmlyAlbum) throws BusinessException{
-        if(null == xmlyAlbum){
+    private void saveTrackByAlbum(XmlyAlbumMongo xmlyAlbumMongo) throws BusinessException{
+        if(null == xmlyAlbumMongo){
             return;
         }
         try{
-            Long albumId = xmlyAlbum.getOriginId();
+            Long albumId = xmlyAlbumMongo.getOriginId();
             int currentPage = 0;
             int pageSize = 200;
             while(true){
@@ -186,27 +192,27 @@ public class IXmlyService {
                 if(!jsonObject.containsKey("list")){
                     throw new BusinessException("第三方请求结果格式不正确，缺少list字段");
                 }
-                List<XmlyTrack> xmlyTrackList = jsonObject.getJSONArray("list").toJavaList(XmlyTrack.class);
-                if(CollectionUtils.isEmpty(xmlyTrackList)){
+                List<XmlyTrackMongo> xmlyTrackMongoList = jsonObject.getJSONArray("list").toJavaList(XmlyTrackMongo.class);
+                if(CollectionUtils.isEmpty(xmlyTrackMongoList)){
                     break;
                 }
                 Date currentDate = new Date();
-                xmlyTrackList.forEach(xmlyTrack -> {
-                    xmlyTrack.setExtendCategoryOriginId(xmlyAlbum.getExtendCategoryOriginId());
-                    xmlyTrack.setAlbumOriginId(albumId);
-                    xmlyTrack.setCreateDate(currentDate);
-                    xmlyTrack.setModifyDate(currentDate);
-                    xmlyTrack.setStatus(StatusEnum.DEFAULT.getCode());
+                xmlyTrackMongoList.forEach(xmlyTrackMongo -> {
+                    xmlyTrackMongo.setExtendCategoryOriginId(xmlyAlbumMongo.getExtendCategoryOriginId());
+                    xmlyTrackMongo.setAlbumOriginId(albumId);
+                    xmlyTrackMongo.setCreateDate(currentDate);
+                    xmlyTrackMongo.setModifyDate(currentDate);
+                    xmlyTrackMongo.setStatus(StatusEnum.DEFAULT.getCode());
                 });
-                iXmlyTrackMapper.batchSave(xmlyTrackList);
+                xmlyTrackMongoRepository.insert(xmlyTrackMongoList);
                 int totalPages = jsonObject.getIntValue("totalPages");
                 currentPage++;
                 if(totalPages <= currentPage){
                     break;
                 }
             }
-            xmlyAlbum.setStatus(StatusEnum.SUCCESS.getCode());
-            iXmlyAlbumMapper.updateStatus(xmlyAlbum);
+            xmlyAlbumMongo.setStatus(StatusEnum.SUCCESS.getCode());
+            xmlyAlbumMongoRepository.save(xmlyAlbumMongo);
         }catch(Exception e){
             log.error("Exception when save track by album", e);
         }
@@ -218,29 +224,33 @@ public class IXmlyService {
      * @return
      * @throws BusinessException
      */
-    private List<XmlyCategory> findXmlyCategory(StatusEnum statusEnum) throws BusinessException{
+    private List<XmlyCategoryMongo> findXmlyCategoryMongo(StatusEnum statusEnum) throws BusinessException{
         Map<String, Object> params = new HashMap<>();
+        Query query = null;
         if(null != statusEnum){
-            params.put("status", statusEnum.getCode());
+            query = Query.query(Criteria.where("status").is(statusEnum.getCode()));
+        }else {
+            query = new Query();
         }
-        List<XmlyCategory> xmlyCategoryList = iXmlyCategoryMapper.findByCondition(params);
-        return xmlyCategoryList;
+        List<XmlyCategoryMongo> xmlyCategoryMongoList = mongoTemplate.find(query, XmlyCategoryMongo.class);
+        return xmlyCategoryMongoList;
     }
 
     /**
      * 根据分类，获取专辑集合
      *
-     * @param xmlyCategory 分类对象
+     * @param xmlyCategoryMongo 分类对象
      * @return 专辑集合
      */
-    private List<XmlyAlbum> findXmlyAlbumByCategory(XmlyCategory xmlyCategory){
-        if(null == xmlyCategory){
+    private List<XmlyAlbumMongo> findXmlyAlbumByCategoryMongo(XmlyCategoryMongo xmlyCategoryMongo){
+        if(null == xmlyCategoryMongo){
             return new ArrayList<>();
         }
         Map<String, Object> params = new HashMap<>();
-        params.put("extendCategoryOriginId", xmlyCategory.getOriginId());
+        params.put("extendCategoryOriginId", xmlyCategoryMongo.getOriginId());
         params.put("status", StatusEnum.DEFAULT.getCode());
-        List<XmlyAlbum> xmlyAlbumList = iXmlyAlbumMapper.findByCondition(params);
-        return xmlyAlbumList;
+        Query query = Query.query(Criteria.where("extendCategoryOriginId").is(xmlyCategoryMongo.getOriginId()).and("status").is(StatusEnum.DEFAULT.getCode()));
+        List<XmlyAlbumMongo> xmlyAlbumMongoList = mongoTemplate.find(query, XmlyAlbumMongo.class);
+        return xmlyAlbumMongoList;
     }
 }

@@ -100,7 +100,7 @@ public class JsonBinder {
      * 如果对象为Null,返回"null".
      * 如果集合为空集合,返回"[]".
      */
-    public String toJson(Object object) {
+    public String toJsonString(Object object) {
 
         try {
             return mapper.writeValueAsString(object);
@@ -110,7 +110,7 @@ public class JsonBinder {
         }
     }
 
-    public Object newToJson(Object object) {
+    public Object toJsonObject(Object object) {
         return JSONObject.toJSON(object);
     }
 

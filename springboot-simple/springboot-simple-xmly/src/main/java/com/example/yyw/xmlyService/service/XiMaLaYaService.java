@@ -1,12 +1,13 @@
-package com.example.yyw.xmly.service;
+package com.example.yyw.xmlyService.service;
 
 import com.example.yyw.util.HttpUtil;
 import com.example.yyw.util.JsonBinder;
-import com.example.yyw.util.ToolUtil;
-import com.example.yyw.xmly.modal.*;
+import com.example.yyw.util.ResultUtil;
+import com.example.yyw.xmlyService.modal.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -16,8 +17,8 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.example.yyw.xmly.service.XiMaLaYaSignService.buildParamUrl;
-import static com.example.yyw.xmly.service.XiMaLaYaSignService.buildParams;
+import static com.example.yyw.xmlyService.service.XiMaLaYaSignService.buildParamUrl;
+import static com.example.yyw.xmlyService.service.XiMaLaYaSignService.buildParams;
 
 
 /**
@@ -25,6 +26,7 @@ import static com.example.yyw.xmly.service.XiMaLaYaSignService.buildParams;
  *
  * @author yanzhitao
  **/
+@Slf4j
 @Service
 public class XiMaLaYaService{
     private static final String DOMAIN = "https://api.ximalaya.com";
@@ -42,6 +44,11 @@ public class XiMaLaYaService{
     private static final String TRACK_PLAY_RECORD_POST_BATCH = DOMAIN + "/openapi-collector-app/track_batch_records";
     private static final String GUESS_LIKE_ALBUMS = DOMAIN + "/v2/albums/guess_like";
     private static final String ONE_CLICK_LISTEN_CHANNEL_LIST = DOMAIN + "/one_click_listen/channels";
+    /**
+     * 批量获取专辑更新信息
+     * 根据一批专辑ID批量获取专辑更新信息（专辑下最新上传或更新的声音信息）
+     * */
+    private static final String GET_UPDATE_BATCH = DOMAIN + "/albums/get_update_batch";
 
     /**
      * 点播数据API：分类列表
@@ -93,7 +100,7 @@ public class XiMaLaYaService{
         int count = pageable.getPageSize();
         CategoryBrowse categoryBrowse = getAlbumList(categoryId, albumTagName, CalcDimensionEnum.findByCode(calcDimension), page, count);
         Page<Album> albumPage = new PageImpl<>(categoryBrowse.getAlbums(), pageable, categoryBrowse.getTotalCount());
-        return ToolUtil.checkPageResult(albumPage, albumPage.getContent());
+        return ResultUtil.checkPageResult(albumPage, albumPage.getContent());
     }
 
     /**
@@ -155,7 +162,7 @@ public class XiMaLaYaService{
             trackList = albumBrowse.getTracks();
         }
         Page<Track> trackPage = new PageImpl<>(trackList, pageable, totalCount);
-        return ToolUtil.checkPageResult(trackPage, trackPage.getContent());
+        return ResultUtil.checkPageResult(trackPage, trackPage.getContent());
     }
 
     /**
@@ -263,7 +270,7 @@ public class XiMaLaYaService{
     public void batchPostTrackRecords(String deviceId, List<TrackPlayRecord> trackPlayRecordList){
         Map<String, String> params = Maps.newHashMap();
         params.put("device_id", deviceId);
-        String trackRecords = JsonBinder.buildNonNullBinder().toJson(trackPlayRecordList);
+        String trackRecords = JsonBinder.buildNonNullBinder().toJsonString(trackPlayRecordList);
         params.put("track_records", trackRecords);
         System.out.println("批量回传播放数据:" + TRACK_PLAY_RECORD_POST_BATCH);
         Map<String, String> allParams = buildParams(params, false);
@@ -306,8 +313,7 @@ public class XiMaLaYaService{
         params.put("like_count", likeCount + "");
         String url = GUESS_LIKE_ALBUMS + "?" + buildParamUrl(params);
         String response = HttpUtil.httpGet(url);
-        return JsonBinder.buildNonNullBinder().fromJson(response, new TypeReference<List<Album>>(){
-        });
+        return JsonBinder.buildNonNullBinder().fromJson(response, new TypeReference<List<Album>>(){});
     }
 
     /**
@@ -320,6 +326,21 @@ public class XiMaLaYaService{
         params.put("device_id", deviceId);
         String url = ONE_CLICK_LISTEN_CHANNEL_LIST + "?" + buildParamUrl(params);
         System.out.println(url);
+    }
+
+    /**
+     * 根据一批专辑ID批量获取专辑更新信息（专辑下最新上传或更新的声音信息）
+     * @param albumIds 专辑ID
+     * @return
+     */
+    public List<AlbumUpdateBatch> getUpdateBatch(Long[] albumIds){
+        Map<String, String> params = Maps.newHashMap();
+        String idStrs = Arrays.asList(albumIds).stream().map(albumId -> albumId + "").collect(Collectors.joining(","));
+        params.put("ids", idStrs);
+        String url = GET_UPDATE_BATCH + "?" + buildParamUrl(params);
+        String response = HttpUtil.httpGet(url);
+        log.info("response : {}",response);
+        return JsonBinder.buildNormalBinder().fromJson(response,new TypeReference<List<AlbumUpdateBatch>>(){});
     }
 }
 

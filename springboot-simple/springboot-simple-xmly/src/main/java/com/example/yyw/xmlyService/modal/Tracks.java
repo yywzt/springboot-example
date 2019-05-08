@@ -1,4 +1,4 @@
-package com.example.yyw.xmly.modal;
+package com.example.yyw.xmlyService.modal;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;

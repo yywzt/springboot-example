@@ -1,4 +1,4 @@
-package com.example.yyw.xmly;
+package com.example.yyw;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

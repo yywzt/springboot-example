@@ -1,7 +1,7 @@
-package com.example.yyw.xmly.controller;
+package com.example.yyw.xmlyService.controller;
 
-import com.example.yyw.util.ToolUtil;
-import com.example.yyw.xmly.service.XiMaLaYaService;
+import com.example.yyw.util.ResultUtil;
+import com.example.yyw.xmlyService.service.XiMaLaYaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,12 +22,12 @@ public class XiMaLaYaController {
 
     @RequestMapping("/category/list")
     public Object getCategoryList(){
-        return ToolUtil.successResult(xiMaLaYaService.getCategoryList());
+        return ResultUtil.successResult(xiMaLaYaService.getCategoryList());
     }
 
     @RequestMapping("/tag/list")
     public Object getTagList(Long categoryId, @RequestParam(defaultValue = "0") int tagType){
-        return ToolUtil.successResult(xiMaLaYaService.getTagList(categoryId, tagType));
+        return ResultUtil.successResult(xiMaLaYaService.getTagList(categoryId, tagType));
     }
 
     @RequestMapping("/album/list")
@@ -37,19 +37,19 @@ public class XiMaLaYaController {
 
     @RequestMapping("/album/batch")
     public Object getAlbumBatch(Long[] ids){
-        return ToolUtil.successResult(xiMaLaYaService.albumGetBatch(ids));
+        return ResultUtil.successResult(xiMaLaYaService.albumGetBatch(ids));
     }
 
     @RequestMapping("/track/batch")
     @ResponseBody
     public Object getTrackBatch(Long[] ids){
-        return ToolUtil.successResult(xiMaLaYaService.trackGetBatch(ids, false));
+        return ResultUtil.successResult(xiMaLaYaService.trackGetBatch(ids, false));
     }
 
     @RequestMapping("/album/guessLike")
     public Object guessLikeAlbums(String channelId, String uid, @RequestParam(defaultValue = "2") int deviceType,
                                   @RequestParam(defaultValue = "10") int count){
-        return ToolUtil.successResult(xiMaLaYaService.guessLikeAlbums(deviceType, channelId, uid, count));
+        return ResultUtil.successResult(xiMaLaYaService.guessLikeAlbums(deviceType, channelId, uid, count));
     }
 
     @RequestMapping("/track/guessLike")
@@ -61,5 +61,15 @@ public class XiMaLaYaController {
     @RequestMapping("/track/byAlbum")
     public Object getTracksByAlbum(Long albumId, @RequestParam(defaultValue = "asc") String sort, Pageable pageable){
         return xiMaLaYaService.albumBrowse(albumId, sort, pageable);
+    }
+
+    /**
+     * 根据一批专辑ID批量获取专辑更新信息（专辑下最新上传或更新的声音信息）
+     * @param ids 专辑ID
+     * @return
+     */
+    @RequestMapping("/album/getUpdateBatch")
+    public Object getUpdateBatch(@RequestParam Long[] ids){
+        return ResultUtil.successResult(xiMaLaYaService.getUpdateBatch(ids));
     }
 }

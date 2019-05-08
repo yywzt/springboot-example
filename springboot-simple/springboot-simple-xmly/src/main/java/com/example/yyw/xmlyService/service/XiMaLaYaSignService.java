@@ -1,4 +1,4 @@
-package com.example.yyw.xmly.service;
+package com.example.yyw.xmlyService.service;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
