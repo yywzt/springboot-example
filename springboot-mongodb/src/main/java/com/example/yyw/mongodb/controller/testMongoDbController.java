@@ -2,6 +2,8 @@ package com.example.yyw.mongodb.controller;
 
 
 import com.example.yyw.mongodb.model.Article;
+import com.example.yyw.mongodb.model.Student;
+import com.example.yyw.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -28,5 +30,25 @@ public class testMongoDbController {
         Query query = Query.query(Criteria.where("author").is("yinjihuan")).skip(pageNumber).limit(pageSize);
         List<Article> articles = mongoTemplate.find(query, Article.class);
         return articles;
+    }
+
+    @RequestMapping("/mongoTemplateSave")
+    public Object mongoTemplateSave(){
+        Student student = new Student();
+        student.setName("甲");
+        student.setAge("12");
+        student.setSex("男");
+        Student save = mongoTemplate.save(student);
+        return ResultUtil.successResultV2(save);
+    }
+
+    @RequestMapping("/mongoTemplateSaveToCollection")
+    public Object mongoTemplateSaveToCollection(){
+        Student student = new Student();
+        student.setName("甲");
+        student.setAge("12");
+        student.setSex("男");
+        Student save = mongoTemplate.save(student,"student");
+        return ResultUtil.successResultV2(save);
     }
 }
