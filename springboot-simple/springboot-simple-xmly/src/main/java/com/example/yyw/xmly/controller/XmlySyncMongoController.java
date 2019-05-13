@@ -1,5 +1,6 @@
 package com.example.yyw.xmly.controller;
 
+import com.example.yyw.util.ResultUtil;
 import com.example.yyw.xmly.exception.BusinessException;
 import com.example.yyw.xmly.service.IXmlyMongoService;
 import com.example.yyw.xmly.service.IXmlyService;
@@ -34,4 +35,14 @@ public class XmlySyncMongoController {
         return iXmlyMongoService.saveTrack();
     }
 
+    /**
+     * 构建喜马拉雅声音碎片缓存
+     *
+     * @return
+     */
+    @RequestMapping(value = "/buildXimalayaTrackCache")
+    public Object buildXimalayaTrackCache(){
+        iXmlyMongoService.buildXimalayaTrackCache();
+        return ResultUtil.successResult();
+    }
 }

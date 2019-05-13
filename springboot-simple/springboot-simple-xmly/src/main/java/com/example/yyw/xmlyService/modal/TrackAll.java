@@ -9,7 +9,7 @@ import java.util.List;
  * @author yanzhitao
  **/
 @Data
-public class AlbumBrowse{
+public class TrackAll {
     @JsonProperty("total_page")
     private Long totalPage;
     @JsonProperty("total_count")

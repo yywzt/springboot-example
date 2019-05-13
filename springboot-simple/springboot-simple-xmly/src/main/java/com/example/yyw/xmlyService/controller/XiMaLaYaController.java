@@ -2,6 +2,7 @@ package com.example.yyw.xmlyService.controller;
 
 import com.example.yyw.util.ResultUtil;
 import com.example.yyw.xmlyService.service.XiMaLaYaService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author yanzhitao
  **/
+@Slf4j
 @RestController
 @RequestMapping("/ximalaya")
 public class XiMaLaYaController {
@@ -72,4 +74,65 @@ public class XiMaLaYaController {
     public Object getUpdateBatch(@RequestParam Long[] ids){
         return ResultUtil.successResult(xiMaLaYaService.getUpdateBatch(ids));
     }
+
+    /**
+     * 获取全量专辑数据（注意已剔除版权权益不明确的专辑数据）
+     * @param categoryId 分类ID
+     * @param page  返回第几页，从1开始，默认为1
+     * @param count 每页大小，范围为[1,200]，默认为20
+     * @return
+     */
+    @RequestMapping("/album/getAlbumAll")
+    public Object getAlbumAll(@RequestParam Long categoryId, int page, int count){
+        return ResultUtil.successResult(xiMaLaYaService.getAlbumAll(categoryId, page, count));
+    }
+    /**
+     * 获取专辑增量数据
+     *     获取某个分类中某标签在指定时间区间内的专辑增量数据
+     * https://open.ximalaya.com/doc/podcast-data-sync#%E8%8E%B7%E5%8F%96%E4%B8%93%E8%BE%91%E5%A2%9E%E9%87%8F%E6%95%B0%E6%8D%AE
+     * @param categoryId 分类ID
+     * @param startDate 时间区间的开始时间 yyyy-MM-dd HH:mm:ss
+     * @param endDate 时间区间的结束时间 yyyy-MM-dd HH:mm:ss
+     * @param page  返回第几页，从1开始，默认为1
+     * @param count 每页大小，范围为[1,200]，默认为20
+     * @return
+     */
+    @RequestMapping("/album/getIncrementAlbums")
+    public Object getIncrementAlbums(@RequestParam Long categoryId, long startDate ,long endDate, int page, int count){
+        return ResultUtil.successResult(xiMaLaYaService.getIncrementAlbums(categoryId, startDate, endDate, page, count));
+    }
+    @RequestMapping("/album/getIncrementTracks")
+    public Object getIncrementTracks(@RequestParam Long albumId, long startDate ,long endDate, int page, int count){
+        return ResultUtil.successResult(xiMaLaYaService.getIncrementTracks(albumId, startDate, endDate, page, count));
+    }
+    /**
+     * 获取专辑增量数据
+     *     获取某个分类中某标签在指定时间区间内的专辑增量数据
+     * https://open.ximalaya.com/doc/podcast-data-sync#%E8%8E%B7%E5%8F%96%E4%B8%93%E8%BE%91%E5%A2%9E%E9%87%8F%E6%95%B0%E6%8D%AE
+     * @param categoryId 分类ID
+     * @param start_time 时间区间的开始时间 yyyy-MM-dd HH:mm:ss
+     * @param end_time 时间区间的结束时间 yyyy-MM-dd HH:mm:ss
+     * @param page  返回第几页，从1开始，默认为1
+     * @param count 每页大小，范围为[1,200]，默认为20
+     * @return
+     */
+    /*@RequestMapping("/album/getIncrementAlbums")
+    public Object getIncrementAlbums(@RequestParam Long categoryId, String start_time ,String end_time, int page, int count){
+        Date startDate = null;
+        Date endDate = null;
+        try {
+            startDate = DateUtils.parseDate(start_time, "yyyy-MM-dd HH:mm:ss");
+            endDate = DateUtils.parseDate(end_time, "yyyy-MM-dd HH:mm:ss");
+        } catch (ParseException e) {
+            e.printStackTrace();
+            log.error("date parse error : {}",e.getMessage());
+        }
+        return ResultUtil.successResult(xiMaLaYaService.getIncrementAlbums(categoryId, startDate, endDate, page, count));
+    }
+    @RequestMapping("/album/getIncrementTracks")
+    public Object getIncrementTracks(@RequestParam Long albumId, String start_time ,String end_time, int page, int count){
+        LocalDateTime startDate = TimeUtil.stringToLocalDateTime(start_time);
+        LocalDateTime endDate = TimeUtil.stringToLocalDateTime(end_time);
+        return ResultUtil.successResult(xiMaLaYaService.getIncrementTracks(albumId, startDate, endDate, page, count));
+    }*/
 }

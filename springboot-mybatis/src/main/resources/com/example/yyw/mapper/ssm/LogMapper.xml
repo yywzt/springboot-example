@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.yyw.mapper.ssm.LogMapper">
+    <resultMap id="BaseResultMap" type="com.example.yyw.model.ssm.Log">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+        <result column="log_msg" jdbcType="VARCHAR" property="logMsg" />
+        <result column="creation_date" jdbcType="TIMESTAMP" property="creationDate" />
+        <result column="created_by" jdbcType="CHAR" property="createdBy" />
+        <result column="updation_date" jdbcType="TIMESTAMP" property="updationDate" />
+        <result column="updated_by" jdbcType="CHAR" property="updatedBy" />
+        <result column="enabled_flag" jdbcType="BIT" property="enabledFlag" />
+    </resultMap>
+
+    <update id="alterTableName">
+        alter table ${originalTableName} rename ${newTableName}
+    </update>
+
+    <update id="createTable">
+        CREATE TABLE `log` (
+          `id` bigint(10) NOT NULL AUTO_INCREMENT,
+          `created_by` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+          `creation_date` datetime DEFAULT NULL,
+          `enabled_flag` bigint(20) DEFAULT NULL,
+          `updated_by` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+          `updation_date` datetime DEFAULT NULL,
+          `group_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+          `log_msg` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+          PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    </update>
+</mapper>

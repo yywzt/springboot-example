@@ -21,9 +21,14 @@ import java.util.UUID;
  **/
 @Service
 public class XiMaLaYaSignService{
-    private static final String APP_KEY = "ba39f971bcb35d12afe892ab20be0e14";
+    /** 测试 */
+    private static final String APP_KEY = "b617866c20482d133d5de66fceb37da3";
+    private static final String APP_SECRET = "4d8e605fa7ed546c4bcb33dee1381179";
+    private static final String SERVER_AUTHENTICATE_STATIC_KEY = "z0hh5l9A";
+    /** 正式 */
+    /*private static final String APP_KEY = "ba39f971bcb35d12afe892ab20be0e14";
     private static final String APP_SECRET = "4749ba4fd2931e96744688aa1714b0cd";
-    private static final String SERVER_AUTHENTICATE_STATIC_KEY = "hkol6TPy";
+    private static final String SERVER_AUTHENTICATE_STATIC_KEY = "hkol6TPy";*/
     private static final String CLIENT_OS_TYPE_SERVER_API = "4";
     private static final String SERVER_API_VERSION = "1.0.0";
 

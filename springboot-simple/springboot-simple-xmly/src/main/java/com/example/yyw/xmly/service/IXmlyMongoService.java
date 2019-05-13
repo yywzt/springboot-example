@@ -13,16 +13,20 @@ import com.example.yyw.xmly.repository.XmlyAlbumMongoRepository;
 import com.example.yyw.xmly.repository.XmlyCategoryRepository;
 import com.example.yyw.xmly.repository.XmlyTrackMongoRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 喜马拉雅业务处理
@@ -36,6 +40,12 @@ import java.util.*;
 public class IXmlyMongoService {
 
     private static final String OTHER_IF_URL = "http://127.0.0.1:19091";
+    /** 分类 */
+    private static final String XMLY_CATEGORY_LIST = OTHER_IF_URL + "/ximalaya/category/list";
+    /** 专辑 */
+    private static final String XMLY_ALBUM_LIST = OTHER_IF_URL + "/ximalaya/album/list?";
+    /** 专辑下声音碎片 */
+    private static final String XMLY_TRACK_BYALBUM = OTHER_IF_URL + "/ximalaya/track/byAlbum?";
 
     @Autowired
     private XmlyCategoryRepository xmlyCategoryRepository;
@@ -47,14 +57,16 @@ public class IXmlyMongoService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
     /**
      * 保存分类
      *
      * @throws BusinessException
      */
     public Object saveCategory() throws BusinessException {
-        String url = OTHER_IF_URL + "/ximalaya/category/list";
-        String responseStr = HttpUtil.httpGet(url);
+        String responseStr = HttpUtil.httpGet(XMLY_CATEGORY_LIST);
         if(StringUtils.isBlank(responseStr)){
             throw new BusinessException("第三方请求结果为空");
         }
@@ -104,7 +116,7 @@ public class IXmlyMongoService {
         int currentPage = 0;
         int pageSize = 200;
         while(true){
-            StringBuilder url = new StringBuilder(OTHER_IF_URL + "/ximalaya/album/list?");
+            StringBuilder url = new StringBuilder(XMLY_ALBUM_LIST);
             url.append("categoryId=" + categoryId);
             url.append("&page=" + currentPage);
             url.append("&size=" + pageSize);
@@ -179,7 +191,7 @@ public class IXmlyMongoService {
             int currentPage = 0;
             int pageSize = 200;
             while(true){
-                StringBuilder url = new StringBuilder(OTHER_IF_URL + "/ximalaya/track/byAlbum?");
+                StringBuilder url = new StringBuilder(XMLY_TRACK_BYALBUM);
                 url.append("albumId=" + albumId);
                 url.append("&page=" + currentPage);
                 url.append("&size=" + pageSize);
@@ -252,5 +264,54 @@ public class IXmlyMongoService {
         Query query = Query.query(Criteria.where("extendCategoryOriginId").is(xmlyCategoryMongo.getOriginId()).and("status").is(StatusEnum.DEFAULT.getCode()));
         List<XmlyAlbumMongo> xmlyAlbumMongoList = mongoTemplate.find(query, XmlyAlbumMongo.class);
         return xmlyAlbumMongoList;
+    }
+
+    public static final String XIMALAYA_CACHE_COMMON_PREFIX = "XIMALAYA:";
+    public static final String XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_TO_TRACK_ID_CACHE_PREFIX = XIMALAYA_CACHE_COMMON_PREFIX + "EOCI_TI:";
+    public static final String XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_List_CACHE_PREFIX = XIMALAYA_CACHE_COMMON_PREFIX + "EOCI_LIST";
+
+    /**
+     * 构建redis缓存
+     * 所有声音id
+     * 声音所属的喜马拉雅分类id
+     */
+    public void buildXimalayaTrackCache() {
+        Document queryObject = new Document();
+        queryObject.put("status", 0);  //查询条件
+
+        Document fieldsObject=new Document();
+        //指定返回的字段
+        fieldsObject.put("originId", true);
+        fieldsObject.put("extendCategoryOriginId", true);
+        BasicQuery query = new BasicQuery(queryObject,fieldsObject);
+        List<XmlyTrackMongo> xmlyTrackMongoList = mongoTemplate.find(query, XmlyTrackMongo.class);
+        log.info("xmlyTrack size: {}",xmlyTrackMongoList.size());
+
+        xmlyTrackMongoList.stream()
+                .collect(Collectors.groupingBy(XmlyTrackMongo::getExtendCategoryOriginId))
+                .entrySet()
+                .forEach(longListEntry -> {
+                    String extendCategoryOriginId = longListEntry.getKey().toString();
+                    List<String> xmlyTrackOriginIds = longListEntry.getValue().stream()
+                            .map(xmlyTrackMongo -> xmlyTrackMongo.getOriginId().toString())
+                            .collect(Collectors.toList());
+
+                    if(CollectionUtils.isNotEmpty(xmlyTrackOriginIds)){
+                        String cacheKey = XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_TO_TRACK_ID_CACHE_PREFIX + extendCategoryOriginId;
+                        stringRedisTemplate.opsForSet()
+                                .add(cacheKey, xmlyTrackOriginIds.toArray(new String[0]));
+                    }
+
+                });
+
+        List<String> xmlyExtendCategoryOriginIdList = xmlyTrackMongoList.stream().map(xmlyTrackMongo -> xmlyTrackMongo.getExtendCategoryOriginId().toString()).distinct().collect(Collectors.toList());
+        log.info("xmlyExtendCategoryOriginId size: {}",xmlyExtendCategoryOriginIdList.size());
+        if(CollectionUtils.isNotEmpty(xmlyExtendCategoryOriginIdList)){
+            String cacheKey = XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_List_CACHE_PREFIX;
+            stringRedisTemplate.opsForSet()
+                    .add(cacheKey, xmlyExtendCategoryOriginIdList.toArray(new String[0]));
+        }
+
+        log.info("缓存成功");
     }
 }

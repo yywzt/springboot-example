@@ -33,6 +33,12 @@ import java.util.*;
 public class IXmlyService {
 
     private static final String OTHER_IF_URL = "http://127.0.0.1:19091";
+    /** 分类 */
+    private static final String XMLY_CATEGORY_LIST = OTHER_IF_URL + "/ximalaya/category/list";
+    /** 专辑 */
+    private static final String XMLY_ALBUM_LIST = OTHER_IF_URL + "/ximalaya/album/list?";
+    /** 专辑下声音碎片 */
+    private static final String XMLY_TRACK_BYALBUM = OTHER_IF_URL + "/ximalaya/track/byAlbum?";
 
     @Autowired
     private IXmlyAlbumMapper iXmlyAlbumMapper;
@@ -47,8 +53,7 @@ public class IXmlyService {
      * @throws BusinessException
      */
     public Object saveCategory() throws BusinessException {
-        String url = OTHER_IF_URL + "/ximalaya/category/list";
-        String responseStr = HttpUtil.httpGet(url);
+        String responseStr = HttpUtil.httpGet(XMLY_CATEGORY_LIST);
         if(StringUtils.isBlank(responseStr)){
             throw new BusinessException("第三方请求结果为空");
         }
@@ -98,7 +103,7 @@ public class IXmlyService {
         int currentPage = 0;
         int pageSize = 200;
         while(true){
-            StringBuilder url = new StringBuilder(OTHER_IF_URL + "/ximalaya/album/list?");
+            StringBuilder url = new StringBuilder(XMLY_ALBUM_LIST);
             url.append("categoryId=" + categoryId);
             url.append("&page=" + currentPage);
             url.append("&size=" + pageSize);
@@ -173,7 +178,7 @@ public class IXmlyService {
             int currentPage = 0;
             int pageSize = 200;
             while(true){
-                StringBuilder url = new StringBuilder(OTHER_IF_URL + "/ximalaya/track/byAlbum?");
+                StringBuilder url = new StringBuilder(XMLY_TRACK_BYALBUM);
                 url.append("albumId=" + albumId);
                 url.append("&page=" + currentPage);
                 url.append("&size=" + pageSize);

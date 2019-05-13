@@ -8,8 +8,9 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:mysql://139.199.179.164:3306/xmly?userUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=GMT%2B8
     username: root
-    password: root
+    password: Root123
   data:
+    # mongodb
     mongodb:
       host: 127.0.0.1
       port: 27017
@@ -17,6 +18,19 @@ spring:
       password: admin
       authentication-database: admin
       database: test
+  # redis
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: 1
+        max-idle: 8
+        min-idle: 0
+    timeout: 5000
+    database: 2
+    password: root
 
 mybatis:
   configuration:

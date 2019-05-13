@@ -3,6 +3,7 @@ package com.example.yyw.util;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Year;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -13,10 +14,11 @@ import java.time.format.DateTimeFormatter;
 public class TimeUtil {
 
     private static final DateTimeFormatter DEFAULT_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public static final DateTimeFormatter DEFAULT_DATE_TIME_FORMATTER2 = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
-    private static final DateTimeFormatter ISO_LOCAL_DATE_TIME = DateTimeFormatter.ISO_LOCAL_DATE_TIME; //2019-05-07T17:00:11.225
-    private static final DateTimeFormatter ISO_LOCAL_DATE = DateTimeFormatter.ISO_LOCAL_DATE; //2019-05-07
-    private static final DateTimeFormatter ISO_LOCAL_TIME = DateTimeFormatter.ISO_LOCAL_TIME; //17:00:11.225
+    public static final DateTimeFormatter ISO_LOCAL_DATE_TIME = DateTimeFormatter.ISO_LOCAL_DATE_TIME; //2019-05-07T17:00:11.225
+    public static final DateTimeFormatter ISO_LOCAL_DATE = DateTimeFormatter.ISO_LOCAL_DATE; //2019-05-07
+    public static final DateTimeFormatter ISO_LOCAL_TIME = DateTimeFormatter.ISO_LOCAL_TIME; //17:00:11.225
 
     public static String localDateTimeToString(LocalDateTime localDateTime) {
         return localDateTime.format(DEFAULT_DATE_TIME_FORMATTER);
@@ -24,6 +26,13 @@ public class TimeUtil {
 
     public static String localDateTimeToString(LocalDateTime localDateTime, DateTimeFormatter dateTimeFormatter) {
         return localDateTime.format(dateTimeFormatter);
+    }
+
+    public static LocalDateTime stringToLocalDateTime(String localDateTime) {
+        return LocalDateTime.parse(localDateTime,DEFAULT_DATE_TIME_FORMATTER);
+    }
+    public static LocalDateTime stringToLocalDateTime(String localDateTime, DateTimeFormatter dateTimeFormatter) {
+        return LocalDateTime.parse(localDateTime,dateTimeFormatter);
     }
 
     public static String localDateTimeToString(LocalDateTime localDateTime, int type) {
@@ -129,5 +138,27 @@ public class TimeUtil {
     public static LocalDateTime plusDays(LocalDateTime localDateTime, long days) {
         return localDateTime.plusDays(days);
     }
+
+    /**
+     * 返回此{@code LocalDateTime}的副本，并添加指定的分钟数
+     *
+     * @param localDateTime
+     * @param minutes
+     * @return
+     */
+    public static LocalDateTime plusMinutes(LocalDateTime localDateTime, long minutes) {
+        return localDateTime.plusMinutes(minutes);
+    }
+
+    public static long getEpochSecond(LocalDateTime localDateTime) {
+        //获取秒数
+        return localDateTime.toEpochSecond(ZoneOffset.of("+8"));
+    }
+
+    public static long getEpochMilli(LocalDateTime localDateTime) {
+        //获取毫秒数
+        return localDateTime.toInstant(ZoneOffset.of("+8")).toEpochMilli();
+    }
+
 
 }
