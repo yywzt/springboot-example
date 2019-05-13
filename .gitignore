@@ -1,0 +1,21 @@
+# Created by .ignore support plugin (hsz.mobi)
+.idea/
+springboot-admin/springboot-admin.iml
+springboot-admin/target/
+springboot-example-api/springboot-example-api.iml
+springboot-example-api/target/
+springboot-mongodb/springboot-mongodb.iml
+springboot-mongodb/target/
+springboot-mybatis/springboot-mybatis.iml
+springboot-mybatis/target/
+springboot-redis-pubsub/springboot-redis-pubsub.iml
+springboot-redis-pubsub/target/
+springboot-simple/springboot-simple-auth/springboot-simple-auth.iml
+springboot-simple/springboot-simple-auth/target/
+springboot-simple/springboot-simple-redenvelope/springboot-simple-redenvelope.iml
+springboot-simple/springboot-simple-redenvelope/target/
+springboot-simple/springboot-simple-xmly/springboot-simple-xmly.iml
+springboot-simple/springboot-simple-xmly/target/
+springboot-simple/springboot-simple.iml
+springboot-thymeleaf/springboot-thymeleaf.iml
+springboot-thymeleaf/target/
