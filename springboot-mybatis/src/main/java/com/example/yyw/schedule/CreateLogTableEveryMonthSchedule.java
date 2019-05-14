@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @describe
  */
 @Slf4j
-@Component
+//@Component
 public class CreateLogTableEveryMonthSchedule {
 
     private static final String TABLENAME = "log";

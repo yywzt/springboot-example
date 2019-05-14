@@ -2,11 +2,21 @@ server:
   port: 18081
 
 spring:
+  application:
+    name: springboot-mybatis
   datasource:
-    type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://139.199.179.164:3306/ssm?userUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=GMT%2B8
-    username: root
-    password: Root123
+    ssm:
+      poolName: ${spring.application.name}
+      type: com.zaxxer.hikari.HikariDataSource
+      jdbcUrl: jdbc:mysql://139.199.179.164:3306/ssm?tinyInt1isBit=false&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
+      username: root
+      password: Root123
+      autoCommit: false
+      minIdle: 5
+      maximumPoolSize: 20
+      connectionInitSql: select 1
+      hikari:
+        idle-timeout: 10000
 
 mybatis:
   configuration:
@@ -26,3 +36,8 @@ logging:
   level:
     root: info
     com.example.yyw: debug
+  file: ${spring.application.name}
+
+student:
+  name: 'hahhah'
+  age: 12
