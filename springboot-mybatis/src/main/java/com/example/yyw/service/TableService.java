@@ -20,14 +20,25 @@ public class TableService {
     private JdbcTemplate jdbcTemplate;
 
     public String tableExist(String table, String date) {
-        String sql = "SELECT count(TABLE_NAME) FROM information_schema.`TABLES` WHERE TABLE_SCHEMA = 'ssm' AND TABLE_NAME = '" + table + SPLIT_SYMBOL + date + "'";
-        Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
-        if (count > 0) {
-            log.info(table + SPLIT_SYMBOL + date + " IS EXIST");
+        String tableName = table + SPLIT_SYMBOL + date;
+        boolean b = tableExist(tableName);
+        if (b) {
             return table + "分表成功;";
         } else {
-            log.info(table + SPLIT_SYMBOL + date + " IS NOT EXIST");
             return table + "分表失败;";
         }
     }
+
+    public boolean tableExist(String tableName) {
+        String sql = "SELECT count(TABLE_NAME) FROM information_schema.`TABLES` WHERE TABLE_SCHEMA = 'ssm' AND TABLE_NAME = '" + tableName + "'";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
+        if (count > 0) {
+            log.info("{} IS EXIST",tableName);
+            return true;
+        } else {
+            log.info("{} IS NOT EXIST",tableName);
+            return false;
+        }
+    }
+
 }

@@ -12,12 +12,14 @@
         <result column="enabled_flag" jdbcType="BIT" property="enabledFlag" />
     </resultMap>
 
+    <sql id="tableName">log</sql>
+
     <update id="alterTableName">
         alter table ${originalTableName} rename ${newTableName}
     </update>
 
     <update id="createTable">
-        CREATE TABLE `log` (
+        CREATE TABLE <include refid="tableName"/> (
           `id` bigint(10) NOT NULL AUTO_INCREMENT,
           `created_by` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
           `creation_date` datetime DEFAULT NULL,

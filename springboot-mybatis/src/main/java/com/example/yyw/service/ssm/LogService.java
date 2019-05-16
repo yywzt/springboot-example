@@ -17,6 +17,10 @@ public class LogService {
     @Autowired
     private LogMapper logMapper;
 
+    public LogMapper getLogMapper() {
+        return logMapper;
+    }
+
     public void createTable(){
         logMapper.createTable();
     }
