@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 @Configuration
 public class SsmDataSourceConfig {
 
-    @Bean(name = "ssmDataSource")
+//    @Bean(name = "ssmDataSource")
     @Primary
     @ConfigurationProperties(prefix = "spring.datasource.ssm")
     public DataSource primaryDataSource() {

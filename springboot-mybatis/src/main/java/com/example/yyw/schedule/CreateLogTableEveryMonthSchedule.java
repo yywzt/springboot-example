@@ -23,8 +23,14 @@ import java.sql.Timestamp;
 @Component
 public class CreateLogTableEveryMonthSchedule {
 
+    private static final String SCHEMANAME = "ssm";
     private static final String TABLENAME = "log";
-    private static final String SEPARATOR = "_";
+    public static final String SEPARATOR = "_bak_";
+    private static final String APOSTROPHE = "'";
+    private static final String COMMA = ",";
+    private static final String LEFTBRACKETS = "(";
+    private static final String RIGHTBRACKETS = ")";
+
 
     @Autowired
     private LogService logService;
@@ -33,23 +39,6 @@ public class CreateLogTableEveryMonthSchedule {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
-    @Transactional(rollbackFor = RuntimeException.class)
-    @Scheduled(cron = "0 0/1 * * * ? ")
-    private void createLogTable() {
-        String date = TimeUtil.localDateTimeToString(TimeUtil.now(), TimeUtil.DEFAULT_DATE_TIME_FORMATTER2);
-        String newTableName = new StringBuffer(TABLENAME).append(SEPARATOR).append(date).toString();
-//        logService.alterTableName(TABLENAME, newTableName);
-//        logService.createTable();
-        alterTableName(TABLENAME, newTableName);
-        createTable(TABLENAME, newTableName);
-
-        log.info("alter table msg : {}",tableService.tableExist(TABLENAME, date));
-        if(!tableService.tableExist(TABLENAME)){
-            log.error("create table error");
-            throw new RuntimeException("异常");
-        }
-    }
 
     private void alterTableName(String tableName, String newTableName){
         String sql = "ALTER TABLE " + tableName + " RENAME TO " + newTableName;
@@ -63,9 +52,37 @@ public class CreateLogTableEveryMonthSchedule {
         log.info("{}",update);
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
+    @Scheduled(cron = "0 0/1 * * * ? ")
+    private void createLogTable() {
+        String date = TimeUtil.localDateTimeToString(TimeUtil.now(), TimeUtil.DEFAULT_DATE_TIME_FORMATTER2);
+        String newTableName = new StringBuffer(TABLENAME).append(SEPARATOR).append(date).toString();
+        bakLog(SCHEMANAME, TABLENAME, newTableName);
+        log.info("alter table msg : {}",tableService.tableExist(TABLENAME, date));
+        if(!tableService.tableExist(TABLENAME)){
+            log.error("create table error");
+            throw new RuntimeException("异常");
+        }
+    }
+
+    /**
+     * 调用存储过程
+     * call bakLog('ssm','log','log_bak')
+     * @param tableName
+     * @param newTableName
+     */
+    private void bakLog(String schemaName, String tableName, String newTableName){
+        String sql = new StringBuffer("CALL bakLog").append(LEFTBRACKETS)
+                .append(APOSTROPHE).append(schemaName).append(APOSTROPHE).append(COMMA)
+                .append(APOSTROPHE).append(tableName).append(APOSTROPHE).append(COMMA)
+                .append(APOSTROPHE).append(newTableName).append(APOSTROPHE).append(RIGHTBRACKETS).toString();
+        jdbcTemplate.execute(sql);
+        log.info("bakLog success");
+    }
+
     private static final String GROUP_NAME = "YYW";
 
-    @Scheduled(fixedDelay = 500)
+    @Scheduled(fixedDelay = 100)
     public void init(){
         Log logs = new Log();
         logs.setGroupName(GROUP_NAME);

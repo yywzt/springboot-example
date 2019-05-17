@@ -1,5 +1,6 @@
 package com.example.yyw.service;
 
+import com.example.yyw.schedule.CreateLogTableEveryMonthSchedule;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class TableService {
 
-    private static final String SPLIT_SYMBOL = "_";
+    private static final String SPLIT_SYMBOL = CreateLogTableEveryMonthSchedule.SEPARATOR;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
