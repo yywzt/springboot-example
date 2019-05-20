@@ -4,6 +4,7 @@ import com.example.yyw.model.ssm.Log;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import tk.mybatis.mapper.common.BaseMapper;
+import tk.mybatis.mapper.common.MySqlMapper;
 
 /**
  * @author yanzhitao@xiaomalixing.com
@@ -11,7 +12,7 @@ import tk.mybatis.mapper.common.BaseMapper;
  * @describe
  */
 @Mapper
-public interface LogMapper extends BaseMapper<Log> {
+public interface LogMapper extends BaseMapper<Log>, MySqlMapper<Log> {
 
     /**
      * 重命名表

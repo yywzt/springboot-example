@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.yyw.mapper.ssm.BasedMapper">
+
+    <insert id="batchSave">
+        INSERT INTO `ssm`.${tableName} (`created_by`, `creation_date`, `enabled_flag`, `updated_by`, `updation_date`, `group_name`, `log_msg`)
+        VALUES
+        <foreach collection="logs" item="log" index="index" separator=",">
+            (
+            #{log.createdBy}, #{log.creationDate}, #{log.enabledFlag}, #{log.updatedBy}, #{log.updationDate}, #{log.groupName}, #{log.logMsg}
+            )
+        </foreach>
+    </insert>
+</mapper>

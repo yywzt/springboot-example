@@ -20,7 +20,7 @@ import java.sql.Timestamp;
  * @describe
  */
 @Slf4j
-@Component
+//@Component
 public class CreateLogTableEveryMonthSchedule {
 
     private static final String SCHEMANAME = "ssm";
