@@ -1,8 +1,7 @@
-package com.example.yyw.xmly.config;
+package com.example.yyw.common;
 
-import com.example.yyw.xmly.exception.BusinessException;
+import com.example.yyw.constant.ResponseData;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
@@ -83,6 +82,17 @@ public class ExceptionAspect {
     /**
      * 500 - Internal Server Error
      */
+	/*@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ExceptionHandler(TokenException.class)
+	public ResponseData handleTokenException(Exception e, HttpServletRequest request) {
+		log.error("Token is invaild...", e);
+		ResponseData info = ResponseData.failure("Token is invaild");
+		return info;
+	}*/
+
+    /**
+     * 500 - Internal Server Error
+     */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ResponseData handleException(Exception e, HttpServletRequest request) {
@@ -105,31 +115,6 @@ public class ExceptionAspect {
         log.error("paremeter validation failure... : {}", msg);
         ResponseData info = ResponseData.failure(Arrays.toString(msg.toArray()));
         return info;
-    }
-
-    /**
-     * 500 - SQL Error
-     */
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(DuplicateKeyException.class)
-    public ResponseData handleDefaultSQLException(DuplicateKeyException e, HttpServletRequest request) {
-        log.error("DuplicateKeyException Error : {}", e);
-        ResponseData info = ResponseData.failure("DuplicateKeyException Error : " + e.getMessage());
-        return info;
-    }
-
-    @ExceptionHandler(BusinessException.class)
-    public ResponseData handleBusinessException(BusinessException e) {
-        log.error("BusinessException : {}", e);
-        return ResponseData.failure("500", e.getMessage());
-    }
-
-    private HttpStatus getStatus(HttpServletRequest request) {
-        Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
-        if (statusCode == null) {
-            return HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-        return HttpStatus.valueOf(statusCode);
     }
 
 }
