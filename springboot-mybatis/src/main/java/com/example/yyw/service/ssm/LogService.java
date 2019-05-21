@@ -62,7 +62,6 @@ public class LogService {
             logs.add(logModel);
         }
         int i = basedMapper.batchSave(tableName, logs);
-        i = i/0;
         log.info("{}",i);
     }
 }
