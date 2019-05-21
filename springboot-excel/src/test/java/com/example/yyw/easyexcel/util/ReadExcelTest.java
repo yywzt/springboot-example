@@ -1,14 +1,10 @@
 package com.example.yyw.easyexcel.util;
 
 import com.alibaba.excel.ExcelReader;
-import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.Sheet;
 import com.example.yyw.modal.CarParkActiviti;
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.Test;
-import org.springframework.util.FileSystemUtils;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
