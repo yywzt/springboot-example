@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 /**
- * @author yanzhitao@xiaomalixing.com
+ * @author ywyw2424@foxmail.com
  * @date 2019/4/28 17:16
  * @describe
  */

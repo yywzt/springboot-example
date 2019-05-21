@@ -3,7 +3,7 @@ package com.example.yyw.xmly.enums;
 /**
  * 通用型的状态枚举类型，原则上只能添加新的枚举值，已有枚举值不可修改。
  *
- * @author yanzhitao@xiaomalixing.com
+ * @author ywyw2424@foxmail.com
  * @date 2019-05-07
  **/
 public enum StatusEnum {

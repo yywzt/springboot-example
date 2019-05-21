@@ -5,7 +5,7 @@ import com.example.yyw.model.GenericModel;
 import com.example.yyw.util.TimeUtil;
 
 /**
- * @author yanzhitao@xiaomalixing.com
+ * @author ywyw2424@foxmail.com
  * @date 2019/4/25 17:07
  * @describe
  */

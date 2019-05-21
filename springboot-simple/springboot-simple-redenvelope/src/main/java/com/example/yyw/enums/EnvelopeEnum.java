@@ -3,7 +3,7 @@ package com.example.yyw.enums;
 /**
  * 红包类型枚举类
  *
- * @author yanzhitao@xiaomalixing.com
+ * @author ywyw2424@foxmail.com
  * @date 2019/4/23 16:37
  */
 public enum EnvelopeEnum {

@@ -1,7 +1,7 @@
 package com.example.yyw.xmlyService.enums;
 
 /**
- * @author yanzhitao@xiaomalixing.com
+ * @author ywyw2424@foxmail.com
  * @date 2019/5/10 10:54
  * @describe
  */

@@ -1,7 +1,7 @@
 package com.example.yyw.exception;
 
 /**
- * @author yanzhitao@xiaomalixing.com
+ * @author ywyw2424@foxmail.com
  * @date 2019/5/5 15:09
  * @describe
  */

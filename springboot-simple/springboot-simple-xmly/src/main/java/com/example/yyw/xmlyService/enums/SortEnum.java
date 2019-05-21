@@ -3,7 +3,7 @@ package com.example.yyw.xmlyService.enums;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author yanzhitao@xiaomalixing.com
+ * @author ywyw2424@foxmail.com
  * @date 2019/5/10 10:54
  * @describe
  */

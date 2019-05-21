@@ -1,7 +1,7 @@
 package com.example.yyw.constant;
 
 /**
- * @author yanzhitao@xiaomalixing.com
+ * @author ywyw2424@foxmail.com
  * @date 2019/4/23 19:41
  * @describe
  */

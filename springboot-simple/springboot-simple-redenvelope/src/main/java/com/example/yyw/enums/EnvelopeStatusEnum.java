@@ -1,7 +1,7 @@
 package com.example.yyw.enums;
 
 /**
- * @author yanzhitao@xiaomalixing.com
+ * @author ywyw2424@foxmail.com
  * @date 2019/4/23 19:52
  * @describe
  */

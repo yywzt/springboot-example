@@ -1,7 +1,7 @@
 package com.example.yyw.xmly.exception;
 
 /**
- * @author yanzhitao@xiaomalixing.com
+ * @author ywyw2424@foxmail.com
  * @date 2019-05-07
  */
 public class BusinessException extends Exception {

@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.springframework.util.DigestUtils;
 
 /**
- * @author yanzhitao@xiaomalixing.com
+ * @author ywyw2424@foxmail.com
  * @date 2019/5/5 16:18
  * @describe
  */

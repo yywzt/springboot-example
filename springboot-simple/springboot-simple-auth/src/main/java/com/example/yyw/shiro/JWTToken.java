@@ -3,7 +3,7 @@ package com.example.yyw.shiro;
 import org.apache.shiro.authc.AuthenticationToken;
 
 /**
- * @author yanzhitao@xiaomalixing.com
+ * @author ywyw2424@foxmail.com
  * @date 2019/5/5 15:16
  * @describe
  */

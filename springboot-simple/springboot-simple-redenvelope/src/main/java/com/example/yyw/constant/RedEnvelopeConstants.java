@@ -1,7 +1,7 @@
 package com.example.yyw.constant;
 
 /**
- * @author yanzhitao@xiaomalixing.com
+ * @author ywyw2424@foxmail.com
  * @date 2019/4/25 16:00
  * @describe 红包常量类
  */

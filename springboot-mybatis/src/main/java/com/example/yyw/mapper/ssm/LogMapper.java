@@ -7,7 +7,7 @@ import tk.mybatis.mapper.common.BaseMapper;
 import tk.mybatis.mapper.common.MySqlMapper;
 
 /**
- * @author yanzhitao@xiaomalixing.com
+ * @author ywyw2424@foxmail.com
  * @date 2019/5/13 19:36
  * @describe
  */
