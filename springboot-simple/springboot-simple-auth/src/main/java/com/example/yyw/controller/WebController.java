@@ -1,11 +1,11 @@
 package com.example.yyw.controller;
 
+import com.example.yyw.constant.ResponseData;
 import com.example.yyw.exception.DefaultException;
 import com.example.yyw.model.ssm.UserInf;
 import com.example.yyw.service.UserInfService;
 import com.example.yyw.util.EncodeUtil;
 import com.example.yyw.util.JWTUtil;
-import com.example.yyw.config.ResponseData;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
