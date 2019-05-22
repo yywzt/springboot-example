@@ -1,6 +1,7 @@
 package com.example.yyw.common;
 
 import com.example.yyw.constant.ResponseData;
+import com.example.yyw.exception.DefaultException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -114,6 +115,17 @@ public class ExceptionAspect {
         }
         log.error("paremeter validation failure... : {}", msg);
         ResponseData info = ResponseData.failure(Arrays.toString(msg.toArray()));
+        return info;
+    }
+
+    /**
+     * 500 - Internal Server Error
+     */
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(DefaultException.class)
+    public ResponseData handleDefaultException(DefaultException e, HttpServletRequest request) {
+        log.error("DefaultException error : {}", e);
+        ResponseData info = ResponseData.failure("DefaultException error : " + e.getMessage());
         return info;
     }
 
