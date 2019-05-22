@@ -116,7 +116,13 @@ public class XiMaLaYaService {
         int page = pageable.getPageNumber() + 1;
         int count = pageable.getPageSize();
         CategoryBrowse categoryBrowse = getAlbumList(categoryId, albumTagName, CalcDimensionEnum.findByCode(calcDimension), page, count);
-        Page<Album> albumPage = new PageImpl<>(categoryBrowse.getAlbums(), pageable, categoryBrowse.getTotalCount());
+        Long totalCount = 0L;
+        List<Album> albumList = null;
+        if (null != categoryBrowse) {
+            totalCount = categoryBrowse.getTotalCount() == null ? 0L:categoryBrowse.getTotalCount();
+            albumList = categoryBrowse.getAlbums() == null ? Lists.newArrayList():categoryBrowse.getAlbums();
+        }
+        Page<Album> albumPage = new PageImpl<>(albumList, pageable, totalCount);
         return ResultUtil.checkPageResult(albumPage, albumPage.getContent());
     }
 
@@ -175,8 +181,8 @@ public class XiMaLaYaService {
         Long totalCount = 0L;
         List<Track> trackList = null;
         if (null != albumBrowse) {
-            totalCount = albumBrowse.getTotalCount();
-            trackList = albumBrowse.getTracks();
+            totalCount = albumBrowse.getTotalCount() == null ? 0L:albumBrowse.getTotalCount();
+            trackList = albumBrowse.getTracks() == null ? Lists.newArrayList():albumBrowse.getTracks();
         }
         Page<Track> trackPage = new PageImpl<>(trackList, pageable, totalCount);
         return ResultUtil.checkPageResult(trackPage, trackPage.getContent());

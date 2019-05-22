@@ -30,6 +30,8 @@ public class Album{
     private Long playCount;
     @JsonProperty("favorite_count")
     private Long favoriteCount;
+    @JsonProperty("subscribe_count")
+    private Long subscribeCount;
     @JsonProperty("share_count")
     private Long shareCount;
     @JsonProperty("include_track_count")

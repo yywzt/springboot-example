@@ -42,6 +42,8 @@ public class XmlyAlbumMongo{
     private Long playCount;
     @JSONField(name = "favoriteCount")
     private Long favoriteCount;
+    @JSONField(name = "subscribeCount")
+    private Long subscribeCount;
     @JSONField(name = "shareCount")
     private Long shareCount;
     @JSONField(name = "includeTrackCount")
