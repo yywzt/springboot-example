@@ -91,5 +91,16 @@ public class DateUtil {
         Date firstDayOfMonth = getFirstDayOfMonth(date);
         System.out.println(firstDayOfMonth);
         System.out.println("getLastDayOfMonth : " + getLastDayOfMonth(date));
+
+        Date date1 = addMinute(date, 10);
+        System.out.println(date1);
     }
+
+    public static Date addMinute(Date date, int i) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.MINUTE,i);
+        return calendar.getTime();
+    }
+
 }

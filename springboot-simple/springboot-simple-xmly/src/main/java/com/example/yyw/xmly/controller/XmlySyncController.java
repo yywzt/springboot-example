@@ -1,5 +1,6 @@
 package com.example.yyw.xmly.controller;
 
+import com.example.yyw.util.ResultUtil;
 import com.example.yyw.xmly.exception.BusinessException;
 import com.example.yyw.xmly.service.IXmlyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,36 @@ public class XmlySyncController {
     @RequestMapping("/saveTrack")
     public Object saveTrack() throws BusinessException {
         return iXmlyService.saveTrack();
+    }
+
+    @RequestMapping("/saveAllXmlyCategory")
+    public Object saveAllXmlyCategory() throws BusinessException {
+        iXmlyService.saveAllXmlyCategory();
+        return ResultUtil.successResult();
+    }
+
+    @RequestMapping("/saveAllXmlyAlbum")
+    public Object saveAllXmlyAlbum() throws BusinessException {
+        iXmlyService.saveAllXmlyAlbum();
+        return ResultUtil.successResult();
+    }
+
+    @RequestMapping("/saveAllXmlyTrack")
+    public Object saveAllXmlyTrack() throws BusinessException {
+        iXmlyService.saveAllXmlyTrack();
+        return ResultUtil.successResult();
+    }
+
+    @RequestMapping("/saveIncrementAlbum")
+    public Object saveIncrementAlbum() throws BusinessException {
+        iXmlyService.saveIncrementAlbum();
+        return ResultUtil.successResult();
+    }
+
+    @RequestMapping("/saveIncrementTrack")
+    public Object saveIncrementTrack() throws BusinessException {
+        iXmlyService.saveIncrementTrack();
+        return ResultUtil.successResult();
     }
 
 }

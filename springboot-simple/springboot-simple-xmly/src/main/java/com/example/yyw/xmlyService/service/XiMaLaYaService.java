@@ -376,15 +376,24 @@ public class XiMaLaYaService {
      * @param categoryId 分类ID
      * @return
      */
-    public AlbumsAll getAlbumAll(Long categoryId, int page, int count) {
+    public Object getAlbumAll(Long categoryId, Pageable pageable) {
+        int page = pageable.getPageNumber() + 1;
+        int size = pageable.getPageSize();
         Map<String, String> params = Maps.newHashMap();
         params.put("category_id", categoryId.toString());
         params.put("page", page + "");
-        params.put("count", count + "");
+        params.put("size", size + "");
         String url = GET_ALBUMS_ALL + "?" + buildParamUrl(params);
         String response = HttpUtil.httpGet(url);
         AlbumsAll albumsAll = JsonBinder.buildNonNullBinder().fromJson(response, AlbumsAll.class);
-        return albumsAll;
+        Long totalCount = 0L;
+        List<Album> albumList = null;
+        if (null != albumsAll) {
+            totalCount = albumsAll.getTotalCount() == null ? 0L:albumsAll.getTotalCount();
+            albumList = albumsAll.getAlbums() == null ? Lists.newArrayList():albumsAll.getAlbums();
+        }
+        Page<Album> albumPage = new PageImpl<>(albumList, pageable , totalCount);
+        return ResultUtil.checkPageResult(albumPage, albumPage.getContent());
     }
 
     /**
@@ -470,11 +479,10 @@ public class XiMaLaYaService {
      * @param categoryId 分类ID
      * @param startDate  时间区间的开始时间，Unix时间戳毫秒数
      * @param endDate    时间区间的结束时间，Unix时间戳毫秒数
-     * @param page       返回第几页，从1开始，默认为1
-     * @param count      每页大小，范围为[1,200]，默认为20
+     * @param pageable       返回第几页，从1开始，默认为1,每页大小，范围为[1,200]，默认为20
      * @return
      */
-    public AlbumsAll getIncrementAlbums(Long categoryId, long startDate, long endDate, int page, int count) {
+    public Object getIncrementAlbums(Long categoryId, long startDate, long endDate, Pageable pageable) {
         List<AlbumsAll> albumsAllList = Lists.newArrayList();
         AlbumsAll albumsAll = new AlbumsAll();
         while (startDate < endDate ) {
@@ -482,7 +490,7 @@ public class XiMaLaYaService {
             if (endDate < endTime ) {
                 endTime = endDate;
             }
-            AlbumsAll xmlyIncrementAlbums = getXmlyIncrementAlbums(categoryId, startDate, endTime, page, count);
+            AlbumsAll xmlyIncrementAlbums = getXmlyIncrementAlbums(categoryId, startDate, endTime, pageable);
             albumsAllList.add(xmlyIncrementAlbums);
             startDate = endTime;
         }
@@ -494,16 +502,25 @@ public class XiMaLaYaService {
             albumsAll.setAlbums(albumsAllList.stream().map(AlbumsAll::getAlbums).flatMap(Collection::stream).collect(Collectors.toList()));
         }
         log.info("album=>track size : {}", (albumsAll == null || CollectionUtils.isEmpty(albumsAll.getAlbums())) ? 0:albumsAll.getAlbums().size());
-        return albumsAll;
+        Long totalCount = 0L;
+        List<Album> albumList = null;
+        if (null != albumsAll) {
+            totalCount = albumsAll.getTotalCount() == null ? 0L:albumsAll.getTotalCount();
+            albumList = albumsAll.getAlbums() == null ? Lists.newArrayList():albumsAll.getAlbums();
+        }
+        Page<Album> albumPage = new PageImpl<>(albumList, pageable , totalCount);
+        return ResultUtil.checkPageResult(albumPage, albumPage.getContent());
     }
 
-    public AlbumsAll getXmlyIncrementAlbums(Long categoryId, long startDate, long endDate, int page, int count) {
+    public AlbumsAll getXmlyIncrementAlbums(Long categoryId, long startDate, long endDate, Pageable pageable) {
+        int page = pageable.getPageNumber() + 1;
+        int size = pageable.getPageSize();
         Map<String, String> params = Maps.newHashMap();
         params.put("category_id", categoryId.toString());
         params.put("start_time", String.valueOf(startDate));
         params.put("end_time", String.valueOf(endDate));
         params.put("page", String.valueOf(page));
-        params.put("count", String.valueOf(count));
+        params.put("count", String.valueOf(size));
         String url = GET_INCREMENT_ALBUMS + "?" + buildParamUrl(params);
         String response = HttpUtil.httpGet(url);
         AlbumsAll albumsAll = JsonBinder.buildNonNullBinder().fromJson(response, AlbumsAll.class);
@@ -520,11 +537,10 @@ public class XiMaLaYaService {
      * @param albumId   专辑ID
      * @param startDate 时间区间的开始时间，Unix时间戳毫秒数
      * @param endDate   时间区间的结束时间，Unix时间戳毫秒数
-     * @param page      返回第几页，从1开始，默认为1
-     * @param count     每页大小，范围为[1,200]，默认为20
+     * @param pageable      返回第几页，从1开始，默认为1, 每页大小，范围为[1,200]，默认为20
      * @return
      */
-    public TrackAll getIncrementTracks(Long albumId, long startDate, long endDate, int page, int count) {
+    public Object getIncrementTracks(Long albumId, long startDate, long endDate, Pageable pageable) {
         List<TrackAll> trackAllList = Lists.newArrayList();
         TrackAll trackAll = new TrackAll();
         while (startDate < endDate ) {
@@ -532,7 +548,7 @@ public class XiMaLaYaService {
             if (endDate < endTime ) {
                 endTime = endDate;
             }
-            TrackAll xmlyIncrementTracks = getXmlyIncrementTracks(albumId, startDate, endTime, page, count);
+            TrackAll xmlyIncrementTracks = getXmlyIncrementTracks(albumId, startDate, endTime, pageable);
             trackAllList.add(xmlyIncrementTracks);
             startDate = endTime;
         }
@@ -544,17 +560,26 @@ public class XiMaLaYaService {
             trackAll.setTracks(trackAllList.stream().map(TrackAll::getTracks).flatMap(Collection::stream).collect(Collectors.toList()));
         }
         log.info("album=>track size : {}", (trackAll == null || CollectionUtils.isEmpty(trackAll.getTracks())) ? 0:trackAll.getTracks().size());
-        return trackAll;
+        Long totalCount = 0L;
+        List<Track> trackList = null;
+        if (null != trackAll) {
+            totalCount = trackAll.getTotalCount() == null ? 0L:trackAll.getTotalCount();
+            trackList = trackAll.getTracks() == null ? Lists.newArrayList():trackAll.getTracks();
+        }
+        Page<Track> trackPage = new PageImpl<>(trackList, pageable , totalCount);
+        return ResultUtil.checkPageResult(trackPage, trackPage.getContent());
     }
 
-    private TrackAll getXmlyIncrementTracks(Long albumId, long startDate, long endDate, int page, int count) {
+    private TrackAll getXmlyIncrementTracks(Long albumId, long startDate, long endDate, Pageable pageable) {
+        int page = pageable.getPageNumber() + 1;
+        int size = pageable.getPageSize();
         Map<String, String> params = Maps.newHashMap();
         params.put("album_id", albumId.toString());
         params.put("start_time", String.valueOf(startDate));
         params.put("end_time", String.valueOf(endDate));
         params.put("sort", SortEnum.ASC.getCode());
         params.put("page", String.valueOf(page));
-        params.put("count", String.valueOf(count));
+        params.put("count", String.valueOf(size));
         String url = GET_INCREMENT_TRACKS + "?" + buildParamUrl(params);
         String response = HttpUtil.httpGet(url);
         TrackAll trackAll = JsonBinder.buildNonNullBinder().fromJson(response, TrackAll.class);

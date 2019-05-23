@@ -83,8 +83,8 @@ public class XiMaLaYaController {
      * @return
      */
     @RequestMapping("/album/getAlbumAll")
-    public Object getAlbumAll(@RequestParam Long categoryId, int page, int count){
-        return ResultUtil.successResult(xiMaLaYaService.getAlbumAll(categoryId, page, count));
+    public Object getAlbumAll(@RequestParam Long categoryId, Pageable pageable){
+        return xiMaLaYaService.getAlbumAll(categoryId, pageable);
     }
     /**
      * 获取专辑增量数据
@@ -98,12 +98,12 @@ public class XiMaLaYaController {
      * @return
      */
     @RequestMapping("/album/getIncrementAlbums")
-    public Object getIncrementAlbums(@RequestParam Long categoryId, long startDate ,long endDate, int page, int count){
-        return ResultUtil.successResult(xiMaLaYaService.getIncrementAlbums(categoryId, startDate, endDate, page, count));
+    public Object getIncrementAlbums(@RequestParam Long categoryId, long startDate ,long endDate, Pageable pageable){
+        return xiMaLaYaService.getIncrementAlbums(categoryId, startDate, endDate, pageable);
     }
     @RequestMapping("/album/getIncrementTracks")
-    public Object getIncrementTracks(@RequestParam Long albumId, long startDate ,long endDate, int page, int count){
-        return ResultUtil.successResult(xiMaLaYaService.getIncrementTracks(albumId, startDate, endDate, page, count));
+    public Object getIncrementTracks(@RequestParam Long albumId, long startDate ,long endDate, Pageable pageable){
+        return xiMaLaYaService.getIncrementTracks(albumId, startDate, endDate, pageable);
     }
     /**
      * 获取专辑增量数据

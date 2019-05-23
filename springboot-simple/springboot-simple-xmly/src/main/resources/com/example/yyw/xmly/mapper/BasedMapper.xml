@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.yyw.xmly.mapper.BasedMapper">
+
+    <update id="alterTableName">
+        alter table ${sourceTableName} rename ${newTableName}
+    </update>
+
+    <update id="dropTable">
+        drop table IF EXISTS ${tableName}
+    </update>
+
+    <update id="createTable">
+        CREATE TABLE IF NOT EXISTS ${newTableName} LIKE ${sourceTableName}
+    </update>
+
+    <!-- 添加分类数据至中间表 -->
+    <insert id="batchSaveCategorys">
+        INSERT INTO ${tableName}(
+        create_date,
+        modify_date,
+        origin_id,
+        kind,
+        name,
+        cover_url_small,
+        cover_url_middle,
+        cover_url_large,
+        status,
+        order_no
+        )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.createDate},
+            #{item.modifyDate},
+            #{item.originId},
+            #{item.kind},
+            #{item.name},
+            #{item.coverUrlSmall},
+            #{item.coverUrlMiddle},
+            #{item.coverUrlLarge},
+            #{item.status},
+            #{item.orderNo}
+            )
+        </foreach>
+    </insert>
+
+    <!-- 添加数据 -->
+    <insert id="batchSaveAlbums">
+        INSERT INTO ${tableName}(
+        create_date,
+        modify_date,
+        status,
+        order_no,
+        extend_category_origin_id,
+        category_origin_id,
+        origin_id,
+        kind,
+        title,
+        tags,
+        introduce,
+        cover_url_small,
+        cover_url_middle,
+        cover_url_large,
+        play_count,
+        favorite_count,
+        share_count,
+        include_track_count,
+        is_finished,
+        can_download,
+        update_at,
+        created_at
+        )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.createDate},
+            #{item.modifyDate},
+            #{item.status},
+            #{item.orderNo},
+            #{item.extendCategoryOriginId},
+            #{item.categoryOriginId},
+            #{item.originId},
+            #{item.kind},
+            #{item.title},
+            #{item.tags},
+            #{item.introduce},
+            #{item.coverUrlSmall},
+            #{item.coverUrlMiddle},
+            #{item.coverUrlLarge},
+            #{item.playCount},
+            #{item.favoriteCount},
+            #{item.shareCount},
+            #{item.includeTrackCount},
+            #{item.isFinished},
+            #{item.canDownload},
+            #{item.updateAt},
+            #{item.createdAt}
+            )
+        </foreach>
+    </insert>
+
+    <!-- 添加节目片段 -->
+    <insert id="batchSaveTracks">
+        INSERT INTO ${tableName}(
+        create_date,
+        modify_date,
+        status,
+        order_no,
+        extend_category_origin_id,
+        category_origin_id,
+        album_origin_id,
+        origin_id,
+        kind,
+        title,
+        tags,
+        introduce,
+        cover_url_small,
+        cover_url_middle,
+        cover_url_large,
+        duration,
+        play_count,
+        favorite_count,
+        comment_count,
+        download_count,
+        play_size24_m4a,
+        play_size64_m4a,
+        play_size_amr,
+        source,
+        update_at,
+        created_at
+        )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.createDate},
+            #{item.modifyDate},
+            #{item.status},
+            #{item.orderNo},
+            #{item.extendCategoryOriginId},
+            #{item.categoryOriginId},
+            #{item.albumOriginId},
+            #{item.originId},
+            #{item.kind},
+            #{item.title},
+            #{item.tags},
+            #{item.introduce},
+            #{item.coverUrlSmall},
+            #{item.coverUrlMiddle},
+            #{item.coverUrlLarge},
+            #{item.duration},
+            #{item.playCount},
+            #{item.favoriteCount},
+            #{item.commentCount},
+            #{item.downloadCount},
+            #{item.playSize24M4a},
+            #{item.playSize64M4a},
+            #{item.playSizeAmr},
+            #{item.source},
+            #{item.updateAt},
+            #{item.createdAt}
+            )
+        </foreach>
+    </insert>
+
+</mapper>
