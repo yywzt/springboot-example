@@ -23,6 +23,7 @@
         <module>springboot-simple</module>
         <module>springboot-admin</module>
         <module>springboot-excel</module>
+        <module>springboot-test</module>
     </modules>
 
     <properties>
