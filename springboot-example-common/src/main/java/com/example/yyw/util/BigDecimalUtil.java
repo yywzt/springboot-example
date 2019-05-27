@@ -49,7 +49,7 @@ public class BigDecimalUtil {
         return bigDecimal.divide(bigDecimal1);
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         Double d1 = new Double(99d);
         Double d2 = new Double(3.3d);
 
@@ -57,6 +57,6 @@ public class BigDecimalUtil {
         System.out.println("subtract: " + subtract(d1, d2));
         System.out.println("divide: " + divide(d1, d2));
         System.out.println("multiply: " + multiply(d1, d2));
-    }
+    }*/
 
 }

@@ -1,11 +1,8 @@
 package com.example.yyw.limiting.aspect;
 
-import com.example.yyw.exception.DefaultException;
 import com.example.yyw.limiting.annotation.Limit;
-import com.example.yyw.redispubsub.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -14,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.support.atomic.RedisAtomicInteger;
 import org.springframework.stereotype.Component;
+import com.example.yyw.exception.DefaultException;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
