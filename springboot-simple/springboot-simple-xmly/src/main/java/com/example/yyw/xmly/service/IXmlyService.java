@@ -36,11 +36,17 @@ import java.util.stream.Collectors;
 public class IXmlyService {
 
     private static final String OTHER_IF_URL = "http://127.0.0.1:19091";
-    /** 分类 */
+    /**
+     * 分类
+     */
     private static final String XMLY_CATEGORY_LIST = OTHER_IF_URL + "/ximalaya/category/list";
-    /** 专辑 */
+    /**
+     * 专辑
+     */
     private static final String XMLY_ALBUM_LIST = OTHER_IF_URL + "/ximalaya/album/list?";
-    /** 专辑下声音碎片 */
+    /**
+     * 专辑下声音碎片
+     */
     private static final String XMLY_TRACK_BYALBUM = OTHER_IF_URL + "/ximalaya/track/byAlbum?";
 
     @Autowired
@@ -51,7 +57,7 @@ public class IXmlyService {
     private IXmlyTrackMapper iXmlyTrackMapper;
     @Autowired
     private BasedMapper basedMapper;
-    
+
     /**
      * 保存分类
      *
@@ -59,15 +65,15 @@ public class IXmlyService {
      */
     public Object saveCategory() throws BusinessException {
         String responseStr = HttpUtil.httpGet(XMLY_CATEGORY_LIST);
-        if(StringUtils.isBlank(responseStr)){
+        if (StringUtils.isBlank(responseStr)) {
             throw new BusinessException("第三方请求结果为空");
         }
         JSONObject jsonObject = JSON.parseObject(responseStr);
-        if(!jsonObject.containsKey("data")){
+        if (!jsonObject.containsKey("data")) {
             throw new BusinessException("第三方请求结果格式不正确，缺少data字段");
         }
         List<XmlyCategory> xmlyCategoryList = jsonObject.getJSONArray("data").toJavaList(XmlyCategory.class);
-        if(CollectionUtils.isEmpty(xmlyCategoryList)){
+        if (CollectionUtils.isEmpty(xmlyCategoryList)) {
             throw new BusinessException("分类为空");
         }
         Date currentDate = new Date();
@@ -86,13 +92,13 @@ public class IXmlyService {
      * @throws BusinessException
      */
 
-    public Object saveAlbum() throws BusinessException{
+    public Object saveAlbum() throws BusinessException {
         List<XmlyCategory> xmlyCategoryList = findXmlyCategory(StatusEnum.DEFAULT);
-        for(XmlyCategory xmlyCategory : xmlyCategoryList){
+        for (XmlyCategory xmlyCategory : xmlyCategoryList) {
             saveAlbumByCategory(xmlyCategory);
-            try{
+            try {
                 Thread.sleep(100);
-            }catch(InterruptedException e){
+            } catch (InterruptedException e) {
                 e.printStackTrace();
                 log.error("saveAlbum error : {}", e.getMessage());
             }
@@ -100,24 +106,24 @@ public class IXmlyService {
         return ResultUtil.successResult();
     }
 
-    private void saveAlbumByCategory(XmlyCategory xmlyCategory) throws BusinessException{
-        if(null == xmlyCategory){
+    private void saveAlbumByCategory(XmlyCategory xmlyCategory) throws BusinessException {
+        if (null == xmlyCategory) {
             return;
         }
         Long categoryId = xmlyCategory.getOriginId();
         int currentPage = 0;
         int pageSize = 200;
-        while(true){
+        while (true) {
             StringBuilder url = new StringBuilder(XMLY_ALBUM_LIST);
             url.append("categoryId=" + categoryId);
             url.append("&page=" + currentPage);
             url.append("&size=" + pageSize);
             String responseStr = HttpUtil.httpGet(url.toString());
-            if(StringUtils.isBlank(responseStr)){
+            if (StringUtils.isBlank(responseStr)) {
                 throw new BusinessException("第三方请求结果为空");
             }
             JSONObject jsonObject = JSON.parseObject(responseStr);
-            if(!jsonObject.containsKey("list")){
+            if (!jsonObject.containsKey("list")) {
                 throw new BusinessException("第三方请求结果格式不正确，缺少list字段");
             }
             List<XmlyAlbum> xmlyAlbumList = jsonObject.getJSONArray("data").toJavaList(XmlyAlbum.class);
@@ -132,7 +138,7 @@ public class IXmlyService {
             iXmlyAlbumMapper.batchSave(xmlyAlbumList);
             int totalPages = jsonObject.getIntValue("totalPages");
             currentPage++;
-            if(totalPages <= currentPage){
+            if (totalPages <= currentPage) {
                 break;
             }
         }
@@ -145,22 +151,22 @@ public class IXmlyService {
      *
      * @throws BusinessException
      */
-    public Object saveTrack() throws BusinessException{
+    public Object saveTrack() throws BusinessException {
         List<XmlyCategory> xmlyCategoryList = findXmlyCategory(null);
-        for(XmlyCategory xmlyCategory : xmlyCategoryList){
-            if(null == xmlyCategory){
+        for (XmlyCategory xmlyCategory : xmlyCategoryList) {
+            if (null == xmlyCategory) {
                 continue;
             }
             List<XmlyAlbum> xmlyAlbumList = findXmlyAlbumByCategory(xmlyCategory);
-            if(CollectionUtils.isEmpty(xmlyAlbumList)){
+            if (CollectionUtils.isEmpty(xmlyAlbumList)) {
                 continue;
             }
-            for(XmlyAlbum xmlyAlbum : xmlyAlbumList){
-                if(xmlyAlbum.getStatus().intValue() == StatusEnum.DEFAULT.getCode()){
+            for (XmlyAlbum xmlyAlbum : xmlyAlbumList) {
+                if (xmlyAlbum.getStatus().intValue() == StatusEnum.DEFAULT.getCode()) {
                     saveTrackByAlbum(xmlyAlbum);
-                    try{
+                    try {
                         Thread.sleep(100);
-                    }catch(InterruptedException e){
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
@@ -174,30 +180,30 @@ public class IXmlyService {
      *
      * @param xmlyAlbum
      */
-    private void saveTrackByAlbum(XmlyAlbum xmlyAlbum) throws BusinessException{
-        if(null == xmlyAlbum){
+    private void saveTrackByAlbum(XmlyAlbum xmlyAlbum) throws BusinessException {
+        if (null == xmlyAlbum) {
             return;
         }
-        try{
+        try {
             Long albumId = xmlyAlbum.getOriginId();
             int currentPage = 0;
             int pageSize = 200;
-            while(true){
+            while (true) {
                 StringBuilder url = new StringBuilder(XMLY_TRACK_BYALBUM);
                 url.append("albumId=" + albumId);
                 url.append("&page=" + currentPage);
                 url.append("&size=" + pageSize);
                 System.out.println("====url===" + url.toString());
                 String responseStr = HttpUtil.httpGet(url.toString());
-                if(StringUtils.isBlank(responseStr)){
+                if (StringUtils.isBlank(responseStr)) {
                     throw new BusinessException("第三方请求结果为空");
                 }
                 JSONObject jsonObject = JSON.parseObject(responseStr);
-                if(!jsonObject.containsKey("list")){
+                if (!jsonObject.containsKey("list")) {
                     throw new BusinessException("第三方请求结果格式不正确，缺少list字段");
                 }
                 List<XmlyTrack> xmlyTrackList = jsonObject.getJSONArray("data").toJavaList(XmlyTrack.class);
-                if(CollectionUtils.isEmpty(xmlyTrackList)){
+                if (CollectionUtils.isEmpty(xmlyTrackList)) {
                     break;
                 }
                 Date currentDate = new Date();
@@ -211,13 +217,13 @@ public class IXmlyService {
                 iXmlyTrackMapper.batchSave(xmlyTrackList);
                 int totalPages = jsonObject.getIntValue("totalPages");
                 currentPage++;
-                if(totalPages <= currentPage){
+                if (totalPages <= currentPage) {
                     break;
                 }
             }
             xmlyAlbum.setStatus(StatusEnum.SUCCESS.getCode());
             iXmlyAlbumMapper.updateStatus(xmlyAlbum);
-        }catch(Exception e){
+        } catch (Exception e) {
             log.error("Exception when save track by album", e);
         }
     }
@@ -228,9 +234,9 @@ public class IXmlyService {
      * @return
      * @throws BusinessException
      */
-    private List<XmlyCategory> findXmlyCategory(StatusEnum statusEnum) throws BusinessException{
+    private List<XmlyCategory> findXmlyCategory(StatusEnum statusEnum) throws BusinessException {
         Map<String, Object> params = new HashMap<>();
-        if(null != statusEnum){
+        if (null != statusEnum) {
             params.put("status", statusEnum.getCode());
         }
         List<XmlyCategory> xmlyCategoryList = iXmlyCategoryMapper.findByCondition(params);
@@ -243,8 +249,8 @@ public class IXmlyService {
      * @param xmlyCategory 分类对象
      * @return 专辑集合
      */
-    private List<XmlyAlbum> findXmlyAlbumByCategory(XmlyCategory xmlyCategory){
-        if(null == xmlyCategory){
+    private List<XmlyAlbum> findXmlyAlbumByCategory(XmlyCategory xmlyCategory) {
+        if (null == xmlyCategory) {
             return new ArrayList<>();
         }
         Map<String, Object> params = new HashMap<>();
@@ -301,14 +307,17 @@ public class IXmlyService {
         String url = OTHER_IF_URL + "/ximalaya/category/list";
         String responseStr = HttpUtil.httpGet(url);
         if (StringUtils.isBlank(responseStr)) {
-            throw new BusinessException("第三方请求结果为空");
+            log.error("分类-第三方请求结果为空");
+            throw new BusinessException("分类-第三方请求结果为空");
         }
         JSONObject jsonObject = JSON.parseObject(responseStr);
         if (!jsonObject.containsKey("data")) {
-            throw new BusinessException("第三方请求结果格式不正确，缺少data字段");
+            log.error("分类-第三方请求结果格式不正确，缺少list字段");
+            throw new BusinessException("分类-第三方请求结果格式不正确，缺少data字段");
         }
         List<XmlyCategory> xmlyCategoryList = jsonObject.getJSONArray("data").toJavaList(XmlyCategory.class);
         if (CollectionUtils.isEmpty(xmlyCategoryList)) {
+            log.error("分类为空");
             throw new BusinessException("分类为空");
         }
         Date currentDate = new Date();
@@ -317,7 +326,7 @@ public class IXmlyService {
             xmlyCategory.setModifyDate(currentDate);
             xmlyCategory.setStatus(StatusEnum.DEFAULT.getCode());
         });
-        if(CollectionUtils.isNotEmpty(xmlyCategoryList)) {
+        if (CollectionUtils.isNotEmpty(xmlyCategoryList)) {
             basedMapper.batchSaveCategorys(xmlyCategoryList, tableName);
         }
     }
@@ -376,11 +385,13 @@ public class IXmlyService {
             url.append("&size=" + pageSize);
             String responseStr = HttpUtil.httpGet(url.toString());
             if (StringUtils.isBlank(responseStr)) {
-                throw new BusinessException("第三方请求结果为空");
+                log.error("专辑-第三方请求结果为空");
+                throw new BusinessException("专辑-第三方请求结果为空");
             }
             JSONObject jsonObject = JSON.parseObject(responseStr);
             if (!jsonObject.containsKey("list")) {
-                throw new BusinessException("第三方请求结果格式不正确，缺少list字段");
+                log.error("专辑-第三方请求结果格式不正确，缺少list字段");
+                throw new BusinessException("专辑-第三方请求结果格式不正确，缺少list字段");
             }
             List<XmlyAlbum> xmlyAlbumList = jsonObject.getJSONArray("list").toJavaList(XmlyAlbum.class);
             xmlyAlbumList.forEach(System.out::println);
@@ -391,7 +402,7 @@ public class IXmlyService {
                 xmlyAlbum.setModifyDate(currentDate);
                 xmlyAlbum.setStatus(StatusEnum.DEFAULT.getCode());
             });
-            if(CollectionUtils.isNotEmpty(xmlyAlbumList)){
+            if (CollectionUtils.isNotEmpty(xmlyAlbumList)) {
                 basedMapper.batchSaveAlbums(xmlyAlbumList, tableName);
             }
             int totalPages = jsonObject.getIntValue("totalPages");
@@ -401,6 +412,7 @@ public class IXmlyService {
             }
         }
         xmlyCategory.setStatus(StatusEnum.SUCCESS.getCode());
+        xmlyCategory.setModifyDate(DateUtil.getNowDate());
         iXmlyCategoryMapper.updateStatus(xmlyCategory);
     }
 
@@ -469,11 +481,13 @@ public class IXmlyService {
                 System.out.println("====url===" + url.toString());
                 String responseStr = HttpUtil.httpGet(url.toString());
                 if (StringUtils.isBlank(responseStr)) {
-                    throw new BusinessException("第三方请求结果为空");
+                    log.error("声音-第三方请求结果为空");
+                    throw new BusinessException("声音-第三方请求结果为空");
                 }
                 JSONObject jsonObject = JSON.parseObject(responseStr);
                 if (!jsonObject.containsKey("list")) {
-                    throw new BusinessException("第三方请求结果格式不正确，缺少list字段");
+                    log.error("声音-第三方请求结果格式不正确，缺少list字段");
+                    throw new BusinessException("声音-第三方请求结果格式不正确，缺少list字段");
                 }
                 List<XmlyTrack> xmlyTrackList = jsonObject.getJSONArray("list").toJavaList(XmlyTrack.class);
                 if (CollectionUtils.isEmpty(xmlyTrackList)) {
@@ -487,7 +501,7 @@ public class IXmlyService {
                     xmlyTrack.setModifyDate(currentDate);
                     xmlyTrack.setStatus(StatusEnum.DEFAULT.getCode());
                 });
-                if(CollectionUtils.isNotEmpty(xmlyTrackList)) {
+                if (CollectionUtils.isNotEmpty(xmlyTrackList)) {
                     basedMapper.batchSaveTracks(xmlyTrackList, tableName);
                 }
                 int totalPages = jsonObject.getIntValue("totalPages");
@@ -497,9 +511,11 @@ public class IXmlyService {
                 }
             }
             xmlyAlbum.setStatus(StatusEnum.SUCCESS.getCode());
+            xmlyAlbum.setModifyDate(DateUtil.getNowDate());
             iXmlyAlbumMapper.updateStatus(xmlyAlbum);
         } catch (Exception e) {
-            log.error("Exception when save track by album", e);
+            log.error("Exception when save track by album {}", e);
+            log.error("Exception when save track by album {},{}", xmlyAlbum.getOriginId(), xmlyAlbum);
         }
     }
 
@@ -580,7 +596,7 @@ public class IXmlyService {
                     xmlyTrack.setModifyDate(currentDate);
                     xmlyTrack.setStatus(StatusEnum.DEFAULT.getCode());
                 });
-                if(CollectionUtils.isNotEmpty(xmlyTrackList)) {
+                if (CollectionUtils.isNotEmpty(xmlyTrackList)) {
                     iXmlyTrackMapper.batchSave(xmlyTrackList);
                 }
                 int totalPages = jsonObject.getIntValue("totalPages");
@@ -614,7 +630,8 @@ public class IXmlyService {
     /**
      * 增量更新热门专辑
      * 更新策略：拉取热门专辑，库中已存在的热门专辑的保留，不存在的热门专辑入库（status=0）
-     *     更新完热门专辑后，根据status=0的专辑id去获取对应全量节目片段
+     * 更新完热门专辑后，根据status=0的专辑id去获取对应全量节目片段
+     *
      * @throws BusinessException
      */
     public void saveIncrementAlbum() throws BusinessException {
@@ -665,7 +682,7 @@ public class IXmlyService {
                 xmlyAlbum.setModifyDate(currentDate);
                 xmlyAlbum.setStatus(StatusEnum.DEFAULT.getCode());
             });
-            if(CollectionUtils.isNotEmpty(newXmlyAlbumList)) {
+            if (CollectionUtils.isNotEmpty(newXmlyAlbumList)) {
                 iXmlyAlbumMapper.batchSave(newXmlyAlbumList);
             }
             int totalPages = jsonObject.getIntValue("totalPages");
