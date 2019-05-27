@@ -68,7 +68,7 @@ public class XiMaLaYaController {
     /**
      * 根据一批专辑ID批量获取专辑更新信息（专辑下最新上传或更新的声音信息）
      * @param ids 专辑ID
-     * @return
+     * @return Object
      */
     @RequestMapping("/album/getUpdateBatch")
     public Object getUpdateBatch(@RequestParam Long[] ids){
@@ -78,9 +78,8 @@ public class XiMaLaYaController {
     /**
      * 获取全量专辑数据（注意已剔除版权权益不明确的专辑数据）
      * @param categoryId 分类ID
-     * @param page  返回第几页，从1开始，默认为1
-     * @param count 每页大小，范围为[1,200]，默认为20
-     * @return
+     * @param pageable  返回第几页，从1开始，默认为1,每页大小，范围为[1,200]，默认为20
+     * @return Object
      */
     @RequestMapping("/album/getAlbumAll")
     public Object getAlbumAll(@RequestParam Long categoryId, Pageable pageable){
@@ -93,9 +92,8 @@ public class XiMaLaYaController {
      * @param categoryId 分类ID
      * @param startDate 时间区间的开始时间 yyyy-MM-dd HH:mm:ss
      * @param endDate 时间区间的结束时间 yyyy-MM-dd HH:mm:ss
-     * @param page  返回第几页，从1开始，默认为1
-     * @param count 每页大小，范围为[1,200]，默认为20
-     * @return
+     * @param pageable  返回第几页，从1开始，默认为1,每页大小，范围为[1,200]，默认为20
+     * @return Object
      */
     @RequestMapping("/album/getIncrementAlbums")
     public Object getIncrementAlbums(@RequestParam Long categoryId, long startDate ,long endDate, Pageable pageable){
@@ -114,7 +112,7 @@ public class XiMaLaYaController {
      * @param end_time 时间区间的结束时间 yyyy-MM-dd HH:mm:ss
      * @param page  返回第几页，从1开始，默认为1
      * @param count 每页大小，范围为[1,200]，默认为20
-     * @return
+     * @return Object
      */
     /*@RequestMapping("/album/getIncrementAlbums")
     public Object getIncrementAlbums(@RequestParam Long categoryId, String start_time ,String end_time, int page, int count){
