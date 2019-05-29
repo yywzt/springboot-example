@@ -107,6 +107,6 @@
     </insert>
 
     <update id="updateStatus" parameterType="com.example.yyw.xmly.modal.xmly.XmlyAlbum">
-          UPDATE xmly_album set status = #{xmlyAlbum.status} where origin_id = #{xmlyAlbum.originId}
+          UPDATE xmly_album set status = #{xmlyAlbum.status},modify_date = #{xmlyAlbum.modifyDate} where origin_id = #{xmlyAlbum.originId}
     </update>
 </mapper>

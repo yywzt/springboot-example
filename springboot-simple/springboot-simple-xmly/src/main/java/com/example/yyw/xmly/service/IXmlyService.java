@@ -19,6 +19,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -422,6 +423,7 @@ public class IXmlyService {
      *
      * @throws BusinessException
      */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void saveAllXmlyTrack() throws BusinessException {
         basedMapper.dropTable(XMLY_TRACK_BACK_TMP);
         basedMapper.createTable(XMLY_TRACK_BACK_TMP, XMLY_TRACK_BACK);
@@ -444,7 +446,8 @@ public class IXmlyService {
      * @param tableName 中间表名
      * @throws BusinessException
      */
-    private void saveAllTrack(String tableName) throws BusinessException {
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public void saveAllTrack(String tableName) throws BusinessException {
         List<XmlyCategory> xmlyCategoryList = findXmlyCategory(null);
         for (XmlyCategory xmlyCategory : xmlyCategoryList) {
             if (null == xmlyCategory) {
@@ -465,7 +468,7 @@ public class IXmlyService {
         }
     }
 
-    private void saveAllTrackByAlbum(XmlyAlbum xmlyAlbum, String tableName) throws BusinessException {
+    public void saveAllTrackByAlbum(XmlyAlbum xmlyAlbum, String tableName) throws BusinessException {
         if (null == xmlyAlbum) {
             return;
         }
@@ -514,8 +517,8 @@ public class IXmlyService {
             xmlyAlbum.setModifyDate(DateUtil.getNowDate());
             iXmlyAlbumMapper.updateStatus(xmlyAlbum);
         } catch (Exception e) {
-            log.error("Exception when save track by album {}", e);
-            log.error("Exception when save track by album {},{}", xmlyAlbum.getOriginId(), xmlyAlbum);
+            log.error("Exception when save track by album", e);
+            log.error("Exception when save track by album {}", xmlyAlbum.getOriginId());
         }
     }
 
