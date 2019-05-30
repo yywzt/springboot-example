@@ -1,7 +1,7 @@
 package com.example.yyw.xmlyService.modal;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
 
 /**
@@ -12,15 +12,15 @@ import lombok.Data;
 public class Category{
     private Long id;
     private String kind;
-    @JsonProperty("category_name")
+    @JsonSetter("category_name")
     private String categoryName;
-    @JsonProperty("cover_url_small")
+    @JsonSetter("cover_url_small")
     private String coverUrlSmall;
-    @JsonProperty("cover_url_middle")
+    @JsonSetter("cover_url_middle")
     private String coverUrlMiddle;
-    @JsonProperty("cover_url_large")
+    @JsonSetter("cover_url_large")
     private String coverUrlLarge;
-    @JsonProperty("order_num")
+    @JsonSetter("order_num")
     private Long orderNum;
 
 }

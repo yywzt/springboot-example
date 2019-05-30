@@ -1,6 +1,6 @@
 package com.example.yyw.xmlyService.modal;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
 
 /**
@@ -10,15 +10,15 @@ import lombok.Data;
  **/
 @Data
 public class TrackPlayRecord{
-    @JsonProperty("track_id")
+    @JsonSetter("track_id")
     private Integer trackId;
-    @JsonProperty("duration")
+    @JsonSetter("duration")
     private Integer duration;
-    @JsonProperty("played_secs")
+    @JsonSetter("played_secs")
     private Integer playedSecs;
-    @JsonProperty("started_at")
+    @JsonSetter("started_at")
     private Integer startedAt;
-    @JsonProperty("play_type")
+    @JsonSetter("play_type")
     private Integer playType;
 
 }

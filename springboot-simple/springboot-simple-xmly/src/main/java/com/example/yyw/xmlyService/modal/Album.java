@@ -1,6 +1,6 @@
 package com.example.yyw.xmlyService.modal;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
 
 /**
@@ -12,37 +12,37 @@ import lombok.Data;
 public class Album{
     private Long id;
     private String kind;
-    @JsonProperty("album_title")
+    @JsonSetter("album_title")
     private String albumTitle;
-    @JsonProperty("category_id")
+    @JsonSetter("category_id")
     private int categoryId;
-    @JsonProperty("album_tags")
+    @JsonSetter("album_tags")
     private String tags;
-    @JsonProperty("album_intro")
+    @JsonSetter("album_intro")
     private String intro;
-    @JsonProperty("cover_url_small")
+    @JsonSetter("cover_url_small")
     private String coverUrlSmall;
-    @JsonProperty("cover_url_middle")
+    @JsonSetter("cover_url_middle")
     private String coverUrlMiddle;
-    @JsonProperty("cover_url_large")
+    @JsonSetter("cover_url_large")
     private String coverUrlLarge;
-    @JsonProperty("play_count")
+    @JsonSetter("play_count")
     private Long playCount;
-    @JsonProperty("favorite_count")
+    @JsonSetter("favorite_count")
     private Long favoriteCount;
-    @JsonProperty("subscribe_count")
+    @JsonSetter("subscribe_count")
     private Long subscribeCount;
-    @JsonProperty("share_count")
+    @JsonSetter("share_count")
     private Long shareCount;
-    @JsonProperty("include_track_count")
+    @JsonSetter("include_track_count")
     private Integer includeTrackCount;
-    @JsonProperty("is_finished")
+    @JsonSetter("is_finished")
     private Integer isFinished;
-    @JsonProperty("can_download")
+    @JsonSetter("can_download")
     private Boolean canDownload;
-    @JsonProperty("updated_at")
+    @JsonSetter("updated_at")
     private Long updatedAt;
-    @JsonProperty("created_at")
+    @JsonSetter("created_at")
     private Long createdAt;
 
 }

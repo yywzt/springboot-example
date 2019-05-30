@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("/ximalaya")
-public class XiMaLaYaController {
+public class XiMaLaYaControllers {
     @Autowired
     private XiMaLaYaService xiMaLaYaService;
 

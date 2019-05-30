@@ -1,7 +1,7 @@
 package com.example.yyw.xmlyService.modal;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
  **/
 @Data
 public class Tracks{
-    @JsonProperty("tracks")
+    @JsonSetter("tracks")
     private List<Track> tracks;
 
 }

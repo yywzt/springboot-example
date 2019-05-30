@@ -1,7 +1,7 @@
 package com.example.yyw.xmlyService.modal;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
 
 /**
@@ -10,13 +10,13 @@ import lombok.Data;
 @Data
 public class SubordinatedAlbum{
     private Long id;
-    @JsonProperty("album_title")
+    @JsonSetter("album_title")
     private String albumTitle;
-    @JsonProperty("cover_url_small")
+    @JsonSetter("cover_url_small")
     private String coverUrlSmall;
-    @JsonProperty("cover_url_middle")
+    @JsonSetter("cover_url_middle")
     private String coverUrlMiddle;
-    @JsonProperty("cover_url_large")
+    @JsonSetter("cover_url_large")
     private String coverUrlLarge;
 
 }

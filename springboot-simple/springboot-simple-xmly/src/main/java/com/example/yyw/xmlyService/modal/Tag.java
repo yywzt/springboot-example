@@ -1,6 +1,6 @@
 package com.example.yyw.xmlyService.modal;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
 
 /**
@@ -9,7 +9,7 @@ import lombok.Data;
  **/
 @Data
 public class Tag{
-    @JsonProperty("tag_name")
+    @JsonSetter("tag_name")
     private String tagName;
     private String kind;
 

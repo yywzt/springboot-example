@@ -1,6 +1,6 @@
 package com.example.yyw.xmlyService.modal;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
 
 import java.util.List;
@@ -10,15 +10,15 @@ import java.util.List;
  **/
 @Data
 public class TrackAll {
-    @JsonProperty("total_page")
+    @JsonSetter("total_page")
     private Long totalPage;
-    @JsonProperty("total_count")
+    @JsonSetter("total_count")
     private Long totalCount;
-    @JsonProperty("current_page")
+    @JsonSetter("current_page")
     private Long currentPage;
-    @JsonProperty("category_id")
+    @JsonSetter("category_id")
     private Long categoryId;
-    @JsonProperty("tracks")
+    @JsonSetter("tracks")
     private List<Track> tracks;
 
 }

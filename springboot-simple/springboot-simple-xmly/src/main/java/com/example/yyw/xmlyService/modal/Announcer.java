@@ -1,7 +1,7 @@
 package com.example.yyw.xmlyService.modal;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
 
 /**
@@ -11,11 +11,11 @@ import lombok.Data;
 @Data
 public class Announcer{
     private Long id;
-    @JsonProperty("nickname")
+    @JsonSetter("nickname")
     private String nickName;
-    @JsonProperty("avatar_url")
+    @JsonSetter("avatar_url")
     private String avatarUrl;
-    @JsonProperty("is_verified")
+    @JsonSetter("is_verified")
     private Boolean isVerified;
 
 }
