@@ -66,6 +66,6 @@
     </insert>
 
     <update id="updateStatus" parameterType="com.example.yyw.xmly.modal.xmly.XmlyCategory">
-        UPDATE xmly_category set status = #{xmlyCategory.status} where id = #{xmlyCategory.id}
+        UPDATE xmly_category set status = #{xmlyCategory.status},modify_date = #{xmlyAlbum.modifyDate} where id = #{xmlyCategory.id}
     </update>
 </mapper>

@@ -34,24 +34,6 @@ public class XmlySyncController {
         return iXmlyService.saveTrack();
     }
 
-    @RequestMapping("/saveAllXmlyCategory")
-    public Object saveAllXmlyCategory() throws BusinessException {
-        iXmlyService.saveAllXmlyCategory();
-        return ResultUtil.successResult();
-    }
-
-    @RequestMapping("/saveAllXmlyAlbum")
-    public Object saveAllXmlyAlbum() throws BusinessException {
-        iXmlyService.saveAllXmlyAlbum();
-        return ResultUtil.successResult();
-    }
-
-    @RequestMapping("/saveAllXmlyTrack")
-    public Object saveAllXmlyTrack() throws BusinessException {
-        iXmlyService.saveAllXmlyTrack();
-        return ResultUtil.successResult();
-    }
-
     @RequestMapping("/saveIncrementAlbum")
     public Object saveIncrementAlbum() throws BusinessException {
         iXmlyService.saveIncrementAlbum();
@@ -61,7 +43,13 @@ public class XmlySyncController {
     @RequestMapping("/saveIncrementTrack")
     public Object saveIncrementTrack() throws BusinessException {
         iXmlyService.saveIncrementTrack();
+        iXmlyService.saveTrack();
         return ResultUtil.successResult();
     }
 
+    @RequestMapping("/saveAll")
+    public Object saveAll() throws BusinessException{
+        iXmlyService.saveAll();
+        return ResultUtil.successResult();
+    }
 }

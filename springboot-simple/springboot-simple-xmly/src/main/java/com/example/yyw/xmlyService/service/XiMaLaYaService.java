@@ -586,5 +586,8 @@ public class XiMaLaYaService {
         return trackAll;
     }
 
+    public void openPush() {
+
+    }
 }
 

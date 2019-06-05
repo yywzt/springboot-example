@@ -144,6 +144,7 @@ public class IXmlyService {
             }
         }
         xmlyCategory.setStatus(StatusEnum.SUCCESS.getCode());
+        xmlyCategory.setModifyDate(DateUtil.getNowDate());
         iXmlyCategoryMapper.updateStatus(xmlyCategory);
     }
 
@@ -158,18 +159,16 @@ public class IXmlyService {
             if (null == xmlyCategory) {
                 continue;
             }
-            List<XmlyAlbum> xmlyAlbumList = findXmlyAlbumByCategory(xmlyCategory);
+            List<XmlyAlbum> xmlyAlbumList = findXmlyAlbumByCategoryAndStatus(xmlyCategory, StatusEnum.DEFAULT);
             if (CollectionUtils.isEmpty(xmlyAlbumList)) {
                 continue;
             }
             for (XmlyAlbum xmlyAlbum : xmlyAlbumList) {
-                if (xmlyAlbum.getStatus().intValue() == StatusEnum.DEFAULT.getCode()) {
-                    saveTrackByAlbum(xmlyAlbum);
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                saveTrackByAlbum(xmlyAlbum);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -261,6 +260,23 @@ public class IXmlyService {
         return xmlyAlbumList;
     }
 
+    /**
+     * 根据分类，获取专辑集合
+     *
+     * @param xmlyCategory 分类对象
+     * @return 专辑集合
+     */
+    private List<XmlyAlbum> findXmlyAlbumByCategoryAndStatus(XmlyCategory xmlyCategory, StatusEnum statusEnum) {
+        if (null == xmlyCategory) {
+            return new ArrayList<>();
+        }
+        Map<String, Object> params = new HashMap<>();
+        params.put("extendCategoryOriginId", xmlyCategory.getOriginId());
+        params.put("status", statusEnum.getCode());
+        List<XmlyAlbum> xmlyAlbumList = iXmlyAlbumMapper.findByCondition(params);
+        return xmlyAlbumList;
+    }
+
     //源表名
     private static final String XMLY_CATEGORY_BACK = "xmly_category";
     private static final String XMLY_ALBUM_BACK = "xmly_album";
@@ -275,27 +291,6 @@ public class IXmlyService {
     private static final String XMLY_CATEGORY_BACK_BAK = "xmly_category_bak";
     private static final String XMLY_ALBUM_BACK_BAK = "xmly_album_bak";
     private static final String XMLY_TRACK_BACK_BAK = "xmly_track_bak";
-
-    /**
-     * 分类全量更新
-     * 获取分类存入中间表，完成之后原表做备份
-     *
-     * @throws BusinessException
-     */
-    public void saveAllXmlyCategory() throws BusinessException {
-        basedMapper.dropTable(XMLY_CATEGORY_BACK_TMP);
-        basedMapper.createTable(XMLY_CATEGORY_BACK_TMP, XMLY_CATEGORY_BACK);
-        try {
-            saveAllCategory(XMLY_CATEGORY_BACK_TMP);
-        } finally {
-            //源表名重命名为备份表名
-            basedMapper.dropTable(XMLY_CATEGORY_BACK_BAK);
-            basedMapper.alterTableName(XMLY_CATEGORY_BACK, XMLY_CATEGORY_BACK_BAK);
-            //中间表名重命名为源表名
-            basedMapper.dropTable(XMLY_CATEGORY_BACK);
-            basedMapper.alterTableName(XMLY_CATEGORY_BACK_TMP, XMLY_CATEGORY_BACK);
-        }
-    }
 
     /**
      * 分类全量更新
@@ -334,34 +329,13 @@ public class IXmlyService {
 
     /**
      * 专辑全量更新
-     * 获取专辑存入中间表，完成之后原表做备份
-     *
-     * @throws BusinessException
-     */
-    public void saveAllXmlyAlbum() throws BusinessException {
-        basedMapper.dropTable(XMLY_ALBUM_BACK_TMP);
-        basedMapper.createTable(XMLY_ALBUM_BACK_TMP, XMLY_ALBUM_BACK);
-        try {
-            saveAllAlbum(XMLY_ALBUM_BACK_TMP);
-        } finally {
-            //源表名重命名为备份表名
-            basedMapper.dropTable(XMLY_ALBUM_BACK_BAK);
-            basedMapper.alterTableName(XMLY_ALBUM_BACK, XMLY_ALBUM_BACK_BAK);
-            //中间表名重命名为源表名
-            basedMapper.dropTable(XMLY_ALBUM_BACK);
-            basedMapper.alterTableName(XMLY_ALBUM_BACK_TMP, XMLY_ALBUM_BACK);
-        }
-    }
-
-    /**
-     * 专辑全量更新
      * 数据存入中间表
      *
      * @param tableName 中间表名
      * @throws BusinessException
      */
     private void saveAllAlbum(String tableName) throws BusinessException {
-        List<XmlyCategory> xmlyCategoryList = findXmlyCategory(StatusEnum.DEFAULT);
+        List<XmlyCategory> xmlyCategoryList = findXmlyCategoryByTableName(StatusEnum.DEFAULT);
         for (XmlyCategory xmlyCategory : xmlyCategoryList) {
             saveAllAlbumByCategory(xmlyCategory, tableName);
             try {
@@ -414,29 +388,7 @@ public class IXmlyService {
         }
         xmlyCategory.setStatus(StatusEnum.SUCCESS.getCode());
         xmlyCategory.setModifyDate(DateUtil.getNowDate());
-        iXmlyCategoryMapper.updateStatus(xmlyCategory);
-    }
-
-    /**
-     * 节目片段全量更新
-     * 获取分类存入中间表，完成之后原表做备份
-     *
-     * @throws BusinessException
-     */
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public void saveAllXmlyTrack() throws BusinessException {
-        basedMapper.dropTable(XMLY_TRACK_BACK_TMP);
-        basedMapper.createTable(XMLY_TRACK_BACK_TMP, XMLY_TRACK_BACK);
-        try {
-            saveAllTrack(XMLY_TRACK_BACK_TMP);
-        } finally {
-            //源表名重命名为备份表名
-            basedMapper.dropTable(XMLY_TRACK_BACK_BAK);
-            basedMapper.alterTableName(XMLY_TRACK_BACK, XMLY_TRACK_BACK_BAK);
-            //中间表名重命名为源表名
-            basedMapper.dropTable(XMLY_TRACK_BACK);
-            basedMapper.alterTableName(XMLY_TRACK_BACK_TMP, XMLY_TRACK_BACK);
-        }
+        basedMapper.updateCategoryStatus(xmlyCategory, XMLY_CATEGORY_BACK_TMP);
     }
 
     /**
@@ -448,12 +400,12 @@ public class IXmlyService {
      */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void saveAllTrack(String tableName) throws BusinessException {
-        List<XmlyCategory> xmlyCategoryList = findXmlyCategory(null);
+        List<XmlyCategory> xmlyCategoryList = findXmlyCategoryByTableName(null);
         for (XmlyCategory xmlyCategory : xmlyCategoryList) {
             if (null == xmlyCategory) {
                 continue;
             }
-            List<XmlyAlbum> xmlyAlbumList = findXmlyAlbumByCategoryAndStatus(xmlyCategory, StatusEnum.DEFAULT);
+            List<XmlyAlbum> xmlyAlbumList = findXmlyAlbumByCategoryAndStatusByTableName(xmlyCategory, StatusEnum.DEFAULT);
             if (CollectionUtils.isEmpty(xmlyAlbumList)) {
                 continue;
             }
@@ -515,7 +467,7 @@ public class IXmlyService {
             }
             xmlyAlbum.setStatus(StatusEnum.SUCCESS.getCode());
             xmlyAlbum.setModifyDate(DateUtil.getNowDate());
-            iXmlyAlbumMapper.updateStatus(xmlyAlbum);
+            basedMapper.updateAlbumStatus(xmlyAlbum,XMLY_ALBUM_BACK_TMP);
         } catch (Exception e) {
             log.error("Exception when save track by album", e);
             log.error("Exception when save track by album {}", xmlyAlbum.getOriginId());
@@ -614,23 +566,6 @@ public class IXmlyService {
     }
 
     /**
-     * 根据分类，获取专辑集合
-     *
-     * @param xmlyCategory 分类对象
-     * @return 专辑集合
-     */
-    private List<XmlyAlbum> findXmlyAlbumByCategoryAndStatus(XmlyCategory xmlyCategory, StatusEnum statusEnum) {
-        if (null == xmlyCategory) {
-            return new ArrayList<>();
-        }
-        Map<String, Object> params = new HashMap<>();
-        params.put("extendCategoryOriginId", xmlyCategory.getOriginId());
-        params.put("status", statusEnum.getCode());
-        List<XmlyAlbum> xmlyAlbumList = iXmlyAlbumMapper.findByCondition(params);
-        return xmlyAlbumList;
-    }
-
-    /**
      * 增量更新热门专辑
      * 更新策略：拉取热门专辑，库中已存在的热门专辑的保留，不存在的热门专辑入库（status=0）
      * 更新完热门专辑后，根据status=0的专辑id去获取对应全量节目片段
@@ -694,5 +629,87 @@ public class IXmlyService {
                 break;
             }
         }
+    }
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public void saveAll() throws BusinessException {
+        createTmpTable(XMLY_CATEGORY_BACK_TMP, XMLY_CATEGORY_BACK);
+        saveAllCategory(XMLY_CATEGORY_BACK_TMP);
+
+        createTmpTable(XMLY_ALBUM_BACK_TMP, XMLY_ALBUM_BACK);
+        saveAllAlbum(XMLY_ALBUM_BACK_TMP);
+
+        createTmpTable(XMLY_TRACK_BACK_TMP, XMLY_TRACK_BACK);
+        saveAllTrack(XMLY_TRACK_BACK_TMP);
+
+        alterTableName();
+    }
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    private void createTmpTable(String tmpTableName, String sourceTableName) {
+        basedMapper.dropTable(tmpTableName);
+        basedMapper.createTable(tmpTableName, sourceTableName);
+    }
+
+    /**
+     * 源表 ==> bak
+     * tmp ==>源表名
+     */
+    private void alterTableName() {
+        //分类表
+        //源表名重命名为备份表名
+        basedMapper.dropTable(XMLY_CATEGORY_BACK_BAK);
+        basedMapper.alterTableName(XMLY_CATEGORY_BACK, XMLY_CATEGORY_BACK_BAK);
+        //中间表名重命名为源表名
+        basedMapper.dropTable(XMLY_CATEGORY_BACK);
+        basedMapper.alterTableName(XMLY_CATEGORY_BACK_TMP, XMLY_CATEGORY_BACK);
+
+        //专辑表
+        //源表名重命名为备份表名
+        basedMapper.dropTable(XMLY_ALBUM_BACK_BAK);
+        basedMapper.alterTableName(XMLY_ALBUM_BACK, XMLY_ALBUM_BACK_BAK);
+        //中间表名重命名为源表名
+        basedMapper.dropTable(XMLY_ALBUM_BACK);
+        basedMapper.alterTableName(XMLY_ALBUM_BACK_TMP, XMLY_ALBUM_BACK);
+
+        //声音表
+        //源表名重命名为备份表名
+        basedMapper.dropTable(XMLY_TRACK_BACK_BAK);
+        basedMapper.alterTableName(XMLY_TRACK_BACK, XMLY_TRACK_BACK_BAK);
+        //中间表名重命名为源表名
+        basedMapper.dropTable(XMLY_TRACK_BACK);
+        basedMapper.alterTableName(XMLY_TRACK_BACK_TMP, XMLY_TRACK_BACK);
+    }
+
+    /**
+     * 从tmp表中查询可用的喜马拉雅分类集合
+     *
+     * @return
+     * @throws BusinessException
+     */
+    private List<XmlyCategory> findXmlyCategoryByTableName(StatusEnum statusEnum) throws BusinessException {
+        Map<String, Object> params = new HashMap<>();
+        if (null != statusEnum) {
+            params.put("status", statusEnum.getCode());
+        }
+        List<XmlyCategory> xmlyCategoryList = basedMapper.findCategoryByCondition(params, XMLY_CATEGORY_BACK_TMP);
+        return xmlyCategoryList;
+    }
+
+    /**
+     * 根据分类，从tmp表中获取专辑集合
+     *
+     * @param xmlyCategory 分类对象
+     * @return 专辑集合
+     */
+    private List<XmlyAlbum> findXmlyAlbumByCategoryAndStatusByTableName(XmlyCategory xmlyCategory, StatusEnum statusEnum) {
+        if (null == xmlyCategory) {
+            return new ArrayList<>();
+        }
+        Map<String, Object> params = new HashMap<>();
+        params.put("extendCategoryOriginId", xmlyCategory.getOriginId());
+        params.put("status", statusEnum.getCode());
+        List<XmlyAlbum> xmlyAlbumList = basedMapper.findAlbumByCondition(params, XMLY_ALBUM_BACK_TMP);
+        return xmlyAlbumList;
     }
 }

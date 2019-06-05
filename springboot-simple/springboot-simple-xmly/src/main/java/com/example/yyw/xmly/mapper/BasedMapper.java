@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -41,5 +42,25 @@ public interface BasedMapper {
     int batchSaveAlbums(@Param("list") List<XmlyAlbum> xmlyAlbumList, @Param("tableName") String tableName);
 
     int batchSaveTracks(@Param("list") List<XmlyTrack> xmlyTrackList, @Param("tableName") String tableName);
+
+    List<XmlyCategory> findCategoryByCondition(@Param("mapParams") Map<String, Object> mapParams , @Param("tableName") String tableName);
+
+    /**
+     * 按条件查询
+     *
+     * @param mapParams 参数键值对
+     * @return
+     */
+    List<XmlyAlbum> findAlbumByCondition(@Param("mapParams") Map<String, Object> mapParams, @Param("tableName") String tableName);
+
+    void updateCategoryStatus(@Param("xmlyCategory") XmlyCategory xmlyCategory, @Param("tableName") String tableName);
+
+    /**
+     * 更新专辑状态
+     *
+     * @param xmlyAlbum 专辑
+     * @return
+     */
+    int updateAlbumStatus(@Param("xmlyAlbum") XmlyAlbum xmlyAlbum, @Param("tableName") String tableName);
 
 }
