@@ -4,6 +4,7 @@ import com.example.yyw.xmly.modal.xmly.XmlyAlbum;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
+import org.springframework.jmx.export.annotation.ManagedOperationParameter;
 import tk.mybatis.mapper.common.BaseMapper;
 
 import java.util.Date;
@@ -44,6 +45,6 @@ public interface IXmlyAlbumMapper extends BaseMapper<XmlyAlbum> {
      * 上下架
      * @return
      */
-    @Update("UPDATE xmly_album SET update_at = ?2,`status` = ?3 WHERE id = ?1")
-    int upOrLow(Integer id, Date date, int status);
+    @Update("UPDATE xmly_album SET update_at = #{date},`status` = #{status},modify_date=now() WHERE origin_id = #{id}")
+    int upOrLow(@Param("id") Integer id, @Param("date") Date date, @Param("status") int status);
 }

@@ -33,6 +33,6 @@ public interface IXmlyTrackMapper extends BaseMapper<XmlyTrack> {
      */
     int batchSave(@Param("list") List<XmlyTrack> xmlyTrackList);
 
-    @Update("UPDATE xmly_track SET update_at = ?2,`status` = ?3 WHERE id = ?1")
-    int ipOrLow(Integer id, Date date, int status);
+    @Update("UPDATE xmly_track SET update_at = #{date},`status` = #{status},modify_date=now() WHERE origin_id = #{id}")
+    int ipOrLow(@Param("id") Integer id, @Param("date") Date date, @Param("status") int status);
 }
