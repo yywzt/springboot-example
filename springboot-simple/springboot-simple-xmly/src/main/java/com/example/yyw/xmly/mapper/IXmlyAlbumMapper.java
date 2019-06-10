@@ -3,8 +3,10 @@ package com.example.yyw.xmly.mapper;
 import com.example.yyw.xmly.modal.xmly.XmlyAlbum;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 import tk.mybatis.mapper.common.BaseMapper;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -37,4 +39,11 @@ public interface IXmlyAlbumMapper extends BaseMapper<XmlyAlbum> {
      * @return
      */
     int updateStatus(@Param("xmlyAlbum") XmlyAlbum xmlyAlbum);
+
+    /**
+     * 上下架
+     * @return
+     */
+    @Update("UPDATE xmly_album SET update_at = ?2,`status` = ?3 WHERE id = ?1")
+    int upOrLow(Integer id, Date date, int status);
 }

@@ -14,6 +14,7 @@ import com.example.yyw.xmly.mapper.IXmlyTrackMapper;
 import com.example.yyw.xmly.modal.xmly.XmlyAlbum;
 import com.example.yyw.xmly.modal.xmly.XmlyCategory;
 import com.example.yyw.xmly.modal.xmly.XmlyTrack;
+import com.example.yyw.xmly.response.OpenPushResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.DigestUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -711,5 +713,95 @@ public class IXmlyService {
         params.put("status", statusEnum.getCode());
         List<XmlyAlbum> xmlyAlbumList = basedMapper.findAlbumByCondition(params, XMLY_ALBUM_BACK_TMP);
         return xmlyAlbumList;
+    }
+
+    /**
+     * 实时推送专辑/声音的上下架状态
+     * @param push_type	Int	是	推送内容类型：1-专辑，2-声音
+     * @param id	Int	是	推送内容ID，即专辑ID（push_type为1时）或声音ID（push_type为2时）
+     * @param subordinated_album_id	Int	否	如果推送内容类型为声音时，有此字段，表示声音所属专辑ID
+     * @param is_paid	Bool	否	是否是付费内容：true-付费，false-免费。没有该参数时默认为免费内容
+     * @param updated_at	Int	是	业务发生时间（即发生上下架事件的时刻），Unix毫秒数时间戳
+     * @param is_online	Bool	是	内容上下架状态：true-上架，false-下架
+     * @param offline_reason_type	Int	是	下架原因： 0-无此属性，1-运营/主播下架内容，2-版权变更导致内容不再输出
+     * @param nonce	String	是	随机字符串
+     *
+     * @return json 字段为：
+     *          code    Int	推送结果：0-成功，1-失败
+     *          message	String	可选，失败时为出错描述
+     *          source	String	必填，唯一标识推送接口提供方来源，需要合作方和喜马拉雅共同约定
+     */
+    public OpenPushResponse openPush(Integer push_type, Integer id, Integer subordinated_album_id, Boolean is_paid, Long updated_at,
+                         Boolean is_online, Integer offline_reason_type, String nonce, Long timestamp) {
+        switch (push_type){
+            case 1:
+                openPushAlbum(id, updated_at, is_online);
+                break;
+            case 2:
+                openPushTrack(id, subordinated_album_id, updated_at, is_online);
+                break;
+        }
+        return OpenPushResponse.success();
+    }
+
+    public Map<String, Object> buildParams(String app_key, Integer push_type, Integer id, Integer subordinated_album_id, Boolean is_paid,
+                                            Long updated_at, Boolean is_online, Integer offline_reason_type, String nonce, Long timestamp) {
+        Map<String,Object> params = new HashMap<>();
+        params.put("app_key", app_key);
+        params.put("push_type", push_type);
+        params.put("id", id);
+        params.put("subordinated_album_id", subordinated_album_id);
+        params.put("is_paid", is_paid);
+        params.put("updated_at", updated_at);
+        params.put("is_online", is_online);
+        params.put("offline_reason_type", offline_reason_type);
+        params.put("nonce", nonce);
+        params.put("timestamp", timestamp);
+        return params;
+    }
+
+    private static final String APP_KEY = "ba39f971bcb35d12afe892ab20be0e14";
+    private static final String APP_SECRET = "4749ba4fd2931e96744688aa1714b0cd";
+
+    /**
+     * 对参数进行校验
+     * @param params 包含sig
+     * @return
+     */
+    public String verifySign(Map<String,Object> params){
+        String[] keys = params.keySet().toArray(new String[0]);
+        Arrays.sort(keys);
+
+        StringBuffer sign_param = new StringBuffer();
+
+        for (String key:keys) {
+            Object o = params.get(key);
+            if(o != null) {
+                sign_param.append(key).append("=").append(o).append("&");
+            }
+        }
+        sign_param.append("app_secret=").append(APP_SECRET);
+        String sign = DigestUtils.md5DigestAsHex(sign_param.toString().getBytes());
+        log.info("sign_params : {},sign : {}", sign_param.toString(), sign);
+        return sign;
+    }
+
+    /**
+     * @param id	        推送内容ID，即专辑ID（push_type为1时）或声音ID（push_type为2时）
+     * @param updated_at	业务发生时间（即发生上下架事件的时刻），Unix毫秒数时间戳
+     * @param is_online		内容上下架状态：true-上架，false-下架
+     */
+    private void openPushAlbum(Integer id, Long updated_at, Boolean is_online) {
+        iXmlyAlbumMapper.upOrLow(id, new Date(updated_at), is_online ? StatusEnum.DEFAULT.getCode():StatusEnum.FAILED.getCode());
+    }
+
+    /**
+     * @param id	推送内容ID，即专辑ID（push_type为1时）或声音ID（push_type为2时）
+     * @param subordinated_album_id	如果推送内容类型为声音时，有此字段，表示声音所属专辑ID
+     * @param updated_at    业务发生时间（即发生上下架事件的时刻），Unix毫秒数时间戳
+     * @param is_online		内容上下架状态：true-上架，false-下架
+     */
+    private void openPushTrack(Integer id, Integer subordinated_album_id, Long updated_at, Boolean is_online){
+        iXmlyTrackMapper.ipOrLow(id, new Date(updated_at), is_online? StatusEnum.DEFAULT.getCode():StatusEnum.FAILED.getCode());
     }
 }
