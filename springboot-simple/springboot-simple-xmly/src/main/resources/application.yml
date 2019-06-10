@@ -1,3 +1,6 @@
+spring:
+  profiles:
+    active: xmly1
 ---
 server:
   port: 18081
@@ -5,8 +8,7 @@ server:
 spring:
   application:
     name: xmly
-  profiles:
-    xmly1
+  profiles: xmly1
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:mysql://139.199.179.164:3306/xmly_bak?userUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=GMT%2B8
@@ -63,13 +65,12 @@ logging:
 
 ---
 server:
-  port: 18081
+  port: 18082
 
 spring:
   application:
     name: xmly
-  profiles:
-    xmly1
+  profiles: xmly2
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:mysql://139.199.179.164:3306/xmly_bak?userUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=GMT%2B8
