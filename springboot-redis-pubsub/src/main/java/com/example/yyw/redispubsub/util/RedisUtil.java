@@ -10,9 +10,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Component(value = "redisUtil")
@@ -290,7 +288,7 @@ public class RedisUtil {
     /**
      * 根据key获取set中所有的值
      */
-    public Set<Object> sGet(String key) {
+    public Set<Object> members(String key) {
         try {
             return redisTemplate.opsForSet().members(key);
         } catch (Exception e) {
@@ -306,7 +304,7 @@ public class RedisUtil {
      * @param value 值
      * @return true 存在 false不存在
      */
-    public boolean sHasKey(String key, Object value) {
+    public boolean isMember(String key, Object value) {
         try {
             return redisTemplate.opsForSet().isMember(key, value);
         } catch (Exception e) {
@@ -325,6 +323,24 @@ public class RedisUtil {
     public long sSet(String key, Object... values) {
         try {
             return redisTemplate.opsForSet().add(key, values);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+    /**
+     * 将数据放入set缓存
+     *
+     * @param key    键
+     * @param values 值 可以是多个
+     * @return 成功个数
+     */
+    public long sSet2(String key, Object... values) {
+        try {
+            HashSet hashSet = new HashSet<Object>() {{
+                addAll(Arrays.asList(values));
+            }};
+            return redisTemplate.opsForSet().add(key, hashSet.toArray(new Object[0]));
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
