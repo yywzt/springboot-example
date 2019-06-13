@@ -5,17 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-
 /**
  * @author yanzhitao@xiaomalixing.com
  * @date 2019/6/12 23:23
  * @describe
  */
 @RestController
-@RequestMapping("/testSet")
+@RequestMapping("/testRtSet")
 public class RedisSetSimple {
 
     @Autowired
@@ -32,6 +28,7 @@ public class RedisSetSimple {
         redisUtil.sSet2(key, value);
     }
 
+
     @RequestMapping("/members")
     public Object members(String key){
         return redisUtil.members(key);
@@ -46,4 +43,5 @@ public class RedisSetSimple {
     public long remove(String key, String... value){
         return redisUtil.setRemove(key, value);
     }
+
 }
