@@ -1,5 +1,6 @@
 package com.example.yyw.util;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -73,27 +74,43 @@ public class DateUtil {
         return calendar.get(dateType);
     }
 
-    public static Date init(int year,int month,int day){
+    public static Date init(int year, int month, int day){
         Calendar instance = Calendar.getInstance();
         instance.set(Calendar.YEAR,year);
         instance.set(Calendar.MONTH,month);
         instance.set(Calendar.DAY_OF_MONTH,day);
         return instance.getTime();
     }
+    public static Date init(int year, int month, int day, int hour, int minute, int second, int millisecond){
+        Calendar instance = Calendar.getInstance();
+        instance.set(Calendar.YEAR,year);
+        instance.set(Calendar.MONTH,month);
+        instance.set(Calendar.DAY_OF_MONTH,day);
+        instance.set(Calendar.HOUR_OF_DAY,hour);
+        instance.set(Calendar.MINUTE,minute);
+        instance.set(Calendar.SECOND,second);
+        instance.set(Calendar.MILLISECOND,millisecond);
+        return instance.getTime();
+    }
 
     public static void main(String[] args) {
-        Date date = new Date();
-        int month = getMonth(date);
-        System.out.println(month);
-        int year = getYear(date);
-        System.out.println(year);
+//        Date date = new Date();
+//        int month = getMonth(date);
+//        System.out.println(month);
+//        int year = getYear(date);
+//        System.out.println(year);
+//
+//        Date firstDayOfMonth = getFirstDayOfMonth(date);
+//        System.out.println(firstDayOfMonth);
+//        System.out.println("getLastDayOfMonth : " + getLastDayOfMonth(date));
+//
+//        Date date1 = addMinute(date, 10);
+//        System.out.println(date1);
 
-        Date firstDayOfMonth = getFirstDayOfMonth(date);
-        System.out.println(firstDayOfMonth);
-        System.out.println("getLastDayOfMonth : " + getLastDayOfMonth(date));
-
-        Date date1 = addMinute(date, 10);
-        System.out.println(date1);
+        Date lastHourOfDay = getLastHourOfDay(new Date());
+        System.out.println(lastHourOfDay);
+        String format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(lastHourOfDay);
+        System.out.println(format);
     }
 
     public static Date addMinute(Date date, int i) {
@@ -103,4 +120,18 @@ public class DateUtil {
         return calendar.getTime();
     }
 
+    /**
+     * 获得某时间的当天最后一刻
+     * @param date
+     * @return
+     */
+    public static Date getLastHourOfDay(Date date){
+        Calendar instance = Calendar.getInstance();
+        instance.setTime(date);
+        instance.set(Calendar.HOUR_OF_DAY,23);
+        instance.set(Calendar.MINUTE,59);
+        instance.set(Calendar.SECOND,59);
+        instance.set(Calendar.MILLISECOND,999);
+        return instance.getTime();
+    }
 }
