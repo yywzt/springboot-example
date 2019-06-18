@@ -3,6 +3,7 @@ package com.example.yyw.limiting.controller;
 import com.example.yyw.limiting.annotation.Limit;
 import com.example.yyw.util.DateUtil;
 import com.example.yyw.util.ResultUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.support.atomic.RedisAtomicInteger;
@@ -21,6 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RestController
 @RequestMapping("/limit")
 @Limit(key = "limit",expireTime = 10,count = 5)
+@Slf4j
 public class LimitController {
 
     @Autowired
@@ -34,12 +36,19 @@ public class LimitController {
     }
 
     @RequestMapping("/test2")
-    public Object test2(){
-        RedisAtomicInteger redisAtomicInteger = new RedisAtomicInteger("TEST2_",redisTemplate.getConnectionFactory());
-        Date lastHourOfDay = DateUtil.getLastHourOfDay(new Date());
-        redisAtomicInteger.expire(lastHourOfDay.getTime() - new Date().getTime(), TimeUnit.MILLISECONDS);
-        int addAndGet = redisAtomicInteger.addAndGet(1);
-        return addAndGet;
+    public Object test2(int count){
+        Object test2_ = redisTemplate.opsForValue().get("TEST2_");
+        RedisAtomicInteger redisAtomicInteger = new RedisAtomicInteger("TEST2_", redisTemplate.getConnectionFactory());
+        if(test2_ == null) {
+            Date lastHourOfDay = DateUtil.getLastHourOfDay(new Date());
+            redisAtomicInteger.expire(lastHourOfDay.getTime() - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
+        }
+        int getAndAdd = redisAtomicInteger.addAndGet(1);
+        if( getAndAdd <= count) {
+            log.info("有效，do something");
+            return getAndAdd;
+        }
+        return "无效";
     }
 }
 

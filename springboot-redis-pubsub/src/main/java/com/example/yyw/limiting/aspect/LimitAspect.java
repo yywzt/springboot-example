@@ -1,5 +1,6 @@
 package com.example.yyw.limiting.aspect;
 
+import com.example.yyw.exception.DefaultException;
 import com.example.yyw.limiting.annotation.Limit;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.support.atomic.RedisAtomicInteger;
 import org.springframework.stereotype.Component;
-import com.example.yyw.exception.DefaultException;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
@@ -49,10 +49,14 @@ public class LimitAspect {
                 String key = limit.key();
                 int expireTime = limit.expireTime();
                 int count = limit.count();
-                RedisAtomicInteger redisAtomicInteger = new RedisAtomicInteger(limit.key(),redisTemplate.getConnectionFactory());
-                redisAtomicInteger.expire(expireTime, TimeUnit.SECONDS);
+
+                Object test2_ = redisTemplate.opsForValue().get(key);
+                RedisAtomicInteger redisAtomicInteger = new RedisAtomicInteger(key, redisTemplate.getConnectionFactory());
+                if(test2_ == null) {
+                    redisAtomicInteger.expire(expireTime, TimeUnit.SECONDS);
+                }
                 int addAndGet = redisAtomicInteger.addAndGet(1);
-                if(addAndGet >= count){
+                if(addAndGet > count){
                     throw new DefaultException("单位时间内请求次数过多");
                 }
             }
