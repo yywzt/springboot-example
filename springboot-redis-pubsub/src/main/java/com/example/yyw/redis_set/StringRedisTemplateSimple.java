@@ -29,6 +29,14 @@ public class StringRedisTemplateSimple {
         }
         return stringRedisTemplate.opsForSet().add(key, stringList.toArray(new String[stringList.size()]));
     }
+    @RequestMapping("/addSet2")
+    public Long addSet2(String key, String... value) {
+        List<String> stringList = new ArrayList<>(100000);
+        for (int i = 1; i <= 100000; i++) {
+            stringList.add(String.valueOf(i));
+        }
+        return stringRedisTemplate.opsForSet().add(key, stringList.stream().toArray(String[]::new));
+    }
 
     @RequestMapping("/members")
     public Set<String> members(String key) {
@@ -43,6 +51,18 @@ public class StringRedisTemplateSimple {
     @RequestMapping("/remove")
     public long remove(String key, String... value) {
         return stringRedisTemplate.opsForSet().remove(key, value);
+    }
+    @RequestMapping("/remove2")
+    public long remove2(String key, String... value) {
+        List<Long> longs = new ArrayList<>();
+        longs.add(36102L);
+        longs.add(56585L);
+        longs.add(64948L);
+        longs.add(50661L);
+        longs.add(54573L);
+        longs.add(24801L);
+        String[] strings = longs.stream().map(aLong -> aLong.toString()).toArray(String[]::new);
+        return stringRedisTemplate.opsForSet().remove(key, strings);
     }
 
     @RequestMapping("/pop")

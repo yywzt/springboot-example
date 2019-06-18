@@ -14,6 +14,12 @@ spring:
     database: 2
     password: root
 
+logging:
+  level:
+    web: debug
+    root: info
+    com.example.yyw: debug
+
 #redisson:
 #  threads: 10
 #  nettyThreads: 10
