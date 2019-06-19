@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -102,6 +103,23 @@ public class StringRedisTemplateSimple {
     @RequestMapping("/renameIfAbsent")
     public boolean renameIfAbsent(String oldKey, String newKey) {
         return stringRedisTemplate.renameIfAbsent(oldKey, newKey);
+    }
+
+    @RequestMapping("/find")
+    public Set<String> find(String pattern){
+        Set<String> keys = stringRedisTemplate.keys(pattern);
+        return keys;
+    }
+    @RequestMapping("/equal")
+    public boolean equal(String pattern){
+        String keySet = "setEqual";
+        Set<String> strings = new HashSet<>();
+        strings.add("1");
+        strings.add("2");
+        strings.add("3");
+        stringRedisTemplate.opsForSet().add(keySet,strings.stream().toArray(String[]::new));
+        Set<String> members = stringRedisTemplate.opsForSet().members(keySet);
+        return strings.equals(members);
     }
 
 }
