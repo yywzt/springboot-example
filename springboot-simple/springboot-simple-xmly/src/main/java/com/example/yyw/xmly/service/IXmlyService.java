@@ -7,18 +7,18 @@ import com.example.yyw.util.HttpUtil;
 import com.example.yyw.util.ResultUtil;
 import com.example.yyw.xmly.enums.StatusEnum;
 import com.example.yyw.xmly.exception.BusinessException;
-import com.example.yyw.xmly.mapper.BasedMapper;
-import com.example.yyw.xmly.mapper.IXmlyAlbumMapper;
-import com.example.yyw.xmly.mapper.IXmlyCategoryMapper;
-import com.example.yyw.xmly.mapper.IXmlyTrackMapper;
+import com.example.yyw.xmly.mapper.*;
 import com.example.yyw.xmly.modal.xmly.XmlyAlbum;
 import com.example.yyw.xmly.modal.xmly.XmlyCategory;
 import com.example.yyw.xmly.modal.xmly.XmlyTrack;
 import com.example.yyw.xmly.response.OpenPushResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +60,10 @@ public class IXmlyService {
     private IXmlyTrackMapper iXmlyTrackMapper;
     @Autowired
     private BasedMapper basedMapper;
+    @Autowired
+    private RecommendResultMapper recommendResultMapper;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
      * 保存分类
@@ -469,7 +473,7 @@ public class IXmlyService {
             }
             xmlyAlbum.setStatus(StatusEnum.SUCCESS.getCode());
             xmlyAlbum.setModifyDate(DateUtil.getNowDate());
-            basedMapper.updateAlbumStatus(xmlyAlbum,XMLY_ALBUM_BACK_TMP);
+            basedMapper.updateAlbumStatus(xmlyAlbum, XMLY_ALBUM_BACK_TMP);
         } catch (Exception e) {
             log.error("Exception when save track by album", e);
             log.error("Exception when save track by album {}", xmlyAlbum.getOriginId());
@@ -717,23 +721,23 @@ public class IXmlyService {
 
     /**
      * 实时推送专辑/声音的上下架状态
-     * @param push_type	Int	是	推送内容类型：1-专辑，2-声音
-     * @param id	Int	是	推送内容ID，即专辑ID（push_type为1时）或声音ID（push_type为2时）
-     * @param subordinated_album_id	Int	否	如果推送内容类型为声音时，有此字段，表示声音所属专辑ID
-     * @param is_paid	Bool	否	是否是付费内容：true-付费，false-免费。没有该参数时默认为免费内容
-     * @param updated_at	Int	是	业务发生时间（即发生上下架事件的时刻），Unix毫秒数时间戳
-     * @param is_online	Bool	是	内容上下架状态：true-上架，false-下架
-     * @param offline_reason_type	Int	是	下架原因： 0-无此属性，1-运营/主播下架内容，2-版权变更导致内容不再输出
-     * @param nonce	String	是	随机字符串
      *
+     * @param push_type             Int	是	推送内容类型：1-专辑，2-声音
+     * @param id                    Int	是	推送内容ID，即专辑ID（push_type为1时）或声音ID（push_type为2时）
+     * @param subordinated_album_id Int	否	如果推送内容类型为声音时，有此字段，表示声音所属专辑ID
+     * @param is_paid               Bool	否	是否是付费内容：true-付费，false-免费。没有该参数时默认为免费内容
+     * @param updated_at            Int	是	业务发生时间（即发生上下架事件的时刻），Unix毫秒数时间戳
+     * @param is_online             Bool	是	内容上下架状态：true-上架，false-下架
+     * @param offline_reason_type   Int	是	下架原因： 0-无此属性，1-运营/主播下架内容，2-版权变更导致内容不再输出
+     * @param nonce                 String	是	随机字符串
      * @return json 字段为：
-     *          code    Int	推送结果：0-成功，1-失败
-     *          message	String	可选，失败时为出错描述
-     *          source	String	必填，唯一标识推送接口提供方来源，需要合作方和喜马拉雅共同约定
+     * code    Int	推送结果：0-成功，1-失败
+     * message	String	可选，失败时为出错描述
+     * source	String	必填，唯一标识推送接口提供方来源，需要合作方和喜马拉雅共同约定
      */
     public OpenPushResponse openPush(Integer push_type, Integer id, Integer subordinated_album_id, Boolean is_paid, Long updated_at,
-                         Boolean is_online, Integer offline_reason_type, String nonce, Long timestamp) {
-        switch (push_type){
+                                     Boolean is_online, Integer offline_reason_type, String nonce, Long timestamp) {
+        switch (push_type) {
             case 1:
                 openPushAlbum(id, updated_at, is_online);
                 break;
@@ -745,8 +749,8 @@ public class IXmlyService {
     }
 
     public Map<String, Object> buildParams(String app_key, Integer push_type, Integer id, Integer subordinated_album_id, Boolean is_paid,
-                                            Long updated_at, Boolean is_online, Integer offline_reason_type, String nonce, Long timestamp) {
-        Map<String,Object> params = new HashMap<>();
+                                           Long updated_at, Boolean is_online, Integer offline_reason_type, String nonce, Long timestamp) {
+        Map<String, Object> params = new HashMap<>();
         params.put("app_key", app_key);
         params.put("push_type", push_type);
         params.put("id", id);
@@ -765,18 +769,19 @@ public class IXmlyService {
 
     /**
      * 对参数进行校验
+     *
      * @param params 包含sig
      * @return
      */
-    public String verifySign(Map<String,Object> params){
+    public String verifySign(Map<String, Object> params) {
         String[] keys = params.keySet().toArray(new String[0]);
         Arrays.sort(keys);
 
         StringBuffer sign_param = new StringBuffer();
 
-        for (String key:keys) {
+        for (String key : keys) {
             Object o = params.get(key);
-            if(o != null) {
+            if (o != null) {
                 sign_param.append(key).append("=").append(o).append("&");
             }
         }
@@ -787,21 +792,137 @@ public class IXmlyService {
     }
 
     /**
-     * @param id	        推送内容ID，即专辑ID（push_type为1时）或声音ID（push_type为2时）
-     * @param updated_at	业务发生时间（即发生上下架事件的时刻），Unix毫秒数时间戳
-     * @param is_online		内容上下架状态：true-上架，false-下架
+     * @param id         推送内容ID，即专辑ID（push_type为1时）或声音ID（push_type为2时）
+     * @param updated_at 业务发生时间（即发生上下架事件的时刻），Unix毫秒数时间戳
+     * @param is_online  内容上下架状态：true-上架，false-下架
      */
     private void openPushAlbum(Integer id, Long updated_at, Boolean is_online) {
-        iXmlyAlbumMapper.upOrLow(id, new Date(updated_at), is_online ? StatusEnum.DEFAULT.getCode():StatusEnum.FAILED.getCode());
+        int status = is_online ? StatusEnum.DEFAULT.getCode() : StatusEnum.HISTORY.getCode();
+        int i = iXmlyAlbumMapper.upOrLow(id, new Date(updated_at), status);
+        //获取专辑下声音id集合
+        Map<Long, List<XmlyTrack>> trackIds = iXmlyTrackMapper.findOriginIdAndExtendCategoryOriginIdByCondition(new HashMap<String, Object>() {{
+            put("albumOriginId", id);
+        }}).stream().collect(Collectors.groupingBy(XmlyTrack::getExtendCategoryOriginId));
+
+        if (trackIds != null && trackIds.size() > 0) {
+            for (Map.Entry<Long, List<XmlyTrack>> listEntry : trackIds.entrySet()) {
+                Long extendCategoryOriginId = listEntry.getKey();
+                List<Long> originIds = listEntry.getValue().stream().map(XmlyTrack::getOriginId).collect(Collectors.toList());
+                String[] originIdArray = originIds.stream().map(aLong -> aLong.toString()).toArray(String[]::new);
+                //声音上下架
+                iXmlyTrackMapper.batchIpOrLow(originIds, new Date(updated_at), status);
+                //rec_result数据上下架
+                recommendResultMapper.updateStatusByItemId(new HashMap<String, Object>() {{
+                    put("originIds", originIds);
+                    put("itemType", "3");
+                    put("date", DateFormatUtils.format(new Date(), "yyyy-MM-dd"));
+                    put("status", status);
+                }});
+
+                //更新redis缓存，专辑对应声音碎片id需要进行remove操作
+                String key = XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_TO_TRACK_ID_CACHE_PREFIX + extendCategoryOriginId.toString();
+                if (is_online) {
+                    stringRedisTemplate.opsForSet().add(key, originIdArray);
+                } else {
+                    stringRedisTemplate.opsForSet().remove(key, originIdArray);
+                }
+            }
+        }
+
     }
 
+    public static final String XIMALAYA_CACHE_COMMON_PREFIX = "XIMALAYA:";
+    public static final String XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_TO_TRACK_ID_CACHE_PREFIX = XIMALAYA_CACHE_COMMON_PREFIX + "EOCI_TI:";
+    public static final String XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_LIST_CACHE_PREFIX = XIMALAYA_CACHE_COMMON_PREFIX + "EOCI_LIST";
+
     /**
-     * @param id	推送内容ID，即专辑ID（push_type为1时）或声音ID（push_type为2时）
-     * @param subordinated_album_id	如果推送内容类型为声音时，有此字段，表示声音所属专辑ID
-     * @param updated_at    业务发生时间（即发生上下架事件的时刻），Unix毫秒数时间戳
-     * @param is_online		内容上下架状态：true-上架，false-下架
+     * @param id                    推送内容ID，即专辑ID（push_type为1时）或声音ID（push_type为2时）
+     * @param subordinated_album_id 如果推送内容类型为声音时，有此字段，表示声音所属专辑ID
+     * @param updated_at            业务发生时间（即发生上下架事件的时刻），Unix毫秒数时间戳
+     * @param is_online             内容上下架状态：true-上架，false-下架
      */
-    private void openPushTrack(Integer id, Integer subordinated_album_id, Long updated_at, Boolean is_online){
-        iXmlyTrackMapper.ipOrLow(id, new Date(updated_at), is_online? StatusEnum.DEFAULT.getCode():StatusEnum.FAILED.getCode());
+    private void openPushTrack(Integer id, Integer subordinated_album_id, Long updated_at, Boolean is_online) {
+        List<XmlyTrack> xmlyTrackList = iXmlyTrackMapper.findOriginIdAndExtendCategoryOriginIdByCondition(new HashMap<String, Object>() {{
+            put("originId", id);
+        }});
+        if (CollectionUtils.isNotEmpty(xmlyTrackList)) {
+            xmlyTrackList.stream().forEach(xmlyTrack -> {
+                int status = is_online ? StatusEnum.DEFAULT.getCode() : StatusEnum.HISTORY.getCode();
+                //声音上下架
+                iXmlyTrackMapper.ipOrLow(id, new Date(updated_at), status);
+                //rec_result数据上下架
+                recommendResultMapper.updateStatusByItemId(new HashMap<String, Object>() {{
+                    put("originId", id);
+                    put("itemType", "3");
+                    put("date", DateFormatUtils.format(new Date(), "yyyy-MM-dd"));
+                    put("status", status);
+                }});
+
+                //更新redis缓存，专辑对应声音碎片id需要进行remove操作
+                String key = XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_TO_TRACK_ID_CACHE_PREFIX + xmlyTrack.getExtendCategoryOriginId().toString();
+                if (is_online) {
+                    stringRedisTemplate.opsForSet().add(key, xmlyTrack.getOriginId().toString());
+                } else {
+                    stringRedisTemplate.opsForSet().remove(key, xmlyTrack.getOriginId().toString());
+                }
+            });
+        }
+    }
+
+    //tmp缓存key
+    private static final String TMP = "TMP";
+    private static final String RISK = ":";
+    public static final String TMP_XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_TO_TRACK_ID_CACHE_PREFIX = XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_TO_TRACK_ID_CACHE_PREFIX + TMP + RISK;
+    public static final String TMP_XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_LIST_CACHE_PREFIX = XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_LIST_CACHE_PREFIX + RISK + TMP;
+
+
+    public void buildXimalayaTrackCacheTmp() {
+        Long startTime = System.currentTimeMillis();
+
+        List<XmlyTrack> xmlyTrackList = iXmlyTrackMapper.findOriginIdAndExtendCategoryOriginIdByCondition(new HashMap<String, Object>() {{
+            put("status", StatusEnum.DEFAULT.getCode());
+        }});
+        xmlyTrackList.stream()
+                .collect(Collectors.groupingBy(XmlyTrack::getExtendCategoryOriginId, Collectors.toList()))
+                .entrySet()
+                .forEach(entry -> {
+                    String extendCategoryOriginId = entry.getKey().toString();
+                    List<String> xmlyTrackOriginIds = entry.getValue().stream()
+                            .map(xmlyTrack -> xmlyTrack.getOriginId().toString())
+                            .collect(Collectors.toList());
+                    String cacheKey = TMP_XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_TO_TRACK_ID_CACHE_PREFIX + extendCategoryOriginId;
+                    if (CollectionUtils.isNotEmpty(xmlyTrackOriginIds)) {
+                        stringRedisTemplate.opsForSet()
+                                .add(cacheKey, xmlyTrackOriginIds.toArray(new String[0]));
+                    }
+                });
+        List<String> xmlyExtendCategoryOriginIdList = iXmlyTrackMapper.findExtendCategoryOriginIdByCondition(new HashedMap() {{
+            put("status", StatusEnum.DEFAULT.getCode());
+        }});
+        stringRedisTemplate.opsForSet().add(TMP_XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_LIST_CACHE_PREFIX, xmlyExtendCategoryOriginIdList.stream().toArray(String[]::new));
+        log.info("=========build ximalaya tmp cache use time=========" + (System.currentTimeMillis() - startTime) + "ms");
+    }
+
+    public void buildXimalayaTrackCache() {
+        Long startTime = System.currentTimeMillis();
+        List<String> xmlyExtendCategoryOriginIdList = iXmlyTrackMapper.findExtendCategoryOriginIdByCondition(new HashedMap() {{
+            put("status", StatusEnum.DEFAULT.getCode());
+        }});
+        xmlyExtendCategoryOriginIdList.stream().forEach(extendCategoryOriginId -> {
+            List<XmlyTrack> xmlyTrackList = iXmlyTrackMapper.findOriginIdAndExtendCategoryOriginIdByCondition(new HashMap<String, Object>() {{
+                put("status", StatusEnum.DEFAULT.getCode());
+                put("extendCategoryOriginId", extendCategoryOriginId);
+            }});
+            List<String> originIds = xmlyTrackList.stream().map(xmlyTrack -> xmlyTrack.getOriginId().toString()).collect(Collectors.toList());
+            String cacheKey = XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_TO_TRACK_ID_CACHE_PREFIX + extendCategoryOriginId;
+            if (CollectionUtils.isNotEmpty(originIds)) {
+                stringRedisTemplate.opsForSet()
+                        .add(cacheKey, originIds.toArray(new String[0]));
+            }
+        });
+
+        stringRedisTemplate.opsForSet()
+                .add(XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_LIST_CACHE_PREFIX, xmlyExtendCategoryOriginIdList.toArray(new String[0]));
+        log.info("=========build ximalaya cache use time=========" + (System.currentTimeMillis() - startTime) + "ms");
     }
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,8 @@ import java.util.concurrent.TimeUnit;
 public class RedisUtil {
 
     private RedisTemplate redisTemplate;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @Autowired(required = false)
     public void setRedisTemplate(RedisTemplate redisTemplate) {
@@ -84,9 +87,16 @@ public class RedisUtil {
                 redisTemplate.delete(key[0]);
             } else {
                 redisTemplate.delete(CollectionUtils.arrayToList(key));
-                ;
             }
         }
+    }
+
+    public Set<String> keys(String pattern){
+        return stringRedisTemplate.keys(pattern + "*");
+    }
+
+    public void rename(String oldKey, String newKey){
+        stringRedisTemplate.rename(oldKey, newKey);
     }
 
 

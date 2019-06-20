@@ -32,7 +32,8 @@
         created_at as createdAt
     </sql>
 
-    <select id="findByCondition" parameterType="java.util.Map" resultType="com.example.yyw.xmly.modal.xmly.XmlyTrack">
+    <select id="findByCondition" parameterType="java.util.Map"
+            resultType="com.example.yyw.xmly.modal.xmly.XmlyTrack">
         SELECT
         <include refid="base_column"/>
         FROM xmly_track WHERE 1 = 1
@@ -42,8 +43,24 @@
         <if test="mapParams.originId != null">
             AND origin_id = #{mapParams.originId}
         </if>
-        <if test="mapParams.categoryOriginId != null">
-            AND category_origin_id = #{mapParams.categoryOriginId}
+        <if test="mapParams.title != null">
+            AND title like concat('%',#{mapParams.title},'%')
+        </if>
+        <if test="mapParams.originIds != null and mapParams.originIds.size > 0">
+            AND origin_id IN
+            <foreach collection="mapParams.originIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="mapParams.extendCategoryOriginId != null">
+            AND extend_category_origin_id = #{mapParams.extendCategoryOriginId}
+        </if>
+        <if test="mapParams.extendCategoryOriginIds != null and mapParams.extendCategoryOriginIds.length > 0">
+            AND extend_category_origin_id IN
+            <foreach collection="mapParams.extendCategoryOriginIds" index="index" item="item" open="(" separator=","
+                     close=")">
+                #{item}
+            </foreach>
         </if>
         <if test="mapParams.albumOriginId != null">
             AND album_origin_id = #{mapParams.albumOriginId}
@@ -54,9 +71,58 @@
         <if test="mapParams.status != null">
             AND status = #{mapParams.status}
         </if>
-        ORDER BY order_no DESC
+        ORDER BY RAND()
+        <if test="mapParams.limit != null">
+            LIMIT #{mapParams.limit}
+        </if>
     </select>
 
+    <select id="findOriginIdAndExtendCategoryOriginIdByCondition" parameterType="java.util.Map"
+            resultType="com.example.yyw.xmly.modal.xmly.XmlyTrack">
+        SELECT origin_id as originId, extend_category_origin_id as extendCategoryOriginId FROM xmly_track WHERE 1 = 1
+        <if test="mapParams.status != null">
+            AND status = #{mapParams.status}
+        </if>
+        <if test="mapParams.albumOriginId != null">
+            AND album_origin_id = #{mapParams.albumOriginId}
+        </if>
+        <if test="mapParams.originId != null">
+            AND origin_id = #{mapParams.originId}
+        </if>
+        <if test="mapParams.extendCategoryOriginId != null">
+            AND extend_category_origin_id = #{mapParams.extendCategoryOriginId}
+        </if>
+    </select>
+
+    <select id="findExtendCategoryOriginIdByCondition" parameterType="java.util.Map" resultType="java.lang.String">
+        SELECT DISTINCT extend_category_origin_id as extendCategoryOriginId FROM xmly_track WHERE 1 = 1
+        <if test="mapParams.status != null">
+            AND status = #{mapParams.status}
+        </if>
+    </select>
+
+    <select id="findXmlyTrackByConditionLimit" parameterType="java.util.Map"
+            resultType="com.example.yyw.xmly.modal.xmly.XmlyTrack">
+        SELECT * FROM xmly_track WHERE 1 = 1
+        <if test="mapParams.start != null">
+            AND id &gt; #{mapParams.start}
+        </if>
+        <if test="mapParams.end != null">
+            AND id &lt; #{mapParams.end}
+        </if>
+    </select>
+
+    <update id="batchIpOrLow">
+        UPDATE xmly_track SET update_at = #{date},`status` = #{status},modify_date=now()
+        WHERE 1 = 1
+        <if test="ids != null and ids.size > 0">
+            AND origin_id IN
+            <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </update>
+    
     <!-- 添加数据 -->
     <insert id="batchSave" parameterType="java.util.List">
         INSERT INTO xmly_track(

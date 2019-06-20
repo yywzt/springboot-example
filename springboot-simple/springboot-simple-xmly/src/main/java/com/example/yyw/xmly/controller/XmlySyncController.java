@@ -58,4 +58,20 @@ public class XmlySyncController {
         return ResultUtil.successResult();
     }
 
+    /**
+     * 构建喜马拉雅声音碎片缓存
+     *
+     * @return
+     */
+    @RequestMapping(value = "/buildXimalayaTrackCache")
+    public Object buildXimalayaTrackCache(){
+        iXmlyService.buildXimalayaTrackCache();
+        return ResultUtil.successResult();
+    }
+    @RequestMapping(value = "/buildXimalayaTrackCacheTmp")
+    public Object buildXimalayaTrackCacheTmp(){
+        iXmlyService.buildXimalayaTrackCacheTmp();
+        return ResultUtil.successResult();
+    }
+
 }

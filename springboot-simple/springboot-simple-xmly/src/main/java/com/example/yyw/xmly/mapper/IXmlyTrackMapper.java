@@ -18,14 +18,6 @@ import java.util.Map;
 @Mapper
 public interface IXmlyTrackMapper extends BaseMapper<XmlyTrack> {
     /**
-     * 按条件查询
-     *
-     * @param mapParams
-     * @return
-     */
-    List<XmlyTrack> findByCondition(@Param("mapParams") Map<String, Object> mapParams);
-
-    /**
      * 批量保存
      *
      * @param xmlyTrackList
@@ -33,6 +25,16 @@ public interface IXmlyTrackMapper extends BaseMapper<XmlyTrack> {
      */
     int batchSave(@Param("list") List<XmlyTrack> xmlyTrackList);
 
+    List<XmlyTrack> findByCondition(@Param("mapParams") Map<String, Object> mapParams);
+
+    List<XmlyTrack> findXmlyTrackByConditionLimit(@Param("mapParams") Map<String, Object> mapParams);
+
+    List<XmlyTrack> findOriginIdAndExtendCategoryOriginIdByCondition(@Param("mapParams") Map<String, Object> mapParams);
+
+    List<String> findExtendCategoryOriginIdByCondition(@Param("mapParams") Map<String, Object> mapParams);
+
     @Update("UPDATE xmly_track SET update_at = #{date},`status` = #{status},modify_date=now() WHERE origin_id = #{id}")
     int ipOrLow(@Param("id") Integer id, @Param("date") Date date, @Param("status") int status);
+
+    int batchIpOrLow(@Param("ids") List<Long> ids, @Param("date") Date date, @Param("status") int status);
 }

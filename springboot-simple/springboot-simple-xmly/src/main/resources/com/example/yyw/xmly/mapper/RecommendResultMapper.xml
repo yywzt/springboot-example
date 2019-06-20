@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.yyw.xmly.mapper.RecommendResultMapper">
+
+    <sql id="base_column">
+        id,
+        create_date as createDate,
+        modify_date as modifyDate,
+        channel_id as channelId,
+        user_id as userId,
+        item_id as itemId,
+        item_type as itemType,
+        score,
+        status
+    </sql>
+    <update id="updateStatusByItemId" parameterType="java.util.Map">
+        UPDATE rec_result SET status = #{mapParams.status},modify_date = now()
+        WHERE 1 = 1
+        <if test="mapParams.itemType != null">
+            AND item_type = #{mapParams.itemType}
+        </if>
+        <if test="mapParams.date != null">
+            AND DATE(create_date) = #{mapParams.date}
+        </if>
+        <if test="mapParams.originId != null">
+            AND item_id = #{mapParams.originId}
+        </if>
+        <if test="mapParams.originIds != null">
+            AND item_id in
+            <foreach collection="mapParams.originIds" item="originId" index="index" open="(" close=")" separator=",">
+                #{originId}
+            </foreach>
+        </if>
+    </update>
+
+    <select id="findByCondition" parameterType="java.util.Map"
+            resultType="com.example.yyw.xmly.modal.xmly.RecommendResult">
+        SELECT
+        <include refid="base_column"/>
+        FROM rec_result WHERE 1 = 1
+        <if test="mapParams.userId != null">
+            AND user_id = #{mapParams.userId}
+        </if>
+        <if test="mapParams.channelId != null">
+            AND channel_id = #{mapParams.channelId}
+        </if>
+        <if test="mapParams.itemId != null">
+            AND item_id = #{mapParams.itemId}
+        </if>
+        <if test="mapParams.itemType != null">
+            AND item_type = #{mapParams.itemType}
+        </if>
+        <if test="mapParams.itemCategory != null">
+            AND item_category = #{mapParams.itemCategory}
+        </if>
+        <if test="mapParams.itemCategories != null">
+            AND item_category IN
+            <foreach collection="mapParams.itemCategories" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="mapParams.status != null">
+            AND status = #{mapParams.status}
+        </if>
+        <if test="mapParams.createDate != null">
+            AND DATE(create_date) = #{mapParams.createDate}
+        </if>
+        ORDER BY score DESC
+    </select>
+
+    <!-- 添加数据 -->
+    <insert id="batchSave" parameterType="java.util.List">
+        INSERT INTO rec_result(
+        create_date,
+        modify_date,
+        channel_id,
+        user_id,
+        item_type,
+        item_id,
+        item_category,
+        score,
+        status
+        )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.createDate},
+            #{item.modifyDate},
+            #{item.channelId},
+            #{item.userId},
+            #{item.itemType},
+            #{item.itemId},
+            #{item.itemCategory},
+            #{item.score},
+            #{item.status}
+            )
+        </foreach>
+    </insert>
+
+    <!--<update id="updateStatusByItemId" parameterType="java.util.Map">
+        UPDATE rec_result SET status = #{mapParams.status},modify_date = now()
+        WHERE 1 = 1
+        <if test="itemType != null">
+            AND item_type = #{mapParams.itemType}
+        </if>
+        <if test="date != null">
+            AND DATE(create_date) = #{mapParams.date}
+        </if>
+        <if test="originId != null">
+            AND item_id = #{mapParams.originId}
+        </if>
+        <if test="originIds != null">
+            AND item_id in
+            <foreach collection="#{mapParams.originIds}" item="originId" index="index" open="(" close=")" separator=",">
+                #{originId}
+            </foreach>
+        </if>
+    </update>-->
+</mapper>
