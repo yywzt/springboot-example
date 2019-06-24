@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: xmly1
+    active: test
 ---
 server:
   port: 18081
@@ -11,12 +11,12 @@ spring:
   profiles: xmly1
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://139.199.179.164:3306/xmly_bak?userUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=GMT%2B8
+#    url: jdbc:mysql://139.199.179.164:3306/xmly_bak?userUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=GMT%2B8
+#    username: root
+#    password: Root123
+    url: jdbc:mysql://127.0.0.1:3306/xmly_bak?userUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
     username: root
     password: Root123
-  #    url: jdbc:mysql://127.0.0.1:3306/xmly_bak?userUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
-  #    username: root
-  #    password: Root123
   data:
     # mongodb
     mongodb:
@@ -125,3 +125,76 @@ logging:
 #  file: D:\yw\logs\${spring.application.name}\logs.log
   file.max-size: 100MB
 
+---
+server:
+  port: 18083
+
+spring:
+  application:
+    name: xmly
+  profiles: test
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    #    url: jdbc:mysql://139.199.179.164:3306/xmly_bak?userUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=GMT%2B8
+    #    username: root
+    #    password: Root123
+    url: jdbc:mysql://127.0.0.1:3306/xmly_bak?userUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+    username: root
+    password: Root123
+    driver-class-name: com.mysql.jdbc.Driver
+    druid:
+      max-active: 40
+      max-idle: 10
+      min-idle: 5
+      initial-size: 5
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 30000
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-borrow: true
+      test-on-return: false
+  data:
+    # mongodb
+    mongodb:
+      host: 127.0.0.1
+      port: 27017
+      username: admin
+      password: admin
+      authentication-database: admin
+      database: test
+  # redis
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: 1
+        max-idle: 8
+        min-idle: 0
+    timeout: 5000
+    database: 2
+    password: root
+
+mybatis:
+  configuration:
+    # 	\u662F\u5426\u5F00\u542F\u81EA\u52A8\u9A7C\u5CF0\u547D\u540D\u89C4\u5219\uFF08camel case\uFF09\u6620\u5C04\uFF0C\u5373\u4ECE\u7ECF\u5178\u6570\u636E\u5E93\u5217\u540D A_COLUMN \u5230\u7ECF\u5178 Java \u5C5E\u6027\u540D aColumn \u7684\u7C7B\u4F3C\u6620\u5C04\u3002
+    map-underscore-to-camel-case: true
+    default-fetch-size: 100
+    default-statement-timeout: 30
+#  mapper-locations:
+
+mapper:
+  identity: MYSQL
+  mappers: tk.mybatis.mapper.common.BaseMapper
+  #\u8BBE\u7F6E insert \u548C update \u4E2D\uFF0C\u662F\u5426\u5224\u65AD\u5B57\u7B26\u4E32\u7C7B\u578B!=\u201D
+  not-empty: true
+
+logging:
+  level:
+    web: debug
+    root: info
+    com.example.yyw: debug
+  file: /yw/jar_log/${spring.application.name}-${server.port}.log
+  #  file: D:\yw\logs\${spring.application.name}\logs.log
+  file.max-size: 100MB
