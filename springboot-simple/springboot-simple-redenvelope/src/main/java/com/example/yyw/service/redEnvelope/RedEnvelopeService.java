@@ -16,6 +16,7 @@ import com.example.yyw.model.redEnvelope.RedEnvelopeDetail;
 import com.example.yyw.model.redEnvelope.User;
 import com.example.yyw.service.GenericService;
 import com.example.yyw.util.RedissonUtils;
+import com.example.yyw.util.SpringUtils;
 import com.example.yyw.util.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -181,7 +182,7 @@ public class RedEnvelopeService extends GenericService<Long> {
         String key = RedisConstants.GET_SINGLE_RED_ENVELOPE + id.toString();
         try {
             if (redissonUtils.tryLock(key, RedisConstants.WAITTIME, RedisConstants.LEASETIME, RedisConstants.DEFAULT_TIME_UNIT)) {
-                return receivedSingleEnvelope(id, uid);
+                return SpringUtils.getBean(this.getClass()).receivedSingleEnvelope(id, uid);
             }
             return ResponseData.failure(RedEnvelopeConstants.RECEIVE_FAILURE);
         } finally {
@@ -243,7 +244,7 @@ public class RedEnvelopeService extends GenericService<Long> {
         String key = RedisConstants.GET_QUN_RED_ENVELOPE + id.toString();
         try {
             if (redissonUtils.tryLock(key, RedisConstants.WAITTIME, RedisConstants.LEASETIME, RedisConstants.DEFAULT_TIME_UNIT)) {
-                return receivedQunRedEnvelope(id, uid);
+                return SpringUtils.getBean(this.getClass()).receivedQunRedEnvelope(id, uid);
             }
             return ResponseData.failure(RedEnvelopeConstants.RECEIVE_FAILURE);
         } finally {

@@ -34,4 +34,11 @@
         and envelope_type = #{envelopeType,jdbcType=INTEGER} and enabled_flag = #{enabledFlag,jdbcType=TINYINT}
     </select>
 
+    <update id="updateRedEnvelopeStatusAndRemainCount" parameterType="com.example.yyw.model.redEnvelope.RedEnvelope">
+        update red_envelope
+        SET `status` = #{status,jdbcType=INTEGER},remain_count = #{remainCount,jdbcType=INTEGER}
+        ,updation_date = #{updationDate,jdbcType=TIMESTAMP},updated_by = #{updatedBy,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
 </mapper>

@@ -28,6 +28,7 @@ logging:
   level:
     root: info
     com.example.yyw: debug
+    org.mybatis: debug
   file: D:\\yw\\logs\\${spring.application.name}.log
   file.max-size: 100MB
   file.max-history: 60

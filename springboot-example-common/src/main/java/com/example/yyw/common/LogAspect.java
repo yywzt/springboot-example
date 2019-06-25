@@ -41,7 +41,7 @@ public class LogAspect {
 
     @AfterReturning(returning = "ret",pointcut = "log()")
     public void doReturn(JoinPoint joinPoint,Object ret){
-        loginfo(joinPoint,ret.toString());
+        loginfo(joinPoint,String.valueOf(ret));
     }
 
     @AfterThrowing(throwing = "ex",pointcut = "log()")
