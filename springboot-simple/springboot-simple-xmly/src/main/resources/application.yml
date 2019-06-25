@@ -135,6 +135,8 @@ spring:
   profiles: test
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
+      #配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    filters: stat,wall,log4j
     #    url: jdbc:mysql://139.199.179.164:3306/xmly_bak?userUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=GMT%2B8
     #    username: root
     #    password: Root123
@@ -153,6 +155,9 @@ spring:
       test-while-idle: true
       test-on-borrow: true
       test-on-return: false
+      stat-view-servlet:
+        loginUsername: root
+        loginPassword: root
   data:
     # mongodb
     mongodb:
@@ -195,6 +200,7 @@ logging:
     web: debug
     root: info
     com.example.yyw: debug
+    org.mybatis: debug
   file: /yw/jar_log/${spring.application.name}-${server.port}.log
   #  file: D:\yw\logs\${spring.application.name}\logs.log
   file.max-size: 100MB

@@ -735,6 +735,7 @@ public class IXmlyService {
      * message	String	可选，失败时为出错描述
      * source	String	必填，唯一标识推送接口提供方来源，需要合作方和喜马拉雅共同约定
      */
+    @Transactional
     public OpenPushResponse openPush(Integer push_type, Integer id, Integer subordinated_album_id, Boolean is_paid, Long updated_at,
                                      Boolean is_online, Integer offline_reason_type, String nonce, Long timestamp) {
         switch (push_type) {
@@ -748,6 +749,7 @@ public class IXmlyService {
         return OpenPushResponse.success();
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Map<String, Object> buildParams(String app_key, Integer push_type, Integer id, Integer subordinated_album_id, Boolean is_paid,
                                            Long updated_at, Boolean is_online, Integer offline_reason_type, String nonce, Long timestamp) {
         Map<String, Object> params = new HashMap<>();
@@ -773,6 +775,7 @@ public class IXmlyService {
      * @param params 包含sig
      * @return
      */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public String verifySign(Map<String, Object> params) {
         String[] keys = params.keySet().toArray(new String[0]);
         Arrays.sort(keys);
@@ -796,7 +799,8 @@ public class IXmlyService {
      * @param updated_at 业务发生时间（即发生上下架事件的时刻），Unix毫秒数时间戳
      * @param is_online  内容上下架状态：true-上架，false-下架
      */
-    private void openPushAlbum(Integer id, Long updated_at, Boolean is_online) {
+    @Transactional
+    public void openPushAlbum(Integer id, Long updated_at, Boolean is_online) {
         int status = is_online ? StatusEnum.DEFAULT.getCode() : StatusEnum.HISTORY.getCode();
         int i = iXmlyAlbumMapper.upOrLow(id, new Date(updated_at), status);
         //获取专辑下声音id集合
@@ -841,7 +845,8 @@ public class IXmlyService {
      * @param updated_at            业务发生时间（即发生上下架事件的时刻），Unix毫秒数时间戳
      * @param is_online             内容上下架状态：true-上架，false-下架
      */
-    private void openPushTrack(Integer id, Integer subordinated_album_id, Long updated_at, Boolean is_online) {
+    @Transactional
+    public void openPushTrack(Integer id, Integer subordinated_album_id, Long updated_at, Boolean is_online) {
         List<XmlyTrack> xmlyTrackList = iXmlyTrackMapper.findOriginIdAndExtendCategoryOriginIdByCondition(new HashMap<String, Object>() {{
             put("originId", id);
         }});
