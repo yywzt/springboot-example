@@ -3,7 +3,7 @@ package com.example.yyw.limiting.annotation;
 import java.lang.annotation.*;
 
 /**
- * @author yanzhitao@xiaomalixing.com
+ * @author ywyw2424@foxmail.com
  * @date 2019/5/22 15:19
  * @describe
  */

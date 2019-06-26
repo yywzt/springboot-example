@@ -1,8 +1,8 @@
-package com.example.yyw.model.base;
-
+package com.example.yyw.base;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 public class GenericModel<PK> implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @Id
     protected PK id;
 
     /**

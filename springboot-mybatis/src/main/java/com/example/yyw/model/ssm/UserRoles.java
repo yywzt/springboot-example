@@ -1,6 +1,7 @@
 package com.example.yyw.model.ssm;
 
-import com.example.yyw.model.base.GenericModel;
+import com.example.yyw.base.GenericModel;
+
 import java.io.Serializable;
 
 /**

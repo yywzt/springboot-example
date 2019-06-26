@@ -3,7 +3,7 @@ package com.example.yyw.xmly.response;
 import lombok.Data;
 
 /**
- * @author yanzhitao@xiaomalixing.com
+ * @author ywyw2424@foxmail.com
  * @date 2019/6/6 10:49
  * @describe
  */

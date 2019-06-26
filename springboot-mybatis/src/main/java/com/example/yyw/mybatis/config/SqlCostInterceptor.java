@@ -11,7 +11,7 @@ import java.sql.Statement;
 import java.util.Properties;
 
 /**
- * @author yanzhitao@xiaomalixing.com
+ * @author ywyw2424@foxmail.com
  * @date 2019/6/20 20:13
  * @describe Sql执行时间记录拦截器
  */

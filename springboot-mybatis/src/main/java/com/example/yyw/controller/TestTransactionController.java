@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author yanzhitao@xiaomalixing.com
+ * @author ywyw2424@foxmail.com
  * @date 2019/6/25 17:52
  * @describe 测试springs事务
  *        同一个方法内 非事务方法内部调用事务方法（@Transactional）会导致事务失效

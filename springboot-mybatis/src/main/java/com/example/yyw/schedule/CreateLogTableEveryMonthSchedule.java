@@ -1,6 +1,6 @@
 package com.example.yyw.schedule;
 
-import com.example.yyw.model.base.GenericModel;
+import com.example.yyw.base.GenericModel;
 import com.example.yyw.model.ssm.Log;
 import com.example.yyw.service.TableService;
 import com.example.yyw.service.ssm.LogService;
@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;

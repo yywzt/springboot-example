@@ -1,7 +1,7 @@
 package com.example.yyw.fizzbuzz;
 
 /**
- * @author yanzhitao@xiaomalixing.com
+ * @author ywyw2424@foxmail.com
  * @date 2019/5/27 19:29
  * @describe
  */
