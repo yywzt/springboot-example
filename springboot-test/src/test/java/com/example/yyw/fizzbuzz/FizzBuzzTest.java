@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @author yanzhitao@xiaomalixing.com
+ * @author ywyw2424@foxmail.com
  * @date 2019/5/27 19:14
  * @describe 代码提炼快捷键 Ctrl+shift+Alt+T , alt+shift+m
  */

@@ -1,12 +1,12 @@
 package com.example.yyw.model.ssm;
 
-import com.example.yyw.model.base.GenericModel;
+import com.example.yyw.base.GenericModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @author yanzhitao@xiaomalixing.com
+ * @author ywyw2424@foxmail.com
  * @date 2019/6/25 17:59
  * @describe
  */

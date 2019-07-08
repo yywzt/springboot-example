@@ -1,0 +1,28 @@
+server:
+  port: 18082
+
+spring:
+  application:
+    name: SpringBoot_Mybatis_Plus
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://139.199.179.164:3306/boot-example?userUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=GMT%2B8&autoReconnect=true&autoReconnectForPools=true&failOverReadOnly=false
+    username: root
+    password: Root123
+
+mybatis:
+  configuration:
+    # 	是否开启自动驼峰命名规则（camel case）映射，即从经典数据库列名 A_COLUMN 到经典 Java 属性名 aColumn 的类似映射。
+    map-underscore-to-camel-case: true
+    default-fetch-size: 100
+    default-statement-timeout: 30
+#  mapper-locations:
+
+logging:
+  level:
+    root: info
+    com.example.yyw: debug
+    org.mybatis: debug
+  file: D:\\yw\\logs\\${spring.application.name}.log
+  file.max-size: 100MB
+  file.max-history: 60
