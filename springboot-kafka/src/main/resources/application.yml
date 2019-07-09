@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: springboot-kafka
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    producer:
+      retries: 0
+      batch-size: 16384
+      buffer-memory: 33554432
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: 0
+      auto-offset-reset: earliest
+      enable-auto-commit: true
+      auto-commit-interval: 100
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+server:
+  port: 18091
+
+logging:
+  level:
+    root: info
+    com.example.yyw: debug
+    org.mybatis: debug
+  file: D:\\yw\\logs\\${spring.application.name}.log
+  file.max-size: 100MB
+  file.max-history: 60
