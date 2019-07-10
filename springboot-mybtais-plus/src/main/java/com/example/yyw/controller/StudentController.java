@@ -24,32 +24,37 @@ public class StudentController {
     private StudentService studentService;
 
     @RequestMapping("/selectById")
-    public Student selectById(@RequestParam Long id){
+    public Student selectById(@RequestParam Long id) {
         return studentService.getById(id);
     }
 
     @RequestMapping("/selectList")
-    public List<Student> selectList(){
+    public List<Student> selectList() {
         return studentService.list();
     }
 
     @RequestMapping("/selectBatchIds")
-    public Object selectBatchIds(@RequestParam List<Long> ids){
+    public Object selectBatchIds(@RequestParam List<Long> ids) {
         return studentService.listByIds(ids);
     }
 
     @RequestMapping("/selectByMap")
-    public Object selectByMap(String value){
+    public Object selectByMap(String value) {
         Map<String, Object> columnMap = new HashMap<>();
-        columnMap.put("name",value);
+        columnMap.put("name", value);
         return studentService.listByMap(columnMap);
     }
 
     @RequestMapping("/getOne")
-    public Object getOne(String value){
+    public Object getOne(String value) {
         QueryWrapper<Student> wrapper = new QueryWrapper<Student>();
         wrapper.lambda().eq(Student::getName, value);
         return studentService.getOne(wrapper);
+    }
+
+    @RequestMapping("/remove")
+    public Object removeById(Long id) {
+        return studentService.removeById(id);
     }
 
 }
