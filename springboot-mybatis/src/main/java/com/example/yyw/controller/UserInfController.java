@@ -3,6 +3,7 @@ package com.example.yyw.controller;
 import com.example.yyw.config.Student;
 import com.example.yyw.mapper.ssm.UserInfMapper;
 import com.example.yyw.model.ssm.UserInf;
+import com.example.yyw.service.ssm.UserInfService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,8 @@ public class UserInfController {
 
     @Autowired
     private UserInfMapper userInfMapper;
+    @Autowired
+    private UserInfService userInfService;
 
     @RequestMapping("/findAll")
     public List<UserInf> findAll(){
@@ -43,5 +46,10 @@ public class UserInfController {
         UserInf all = userInfMapper.findUserInfByUname(username);
         log.info("userinf: {}",all);
         return all;
+    }
+
+    @RequestMapping("/testSort1")
+    public List<UserInf> test_sort_1(String sort){
+        return userInfService.test_sort_1(sort);
     }
 }

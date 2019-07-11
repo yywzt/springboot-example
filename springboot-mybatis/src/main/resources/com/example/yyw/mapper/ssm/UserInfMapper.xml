@@ -35,4 +35,10 @@
     where uname = #{uname}
   </select>
 
+  <select id="findUserInfByUnameAndPasswdAndSort" resultMap="BaseResultMap">
+    select * from user_inf
+    where enabled_flag = #{enableFlag}
+    order by ${sort}
+  </select>
+
 </mapper>

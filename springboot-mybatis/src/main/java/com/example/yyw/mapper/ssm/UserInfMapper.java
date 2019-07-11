@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import tk.mybatis.mapper.common.BaseMapper;
 
+import java.util.List;
+
 @Mapper
 public interface UserInfMapper extends BaseMapper<UserInf> {
 
@@ -26,4 +28,5 @@ public interface UserInfMapper extends BaseMapper<UserInf> {
      */
     UserInf findUserInfByUname(@Param("uname") String uname);
 
+    List<UserInf> findUserInfByUnameAndPasswdAndSort(@Param("enableFlag") Integer enableFlag, @Param("sort") String sort);
 }
