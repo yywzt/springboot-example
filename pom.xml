@@ -25,7 +25,9 @@
         <module>springboot-excel</module>
         <module>springboot-test</module>
         <module>springboot-jedis</module>
+        <module>springboot-jpa</module>
         <module>springboot-mybtais-plus</module>
+        <module>springboot-kafka</module>
     </modules>
 
     <properties>

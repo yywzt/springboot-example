@@ -1,0 +1,32 @@
+server:
+  port: 18088
+
+spring:
+  application:
+    name: springboot-jpa
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://139.199.179.164:3306/jpa_test?userUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=GMT%2B8&autoReconnect=true&autoReconnectForPools=true&failOverReadOnly=false
+    username: root
+    password: Root123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    database: mysql
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL55Dialect
+#        format_sql: true
+
+
+logging:
+  level:
+    root: info
+    com.example.yyw: debug
+    org.springframework.data.jpa: debug
+  file: D:\\yw\\logs\\${spring.application.name}.log
+  file.max-size: 100MB
+  file.max-history: 60

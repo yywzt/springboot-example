@@ -1,10 +1,8 @@
 package com.example.yyw.util;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Year;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  * @author ywyw2424@foxmail.com
@@ -150,15 +148,41 @@ public class TimeUtil {
         return localDateTime.plusMinutes(minutes);
     }
 
+    /**
+     * 获取秒数
+     * @param localDateTime
+     * @return
+     */
     public static long getEpochSecond(LocalDateTime localDateTime) {
-        //获取秒数
         return localDateTime.toEpochSecond(ZoneOffset.of("+8"));
     }
 
+    /**
+     * 获取毫秒值
+     * @param localDateTime
+     * @return
+     */
     public static long getEpochMilli(LocalDateTime localDateTime) {
-        //获取毫秒数
         return localDateTime.toInstant(ZoneOffset.of("+8")).toEpochMilli();
     }
 
+    /**
+     * LocalDateTime转Date
+     * @param localDateTime
+     * @return
+     */
+    public static Date converToDate(LocalDateTime localDateTime){
+        ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
+        return Date.from(zonedDateTime.toInstant());
+    }
+
+    /**
+     * Date转LocalDateTime
+     * @param date
+     * @return
+     */
+    public static LocalDateTime converToLocalDateTime(Date date){
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+    }
 
 }

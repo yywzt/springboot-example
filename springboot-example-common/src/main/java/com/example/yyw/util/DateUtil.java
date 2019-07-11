@@ -1,5 +1,7 @@
 package com.example.yyw.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -9,7 +11,18 @@ import java.util.Date;
  * @date 2019/5/7 16:25
  * @describe
  */
+@Slf4j
 public class DateUtil {
+
+    public static String dateToString(Date date){
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            return simpleDateFormat.format(date);
+        } catch (Exception e) {
+            log.error("dateToString error : {}", e.getMessage());
+            return "";
+        }
+    }
 
     public static Date getNowDate() {
         Calendar calendar = Calendar.getInstance();
