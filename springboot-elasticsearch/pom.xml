@@ -15,7 +15,20 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <elasticsearch.version>5.5.0</elasticsearch.version>
     </properties>
+
+    <!-- add the elasticsearch repo -->
+    <repository>
+        <id>elasticsearch-releases</id>
+        <url>https://artifacts.elastic.co/maven</url>
+        <releases>
+            <enabled>true</enabled>
+        </releases>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+    </repository>
 
     <dependencies>
         <dependency>
@@ -51,16 +64,5 @@
             </plugin>
         </plugins>
     </build>
-
-    <repository>
-        <id>elasticsearch-releases</id>
-        <url>https://artifacts.elastic.co/maven</url>
-        <releases>
-            <enabled>true</enabled>
-        </releases>
-        <snapshots>
-            <enabled>false</enabled>
-        </snapshots>
-    </repository>
 
 </project>
