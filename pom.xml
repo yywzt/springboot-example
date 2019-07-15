@@ -28,6 +28,7 @@
         <module>springboot-jpa</module>
         <module>springboot-mybtais-plus</module>
         <module>springboot-kafka</module>
+        <module>springboot-elasticsearch</module>
     </modules>
 
     <properties>
