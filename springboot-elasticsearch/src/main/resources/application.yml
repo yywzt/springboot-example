@@ -4,18 +4,18 @@ server:
 spring:
   application:
     name: springboot-elasticsearch
-#  data:
-#    elasticsearch:
-#      repositories:
-#        enabled: true
-#      cluster-name: elasticsearch
-#      cluster-nodes: 192.168.245.130:9300
-#      properties:
-#        path:
-#          home: /yw/wwwroot/elasticsearch
-#        transport:
-#          tcp:
-#            connect_timeout: 120s
+  data:
+    elasticsearch:
+      repositories:
+        enabled: true
+      cluster-name: elasticsearch
+      cluster-nodes: 192.168.222.128:9300
+      properties:
+        path:
+          home: /yw/wwwroot/elasticsearch
+        transport:
+          tcp:
+            connect_timeout: 120s
 
 logging:
   level:
