@@ -1,16 +1,16 @@
 package com.example.yyw;
 
+import com.example.yyw.redis_map.SkinMallStatisticalVo;
 import com.example.yyw.redispubsub.util.RedisUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -99,4 +99,27 @@ public class SpringbootRedisPubsubApplicationTests {
         assertTrue(!keys.contains(key2));
     }
 
+    @Test
+    public void test_hSet(){
+        String key = "hset";
+        SkinMallStatisticalVo skinMallStatisticalVo = new SkinMallStatisticalVo();
+        skinMallStatisticalVo.setUserCount(222);
+        skinMallStatisticalVo.setEnterCount(333);
+        skinMallStatisticalVo.setPayCount(444);
+        skinMallStatisticalVo.setUserAddCount(555);
+        skinMallStatisticalVo.setThemeCount(666);
+        skinMallStatisticalVo.setDetailsCount(777);
+        skinMallStatisticalVo.setDetailsCount(888);
+        skinMallStatisticalVo.setDetailsCount(999);
+        Map<String,Object> map = new HashMap<>(1);
+        map.put("2019-07-17", skinMallStatisticalVo);
+        map.put("2019-07-18", skinMallStatisticalVo);
+        redisTemplate.opsForHash().putAll(key, map);
+
+        Set keys = redisTemplate.opsForHash().keys(key);
+        System.out.println(keys);
+
+        SkinMallStatisticalVo vo = (SkinMallStatisticalVo) redisTemplate.opsForHash().get(key, "2019-07-17");
+        System.out.println(vo);
+    }
 }
