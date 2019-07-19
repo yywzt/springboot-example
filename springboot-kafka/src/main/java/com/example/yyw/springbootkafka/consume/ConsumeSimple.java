@@ -29,5 +29,11 @@ public class ConsumeSimple {
         Object o = value.get();
         Message message = JSONObject.parseObject(String.valueOf(o), Message.class);
         log.info("message: {}", message);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            log.error("thread sleep error: {}", e.getMessage());
+        }
+        log.info("消息消费成功!");
     }
 }
