@@ -2,8 +2,10 @@ package com.example.yyw.redis_map;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class SkinMallStatisticalVo {
+public class SkinMallStatisticalVo implements Serializable {
     private String createDate;
     private int userCount; //截止到当日用户总数
     private int enterCount; //进入商城页面用户数
