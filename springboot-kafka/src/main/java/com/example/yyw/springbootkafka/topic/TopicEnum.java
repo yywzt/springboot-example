@@ -7,12 +7,22 @@ package com.example.yyw.springbootkafka.topic;
  */
 public enum TopicEnum {
 
-    TEST("test");
+    TEST("test"),
+    TEST2("test2");
 
     private String name;
 
     TopicEnum(String name) {
         this.name = name;
+    }
+
+    public static TopicEnum findByName(String name) {
+        for (TopicEnum topicEnum : TopicEnum.values()) {
+            if (name.equals(topicEnum.getName())) {
+                return topicEnum;
+            }
+        }
+        return null;
     }
 
     public String getName() {
