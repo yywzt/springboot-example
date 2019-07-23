@@ -7,7 +7,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 
 
@@ -22,6 +21,7 @@ public class ConsumeSimple {
 
     @KafkaListener(topics = {"test2"})
     public void consumeOne(ConsumerRecord<String, String> consumerRecord) {
+        long startTime = System.currentTimeMillis();
         Optional<?> value = Optional.ofNullable(consumerRecord.value());
         if (!value.isPresent()) {
             log.warn("消息不存在");
@@ -30,12 +30,7 @@ public class ConsumeSimple {
         Object o = value.get();
         Message message = JSONObject.parseObject(String.valueOf(o), Message.class);
         log.info("message: {}", message);
-//        try {
-//            Thread.sleep(2000);
-//        } catch (InterruptedException e) {
-//            log.error("thread sleep error: {}", e.getMessage());
-//        }
-        log.info("test2 - 消息消费成功!");
+        log.info("test2 - 消息消费成功!耗时：{}ms", System.currentTimeMillis() - startTime);
     }
 
 }

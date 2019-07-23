@@ -22,6 +22,7 @@ public class ConsumeSimple2 {
 
     @KafkaListener(topics = {"test"}, containerFactory = "batchFactory")
     public void batchConsume(List<ConsumerRecord<String, String>> consumerRecords) {
+        Long startTime = System.currentTimeMillis();
         consumerRecords.stream().forEach(stringStringConsumerRecord -> {
             Optional<?> value = Optional.ofNullable(stringStringConsumerRecord.value());
             if (!value.isPresent()) {
@@ -32,11 +33,6 @@ public class ConsumeSimple2 {
             Message message = JSONObject.parseObject(String.valueOf(o), Message.class);
             log.info("message: {}", message);
         });
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            log.error("thread sleep error: {}", e.getMessage());
-        }
-        log.info("test - 消息消费成功!");
+        log.info("test - 消息消费成功!耗时：{}ms", System.currentTimeMillis() - startTime);
     }
 }
