@@ -1,9 +1,34 @@
+spring:
+  profiles:
+    active: test
+
+---
 server:
   port: 18093
 
 spring:
+  profiles: dev
   redis:
     host: 127.0.0.1
+    port: 6379
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: 1
+        max-idle: 8
+        min-idle: 0
+    timeout: 5000
+    database: 2
+    password: root
+
+---
+server:
+  port: 18093
+
+spring:
+  profiles: test
+  redis:
+    host: 192.168.0.108
     port: 6379
     jedis:
       pool:
