@@ -11,7 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  * @author ywyw2424@foxmail.com
@@ -39,26 +39,26 @@ public class CreateLogTableEveryMonthSchedule {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private void alterTableName(String tableName, String newTableName){
+    private void alterTableName(String tableName, String newTableName) {
         String sql = "ALTER TABLE " + tableName + " RENAME TO " + newTableName;
         int update = jdbcTemplate.update(sql);
-        log.info("{}",update);
+        log.info("{}", update);
     }
 
-    private void createTable(String tableName, String lastTableName){
+    private void createTable(String tableName, String lastTableName) {
         String sql = "CREATE TABLE IF NOT EXISTS " + TABLENAME + " like " + lastTableName;
         int update = jdbcTemplate.update(sql);
-        log.info("{}",update);
+        log.info("{}", update);
     }
 
     @Transactional(rollbackFor = RuntimeException.class)
     @Scheduled(cron = "0 0/1 * * * ? ")
-    private void createLogTable() {
+    public void createLogTable() {
         String date = TimeUtil.localDateTimeToString(TimeUtil.now(), TimeUtil.DEFAULT_DATE_TIME_FORMATTER2);
         String newTableName = new StringBuffer(TABLENAME).append(SEPARATOR).append(date).toString();
         bakLog(SCHEMANAME, TABLENAME, newTableName);
-        log.info("alter table msg : {}",tableService.tableExist(TABLENAME, date));
-        if(!tableService.tableExist(TABLENAME)){
+        log.info("alter table msg : {}", tableService.tableExist(TABLENAME, date));
+        if (!tableService.tableExist(TABLENAME)) {
             log.error("create table error");
             throw new RuntimeException("异常");
         }
@@ -67,10 +67,11 @@ public class CreateLogTableEveryMonthSchedule {
     /**
      * 调用存储过程
      * call bakLog('ssm','log','log_bak')
+     *
      * @param tableName
      * @param newTableName
      */
-    private void bakLog(String schemaName, String tableName, String newTableName){
+    private void bakLog(String schemaName, String tableName, String newTableName) {
         String sql = new StringBuffer("CALL bakLog").append(LEFTBRACKETS)
                 .append(APOSTROPHE).append(schemaName).append(APOSTROPHE).append(COMMA)
                 .append(APOSTROPHE).append(tableName).append(APOSTROPHE).append(COMMA)
@@ -82,19 +83,19 @@ public class CreateLogTableEveryMonthSchedule {
     private static final String GROUP_NAME = "YYW";
 
     @Scheduled(fixedDelay = 100)
-    public void init(){
+    public void init() {
         Log logs = new Log();
         logs.setGroupName(GROUP_NAME);
-        logs.setLogMsg("log msg : " + TimeUtil.localDateTimeToString(TimeUtil.now(),1));
+        logs.setLogMsg("log msg : " + TimeUtil.localDateTimeToString(TimeUtil.now(), 1));
         initCommonData(logs);
 
-        if(logService.getLogMapper().insert(logs) == 1){
+        if (logService.getLogMapper().insert(logs) == 1) {
             log.info("insert logs success");
         }
     }
 
-    private void initCommonData(GenericModel<Long> model){
+    private void initCommonData(GenericModel<Long> model) {
         model.setCreatedBy("-1");
-        model.setCreationDate(new Timestamp(System.currentTimeMillis()));
+        model.setCreationDate(LocalDateTime.now());
     }
 }
