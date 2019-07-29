@@ -1,13 +1,11 @@
 package com.example.yyw.model.redEnvelope;
 
-import com.example.yyw.model.GenericModel;
+import com.example.yyw.base.GenericModel;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * @version 1.0

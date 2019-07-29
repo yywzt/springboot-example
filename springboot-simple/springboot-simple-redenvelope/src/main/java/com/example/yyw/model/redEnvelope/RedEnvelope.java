@@ -1,8 +1,8 @@
 package com.example.yyw.model.redEnvelope;
 
+import com.example.yyw.base.GenericModel;
 import com.example.yyw.enums.EnvelopeEnum;
 import com.example.yyw.enums.EnvelopeStatusEnum;
-import com.example.yyw.model.GenericModel;
 import lombok.Data;
 
 import java.io.Serializable;

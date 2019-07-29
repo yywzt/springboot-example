@@ -1,6 +1,6 @@
 package com.example.yyw.model.redEnvelope;
 
-import com.example.yyw.model.GenericModel;
+import com.example.yyw.base.GenericModel;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;

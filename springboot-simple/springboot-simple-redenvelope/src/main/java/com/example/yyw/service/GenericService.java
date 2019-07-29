@@ -1,7 +1,7 @@
 package com.example.yyw.service;
 
+import com.example.yyw.base.GenericModel;
 import com.example.yyw.constant.Constants;
-import com.example.yyw.model.GenericModel;
 import com.example.yyw.util.TimeUtil;
 
 /**
