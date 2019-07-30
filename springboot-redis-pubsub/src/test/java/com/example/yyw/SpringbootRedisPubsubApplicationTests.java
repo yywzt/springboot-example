@@ -1,6 +1,5 @@
 package com.example.yyw;
 
-import com.bying.admin.model.vo.SkinMallStatisticalNewVo;
 import com.example.yyw.redis_map.SkinMallStatisticalVo;
 import com.example.yyw.redispubsub.util.RedisUtil;
 import org.junit.Test;
@@ -184,25 +183,4 @@ public class SpringbootRedisPubsubApplicationTests {
         System.out.println(parse);
     }
 
-    @Test
-    public void test_hget(){
-        String key = "NEW_SKIN_MALL_STATISTICAL";
-        Set keys = redisTemplate.opsForHash().keys(key);
-        System.out.println(keys);
-        List<SkinMallStatisticalNewVo> skinMallStatisticalVoList = redisTemplate.opsForHash().multiGet(key, keys);
-        skinMallStatisticalVoList = skinMallStatisticalVoList.stream().sorted((o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate())).collect(Collectors.toList());
-        System.out.println(skinMallStatisticalVoList);
-        SkinMallStatisticalNewVo vo = (SkinMallStatisticalNewVo) redisTemplate.opsForHash().get(key, "2019-07-17");
-        System.out.println(vo);
-        skinMallStatisticalVoList = redisTemplate.opsForHash().multiGet(key, Arrays.asList("2019-07-27", "2019-07-18", "2019-07-12"));
-        skinMallStatisticalVoList = skinMallStatisticalVoList.stream().filter(skinMallStatisticalNewVo -> skinMallStatisticalNewVo != null).collect(Collectors.toList());
-        System.out.println(skinMallStatisticalVoList);
-//
-//        skinMallStatisticalVoList = skinMallStatisticalVoList.stream().sorted((o1, o2) -> o2.getCreateDate().compareTo(o1.getCreateDate())).collect(Collectors.toList());
-//        System.out.println(skinMallStatisticalVoList);
-//
-//        Set<String> keySet = redisTemplate.opsForHash().keys(key);
-//        Optional<String> collect = keySet.stream().collect(Collectors.maxBy(Comparator.comparing(String::toString)));
-//        System.out.println(collect.isPresent() ? collect.get() : null);
-    }
 }
