@@ -9,7 +9,7 @@ spring:
       repositories:
         enabled: true
       cluster-name: elasticsearch
-      cluster-nodes: 192.168.222.128:9300
+      cluster-nodes: 192.168.0.108:9300
       properties:
         path:
           home: /yw/wwwroot/elasticsearch

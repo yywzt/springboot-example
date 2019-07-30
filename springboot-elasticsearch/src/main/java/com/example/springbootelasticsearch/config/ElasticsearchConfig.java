@@ -28,7 +28,7 @@ public class ElasticsearchConfig {
     @Value("${spring.data.elasticsearch.cluster-name:elasticsearch}")
     private String clusterName;
 
-    @Value("${spring.data.elasticsearch.cluster-nodes:192.168.222.128:9300}")
+    @Value("${spring.data.elasticsearch.cluster-nodes:192.168.0.108:9300}")
     private String clusterNodes;
 
     private static final String SPLIT_STR = ":";
