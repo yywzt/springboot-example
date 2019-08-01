@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class IXmlyService {
 
-    private static final String OTHER_IF_URL = "http://127.0.0.1:19091";
+    private static final String OTHER_IF_URL = "http://127.0.0.1:18083";
     /**
      * 分类
      */
@@ -929,5 +929,34 @@ public class IXmlyService {
         stringRedisTemplate.opsForSet()
                 .add(XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_LIST_CACHE_PREFIX, xmlyExtendCategoryOriginIdList.toArray(new String[0]));
         log.info("=========build ximalaya cache use time=========" + (System.currentTimeMillis() - startTime) + "ms");
+    }
+
+    public void  saveTrackByAlbumId(Long albumId) throws BusinessException {
+        StringBuilder url = new StringBuilder(XMLY_TRACK_BYALBUM);
+        url.append("albumId=" + albumId);
+        url.append("&page=" + 0);
+        url.append("&size=" + 200);
+        System.out.println("====url===" + url.toString());
+        String responseStr = HttpUtil.httpGet(url.toString());
+
+        if (StringUtils.isBlank(responseStr)) {
+            throw new BusinessException("第三方请求结果为空");
+        }
+        JSONObject jsonObject = JSON.parseObject(responseStr);
+        if (!jsonObject.containsKey("list")) {
+            throw new BusinessException("第三方请求结果格式不正确，缺少list字段");
+        }
+        List<XmlyTrack> xmlyTrackList = jsonObject.getJSONArray("list").toJavaList(XmlyTrack.class);
+        if (CollectionUtils.isNotEmpty(xmlyTrackList)) {
+            Date currentDate = new Date();
+            xmlyTrackList.forEach(xmlyTrack -> {
+                xmlyTrack.setExtendCategoryOriginId(xmlyTrack.getCategoryOriginId());
+                xmlyTrack.setAlbumOriginId(albumId);
+                xmlyTrack.setCreateDate(currentDate);
+                xmlyTrack.setModifyDate(currentDate);
+                xmlyTrack.setStatus(StatusEnum.DEFAULT.getCode());
+            });
+            iXmlyTrackMapper.batchSave(xmlyTrackList);
+        }
     }
 }

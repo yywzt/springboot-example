@@ -18,6 +18,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
+@RequestMapping("/customer")
 public class CustomerController {
     @Autowired
     private CustomerService customerService;
@@ -38,8 +39,8 @@ public class CustomerController {
     }
 
     @RequestMapping("/selectAll")
-    public void selectAll(){
-        customerService.selectAll();
+    public Object selectAll(){
+        return customerService.selectAll();
     }
 
     @RequestMapping(value = "/findAll",method = RequestMethod.GET)

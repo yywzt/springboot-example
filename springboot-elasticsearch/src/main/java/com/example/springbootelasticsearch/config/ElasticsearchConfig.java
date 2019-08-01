@@ -40,6 +40,7 @@ public class ElasticsearchConfig {
                 .put("cluster.name", clusterName)
                 .put("xpack.security.user", username + SPLIT_STR + password)
                 .build())
+//                .addTransportAddress(new TransportAddress(InetAddress.getByName(split[0]), Integer.valueOf(split[1])));
                 .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(split[0]), Integer.valueOf(split[1])));
         return client;
     }

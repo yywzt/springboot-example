@@ -2,14 +2,11 @@ package com.example.yyw.xmly.controller;
 
 import com.example.yyw.util.ResultUtil;
 import com.example.yyw.xmly.exception.BusinessException;
-import com.example.yyw.xmly.response.OpenPushResponse;
 import com.example.yyw.xmly.service.IXmlyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 /**
  * @author ywyw2424@foxmail.com
@@ -71,6 +68,12 @@ public class XmlySyncController {
     @RequestMapping(value = "/buildXimalayaTrackCacheTmp")
     public Object buildXimalayaTrackCacheTmp(){
         iXmlyService.buildXimalayaTrackCacheTmp();
+        return ResultUtil.successResult();
+    }
+
+    @RequestMapping("/saveTrackByAlbum")
+    public Object saveTrackByAlbum(Long albumId) throws BusinessException {
+        iXmlyService.saveTrackByAlbumId(albumId);
         return ResultUtil.successResult();
     }
 

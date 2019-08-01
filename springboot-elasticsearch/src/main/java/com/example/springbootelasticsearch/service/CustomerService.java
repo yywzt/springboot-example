@@ -55,8 +55,8 @@ public class CustomerService {
     }
 
     public List<Customer> findAll() {
-        Sort sort = Sort.by("_id").ascending();
-        Iterable<Customer> customerIterable = customerRepository.findAll(sort);
+//        Sort sort = Sort.by("creationDate").ascending();
+        Iterable<Customer> customerIterable = customerRepository.findAll();
         List<Customer> customerList = new ArrayList<>();
         customerIterable.forEach(customer -> customerList.add(customer));
         return customerList;

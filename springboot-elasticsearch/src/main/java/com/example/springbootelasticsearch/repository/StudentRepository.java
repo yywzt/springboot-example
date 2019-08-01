@@ -1,12 +1,12 @@
 package com.example.springbootelasticsearch.repository;
 
-import com.example.springbootelasticsearch.modal.Customer;
+import com.example.springbootelasticsearch.modal.Student;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 /**
  * @author yanzhitao@xiaomalixing.com
- * @date 2019/7/15 17:07
+ * @date 2019/8/1 10:50
  * @describe
  */
-public interface CustomerRepository extends ElasticsearchRepository<Customer,String> {
+public interface StudentRepository extends ElasticsearchRepository<Student, String> {
 }
