@@ -12,12 +12,14 @@ import com.example.yyw.xmly.modal.xmly.XmlyAlbum;
 import com.example.yyw.xmly.modal.xmly.XmlyCategory;
 import com.example.yyw.xmly.modal.xmly.XmlyTrack;
 import com.example.yyw.xmly.response.OpenPushResponse;
+import com.example.yyw.xmlyService.service.XiMaLaYaService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -64,6 +66,8 @@ public class IXmlyService {
     private RecommendResultMapper recommendResultMapper;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    private XiMaLaYaService xiMaLaYaService;
 
     /**
      * 保存分类
@@ -306,8 +310,7 @@ public class IXmlyService {
      * @throws BusinessException
      */
     private void saveAllCategory(String tableName) throws BusinessException {
-        String url = OTHER_IF_URL + "/ximalaya/category/list";
-        String responseStr = HttpUtil.httpGet(url);
+        String responseStr =  ResultUtil.successResult(xiMaLaYaService.getCategoryList()).toString();
         if (StringUtils.isBlank(responseStr)) {
             log.error("分类-第三方请求结果为空");
             throw new BusinessException("分类-第三方请求结果为空");
@@ -360,11 +363,7 @@ public class IXmlyService {
         int currentPage = 0;
         int pageSize = 200;
         while (true) {
-            StringBuilder url = new StringBuilder(OTHER_IF_URL + "/ximalaya/album/list?");
-            url.append("categoryId=" + categoryId);
-            url.append("&page=" + currentPage);
-            url.append("&size=" + pageSize);
-            String responseStr = HttpUtil.httpGet(url.toString());
+            String responseStr = JSONObject.toJSONString(xiMaLaYaService.getAlbumList(categoryId, null, 1, PageRequest.of(currentPage, pageSize)));
             if (StringUtils.isBlank(responseStr)) {
                 log.error("专辑-第三方请求结果为空");
                 throw new BusinessException("专辑-第三方请求结果为空");
@@ -435,12 +434,8 @@ public class IXmlyService {
             int currentPage = 0;
             int pageSize = 200;
             while (true) {
-                StringBuilder url = new StringBuilder(OTHER_IF_URL + "/ximalaya/track/byAlbum?");
-                url.append("albumId=" + albumId);
-                url.append("&page=" + currentPage);
-                url.append("&size=" + pageSize);
-                System.out.println("====url===" + url.toString());
-                String responseStr = HttpUtil.httpGet(url.toString());
+                String responseStr = JSONObject.toJSONString(xiMaLaYaService.albumBrowse(albumId, "asc", PageRequest.of(currentPage, pageSize)));
+
                 if (StringUtils.isBlank(responseStr)) {
                     log.error("声音-第三方请求结果为空");
                     throw new BusinessException("声音-第三方请求结果为空");
@@ -475,8 +470,7 @@ public class IXmlyService {
             xmlyAlbum.setModifyDate(DateUtil.getNowDate());
             basedMapper.updateAlbumStatus(xmlyAlbum, XMLY_ALBUM_BACK_TMP);
         } catch (Exception e) {
-            log.error("Exception when save track by album", e);
-            log.error("Exception when save track by album {}", xmlyAlbum.getOriginId());
+            log.error("Exception when save track by album {}, error: {}", xmlyAlbum.getOriginId(), e.getMessage());
         }
     }
 
