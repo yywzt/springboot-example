@@ -12,7 +12,7 @@ import org.gavaghan.geodesy.GlobalCoordinates;
  */
 public class CaculateDistanceUtil {
 
-    public static void main(String[] args)
+    /*public static void main(String[] args)
     {
         GlobalCoordinates source = new GlobalCoordinates(29.490295, 106.486654);
         GlobalCoordinates target = new GlobalCoordinates(29.615467, 106.581515);
@@ -32,7 +32,7 @@ public class CaculateDistanceUtil {
 
         System.out.println("Sphere坐标系计算结果："+meter1 + "米");
         System.out.println("WGS84坐标系计算结果："+meter2 + "米");
-    }
+    }*/
 
     public static double getDistanceMeter(GlobalCoordinates gpsFrom, GlobalCoordinates gpsTo, Ellipsoid ellipsoid)
     {
