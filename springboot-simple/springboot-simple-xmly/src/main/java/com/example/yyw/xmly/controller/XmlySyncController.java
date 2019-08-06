@@ -77,4 +77,14 @@ public class XmlySyncController {
         return ResultUtil.successResult();
     }
 
+    @RequestMapping("/syncStatus")
+    public Object syncStatus(){
+        return iXmlyService.syncStatus();
+    }
+
+    @RequestMapping("/renameRedisKey")
+    public void renameRedisKey(){
+        iXmlyService.alterXmlyRedisKey();
+    }
+
 }

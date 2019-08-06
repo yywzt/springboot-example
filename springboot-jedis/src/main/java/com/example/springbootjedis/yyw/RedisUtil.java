@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.ScanParams;
+import redis.clients.jedis.ScanResult;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class RedisUtil {
@@ -137,6 +137,28 @@ public class RedisUtil {
     public Set<String> keys(String pattern) {
         try (Jedis jedis = jedisPool.getResource()) {
             return jedis.keys(pattern + "*");
+        }
+    }
+
+    public List<String> scans(String pattern, Integer count) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            List<String> list = new ArrayList<>();
+            String cursor = "0";
+            while(true) {
+                ScanParams params = new ScanParams();
+                params.match(pattern);
+                params.count(count);
+                ScanResult<String> scanResult = jedis.scan(cursor, params);
+                List<String> elements = scanResult.getResult();
+                if (elements != null && elements.size() > 0) {
+                    list.addAll(elements);
+                }
+                cursor = scanResult.getStringCursor();
+                if ("0".equals(cursor)) {
+                    break;
+                }
+            }
+            return list;
         }
     }
 }

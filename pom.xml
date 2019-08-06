@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.4.RELEASE</version>
+        <version>2.1.6.RELEASE</version>
     </parent>
     <groupId>com.example</groupId>
     <artifactId>springboot-example</artifactId>
@@ -35,7 +35,7 @@
     <properties>
         <java.version>1.8</java.version>
         <spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
-        <spring-boot.version>2.1.4.RELEASE</spring-boot.version>
+        <spring-boot.version>2.1.6.RELEASE</spring-boot.version>
         <redisson.version>3.10.6</redisson.version>
         <mybatis.version>2.0.1</mybatis.version>
         <mybatis-plus.version>3.1.0</mybatis-plus.version>

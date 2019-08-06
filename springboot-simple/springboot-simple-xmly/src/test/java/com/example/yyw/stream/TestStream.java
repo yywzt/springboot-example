@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,5 +38,28 @@ public class TestStream {
         List<Long> collect2 = originIdList2.stream().filter(aLong -> !originIdList.contains(aLong)).collect(Collectors.toList());
         log.info("collect: {}",collect);
         log.info("collect: {}",collect2);
+    }
+
+    @Test
+    public void test_2(){
+        ArrayList<String> strings = new ArrayList<String>(){{
+            add("a");
+            add("b");
+            add("c");
+            add("d");
+            add("e");
+        }};
+        ArrayList<String> strings2 = null;
+//        ArrayList<String> strings2 = new ArrayList<String>(){{
+//            add("a");
+//            add("b");
+//            add("g");
+//        }};
+
+        System.out.println(strings);
+        System.out.println(strings2);
+        boolean b = strings.removeAll(strings2);
+        System.out.println(strings);
+        System.out.println(strings2);
     }
 }

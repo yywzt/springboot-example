@@ -162,4 +162,18 @@ public class RedisUtilTest {
         assertTrue(keys.contains(OLDKEY));
         assertTrue(!keys.contains(key2));
     }
+
+    public static final String XIMALAYA_CACHE_COMMON_PREFIX = "XIMALAYA:";
+    public static final String XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_TO_TRACK_ID_CACHE_PREFIX = XIMALAYA_CACHE_COMMON_PREFIX + "EOCI_TI:";
+    public static final String XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_LIST_CACHE_PREFIX = XIMALAYA_CACHE_COMMON_PREFIX + "EOCI_LIST";
+
+    @Test
+    public void scan(){
+        List<String> scan = redisUtil.scans(XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_TO_TRACK_ID_CACHE_PREFIX + "*", 50);
+        List<String> scan1 = redisUtil.scans(XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_LIST_CACHE_PREFIX + "*", 50);
+        System.out.println(scan);
+        System.out.println(scan.size());
+        System.out.println(scan1);
+        System.out.println(scan1.size());
+    }
 }
