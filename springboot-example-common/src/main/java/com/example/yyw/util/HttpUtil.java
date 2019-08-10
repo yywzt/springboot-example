@@ -3,6 +3,7 @@ package com.example.yyw.util;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -22,13 +23,23 @@ import java.util.Map.Entry;
  * @describe
  */
 public class HttpUtil {
-	
+
+	/**
+	 * 等待请求返回结果时长，单位：毫秒
+	 */
+	private static final int SOCKET_TIMEOUT_IN_MILLIS = 2000;
+
+	private static final RequestConfig requestConfig = RequestConfig.custom()
+			.setConnectTimeout(SOCKET_TIMEOUT_IN_MILLIS)
+			.setSocketTimeout(SOCKET_TIMEOUT_IN_MILLIS)
+			.build();
+
 	public static String httpGet(String url) {
 		CloseableHttpClient httpclient = null;
 		HttpGet httpget = new HttpGet(url);
 		String result = "";
 		try {
-			httpclient = HttpClients.custom().build();
+			httpclient = HttpClients.custom().setDefaultRequestConfig(requestConfig).build();
 			CloseableHttpResponse response = httpclient.execute(httpget);
 			HttpEntity entity = response.getEntity();
             if (entity != null) {

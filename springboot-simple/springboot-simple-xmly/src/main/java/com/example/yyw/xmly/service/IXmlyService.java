@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
@@ -960,22 +961,28 @@ public class IXmlyService {
         List<String> xmlyExtendCategoryOriginIdList = iXmlyTrackMapper.findExtendCategoryOriginIdByCondition(new HashedMap() {{
             put("status", StatusEnum.DEFAULT.getCode());
         }});
-        List<String> noEffectiveTrackIds = new ArrayList<>();
-        xmlyExtendCategoryOriginIdList.forEach(extendCategoryOriginId -> {
-            List<XmlyTrack> xmlyTrackList = iXmlyTrackMapper.findOriginIdAndExtendCategoryOriginIdByCondition(new HashMap<String, Object>() {{
-                put("status", StatusEnum.DEFAULT.getCode());
-                put("extendCategoryOriginId", extendCategoryOriginId);
-            }});
-            List<String> originIds = xmlyTrackList.stream().map(xmlyTrack -> xmlyTrack.getOriginId().toString()).collect(Collectors.toList());
-            List<String> effectiveTrackIds = null;
-            try {
-                effectiveTrackIds = getStatusFromXmly(originIds);
-            } catch (BusinessException e) {
-                log.error("getStatusFromXmly error");
-            }
-            noEffectiveTrackIds.addAll(originIds);
-        });
-        return noEffectiveTrackIds;
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(0, 50, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+        CompletionService<List<String>> completionService = new ExecutorCompletionService(threadPoolExecutor);
+        int count = 0;
+        for (int i = 0; i < xmlyExtendCategoryOriginIdList.size(); i++) {
+            count++;
+            String extendCategoryOriginId = xmlyExtendCategoryOriginIdList.get(i);
+            completionService.submit(() -> {
+                List<XmlyTrack> xmlyTrackList = iXmlyTrackMapper.findOriginIdAndExtendCategoryOriginIdByCondition(new HashMap<String, Object>() {{
+                    put("status", StatusEnum.DEFAULT.getCode());
+                    put("extendCategoryOriginId", extendCategoryOriginId);
+                }});
+                List<String> originIds = xmlyTrackList.stream().map(xmlyTrack -> xmlyTrack.getOriginId().toString()).collect(Collectors.toList());
+                try {
+                    List<String> statusFromXmly = getStatusFromXmly(originIds);
+                    return statusFromXmly;
+                } catch (BusinessException e) {
+                    log.error("getStatusFromXmly error");
+                    return null;
+                }
+            });
+        }
+        return true;
     }
 
     /**
@@ -1009,7 +1016,7 @@ public class IXmlyService {
             List<String> existTrackIds = xmlyTrackList.stream().map(xmlyTrack -> xmlyTrack.getOriginId().toString()).collect(Collectors.toList());
             groupTrackId.removeAll(existTrackIds);
             if (CollectionUtils.isNotEmpty(groupTrackId)) {
-                effectiveTrackId.addAll(groupTrackId);
+                stringRedisTemplate.opsForSet().add("EFFECTIVE_TRACK_ID_LIST", groupTrackId.stream().toArray(String[]::new));
             }
         }
         return effectiveTrackId;
@@ -1028,9 +1035,13 @@ public class IXmlyService {
             stringRedisTemplate.delete(keys);
         }
         if (CollectionUtils.isNotEmpty(tmpKeys)) {
-            tmpKeys.forEach(s -> {
-                stringRedisTemplate.rename(s, s.replace(TMP + RISK, ""));
-            });
+            tmpKeys.forEach(s -> stringRedisTemplate.rename(s, s.replace(TMP + RISK, "")));
         }
+    }
+
+    public String getEff() {
+        Set<String> members = stringRedisTemplate.opsForSet().members("EFFECTIVE_TRACK_ID_LIST");
+        String collect = members.stream().collect(Collectors.joining(","));
+        return collect;
     }
 }

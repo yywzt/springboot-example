@@ -87,4 +87,9 @@ public class XmlySyncController {
         iXmlyService.alterXmlyRedisKey();
     }
 
+    @RequestMapping("/getEff")
+    public String getEff(){
+        return iXmlyService.getEff();
+    }
+
 }
