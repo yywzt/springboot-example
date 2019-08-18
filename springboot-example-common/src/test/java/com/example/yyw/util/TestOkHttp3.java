@@ -9,11 +9,11 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * @author yanzhitao@xiaomalixing.com
  * @date 2019/8/15 22:30
- * @describe
  */
 @Slf4j
 public class TestOkHttp3 {
@@ -33,7 +33,7 @@ public class TestOkHttp3 {
     @Test
     public void test_post() {
         String json = "{\"id\":10,\"createdBy\":null,\"creationDate\":null,\"updatedBy\":\"-1\",\"updationDate\":null,\"enabledFlag\":1,\"uname\":null,\"passwd\":null,\"gentel\":null,\"email\":null,\"city\":null,\"roles\":null}";
-        OkHttp3Util.post(USERINF_SAVE_URL, json, OkHttp3Util.JSON_MEDIATYPE);
+        OkHttp3Util.post(USERINF_SAVE_URL, json, OkHttp3Util.getJsonMediatype());
     }
     @Test
     public void test_post2() {
@@ -52,7 +52,7 @@ public class TestOkHttp3 {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                log.info("OkHttp3Util Callback success : {}", response.body().string());
+                log.info("OkHttp3Util Callback success : {}", Objects.requireNonNull(response.body()).string());
             }
         });
     }
@@ -61,7 +61,7 @@ public class TestOkHttp3 {
     public void test_upload_file(){
         String path = "C:\\Users\\yw\\Pictures\\bf85efd8-c56c-4ae8-aa5c-e887f4eb9bb1.jpeg";
         String prefixPath = "yyw";
-        OkHttp3Util.post_form_data(UPLOAD_FILE, path, prefixPath);
+        OkHttp3Util.postFormData(UPLOAD_FILE, path, prefixPath);
     }
     
 }
