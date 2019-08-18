@@ -1,11 +1,13 @@
 package com.example.yyw.controller;
 
 import com.example.yyw.config.Student;
+import com.example.yyw.constant.ResponseData;
 import com.example.yyw.mapper.ssm.UserInfMapper;
 import com.example.yyw.model.ssm.UserInf;
 import com.example.yyw.service.ssm.UserInfService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,11 +37,21 @@ public class UserInfController {
 
     @RequestMapping("/findAll")
     public List<UserInf> findAll(){
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         log.info("dataSource: {}",primaryDataSource);
         log.info("dataSource: {}",student);
         List<UserInf> all = userInfMapper.selectAll();
         log.info("userinf: {}",all);
         return all;
+    }
+    @RequestMapping("/save")
+    public ResponseData save(@RequestBody UserInf userInf){
+        log.info("userInf: {}",userInf);
+        return ResponseData.success();
     }
     @RequestMapping("/findUserInfByUname")
     public UserInf findUserInfByUname(String username){
