@@ -33,13 +33,15 @@ public class TestOkHttp3 {
     @Test
     public void test_post() {
         String json = "{\"id\":10,\"createdBy\":null,\"creationDate\":null,\"updatedBy\":\"-1\",\"updationDate\":null,\"enabledFlag\":1,\"uname\":null,\"passwd\":null,\"gentel\":null,\"email\":null,\"city\":null,\"roles\":null}";
-        OkHttp3Util.post(USERINF_SAVE_URL, json, OkHttp3Util.getJsonMediatype());
+        String result = OkHttp3Util.post(USERINF_SAVE_URL, json, OkHttp3Util.getJsonMediatype());
+        log.info(result);
     }
     @Test
     public void test_post2() {
-        OkHttp3Util.post(USERINF_FIND_BY_USERNAME, new HashMap<String, String>(){{
+        String result = OkHttp3Util.post(USERINF_FIND_BY_USERNAME, new HashMap<String, String>() {{
             put("username", "aaa");
         }});
+        log.info(result);
     }
 
     @Test
@@ -61,7 +63,8 @@ public class TestOkHttp3 {
     public void test_upload_file(){
         String path = "C:\\Users\\yw\\Pictures\\bf85efd8-c56c-4ae8-aa5c-e887f4eb9bb1.jpeg";
         String prefixPath = "yyw";
-        OkHttp3Util.postFormData(UPLOAD_FILE, path, prefixPath);
+        String result = OkHttp3Util.postFormData(UPLOAD_FILE, path, prefixPath);
+        log.info(result);
     }
     
 }

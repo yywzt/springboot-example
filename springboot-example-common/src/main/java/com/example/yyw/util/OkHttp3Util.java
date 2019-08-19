@@ -5,8 +5,10 @@ import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -55,7 +57,7 @@ public class OkHttp3Util {
         }
     }
 
-    static String post(String url, String json, MediaType mediaType) {
+    public static String post(String url, String json, MediaType mediaType) {
         if(mediaType == null) {
             mediaType = JSON_MEDIATYPE;
         }
@@ -70,13 +72,20 @@ public class OkHttp3Util {
                     .build();
 
             try (Response response = client.newCall(request).execute()) {
-                String result = Objects.requireNonNull(response.body()).string();
+                StringBuffer result = new StringBuffer();
+                Optional.ofNullable(response.body()).ifPresent(responseBody -> {
+                    try {
+                        result.append(responseBody.string());
+                    } catch (IOException e) {
+                        log.error("OkHttp3Util post responseBody.string error : {}", e.getMessage());
+                    }
+                });
                 if (response.isSuccessful()) {
                     log.info("OkHttp3Util post success。[URL: {}], [body: {}], [response: {}]", url, json, result);
                 } else {
                     log.info("OkHttp3Util post failure。[URL: {}], [body: {}], [response: {}]", url, json, result);
                 }
-                return result;
+                return result.toString();
             }
         } catch (Exception e) {
             log.error("OkHttp3Util post error : {}", e.getMessage());
