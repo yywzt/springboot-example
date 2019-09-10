@@ -22,7 +22,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/ximalaya")
-public class XiMaLaYaControllers {
+public class XiMaLaYaController {
     @Autowired
     private XiMaLaYaService xiMaLaYaService;
 

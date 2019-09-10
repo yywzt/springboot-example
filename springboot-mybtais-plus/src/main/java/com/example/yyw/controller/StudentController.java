@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.yyw.modal.Student;
 import com.example.yyw.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,6 +56,11 @@ public class StudentController {
     @RequestMapping("/remove")
     public Object removeById(Long id) {
         return studentService.removeById(id);
+    }
+
+    @RequestMapping("/save")
+    public Object save(@RequestBody Student student){
+        return studentService.save(student);
     }
 
 }

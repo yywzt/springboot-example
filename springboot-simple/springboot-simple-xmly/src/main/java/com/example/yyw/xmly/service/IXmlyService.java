@@ -13,6 +13,7 @@ import com.example.yyw.xmly.modal.xmly.XmlyCategory;
 import com.example.yyw.xmly.modal.xmly.XmlyTrack;
 import com.example.yyw.xmly.response.OpenPushResponse;
 import com.example.yyw.xmlyService.service.XiMaLaYaService;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.map.HashedMap;
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
@@ -53,6 +55,7 @@ public class IXmlyService {
      * 专辑下声音碎片
      */
     private static final String XMLY_TRACK_BYALBUM = OTHER_IF_URL + "/ximalaya/track/byAlbum?";
+    private static final String XMLY_TRACK_BATCH = OTHER_IF_URL + "/ximalaya/track/batch?";
 
     @Autowired
     private IXmlyAlbumMapper iXmlyAlbumMapper;
@@ -310,7 +313,7 @@ public class IXmlyService {
      * @throws BusinessException
      */
     private void saveAllCategory(String tableName) throws BusinessException {
-        String responseStr =  ResultUtil.successResult(xiMaLaYaService.getCategoryList()).toString();
+        String responseStr = ResultUtil.successResult(xiMaLaYaService.getCategoryList()).toString();
         if (StringUtils.isBlank(responseStr)) {
             log.error("分类-第三方请求结果为空");
             throw new BusinessException("分类-第三方请求结果为空");
@@ -925,7 +928,7 @@ public class IXmlyService {
         log.info("=========build ximalaya cache use time=========" + (System.currentTimeMillis() - startTime) + "ms");
     }
 
-    public void  saveTrackByAlbumId(Long albumId) throws BusinessException {
+    public void saveTrackByAlbumId(Long albumId) throws BusinessException {
         StringBuilder url = new StringBuilder(XMLY_TRACK_BYALBUM);
         url.append("albumId=" + albumId);
         url.append("&page=" + 0);
@@ -952,5 +955,93 @@ public class IXmlyService {
             });
             iXmlyTrackMapper.batchSave(xmlyTrackList);
         }
+    }
+
+    public Object syncStatus() {
+        List<String> xmlyExtendCategoryOriginIdList = iXmlyTrackMapper.findExtendCategoryOriginIdByCondition(new HashedMap() {{
+            put("status", StatusEnum.DEFAULT.getCode());
+        }});
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(0, 50, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+        CompletionService<List<String>> completionService = new ExecutorCompletionService(threadPoolExecutor);
+        int count = 0;
+        for (int i = 0; i < xmlyExtendCategoryOriginIdList.size(); i++) {
+            count++;
+            String extendCategoryOriginId = xmlyExtendCategoryOriginIdList.get(i);
+            completionService.submit(() -> {
+                List<XmlyTrack> xmlyTrackList = iXmlyTrackMapper.findOriginIdAndExtendCategoryOriginIdByCondition(new HashMap<String, Object>() {{
+                    put("status", StatusEnum.DEFAULT.getCode());
+                    put("extendCategoryOriginId", extendCategoryOriginId);
+                }});
+                List<String> originIds = xmlyTrackList.stream().map(xmlyTrack -> xmlyTrack.getOriginId().toString()).collect(Collectors.toList());
+                try {
+                    List<String> statusFromXmly = getStatusFromXmly(originIds);
+                    return statusFromXmly;
+                } catch (BusinessException e) {
+                    log.error("getStatusFromXmly error");
+                    return null;
+                }
+            });
+        }
+        return true;
+    }
+
+    /**
+     * 根据声音id集合 获取声音信息
+     *
+     * @param trackIds
+     * @return 返回无效的声音id集合
+     * @throws BusinessException
+     */
+    public List<String> getStatusFromXmly(List<String> trackIds) throws BusinessException {
+        if (CollectionUtils.isEmpty(trackIds)) {
+            return null;
+        }
+        List<String> effectiveTrackId = new ArrayList<>();
+        List<List<String>> groupTrackIds = Lists.partition(trackIds, 200);
+        for (int i = 0; i < groupTrackIds.size(); i++) {
+            List<String> groupTrackId = groupTrackIds.get(i);
+            String ids = groupTrackId.stream().collect(Collectors.joining(","));
+            StringBuilder url = new StringBuilder(XMLY_TRACK_BATCH);
+            url.append("ids=" + ids);
+            System.out.println("====url===" + url.toString());
+            String responseStr = HttpUtil.httpGet(url.toString());
+            if (StringUtils.isBlank(responseStr)) {
+                throw new BusinessException("第三方请求结果为空");
+            }
+            JSONObject jsonObject = JSON.parseObject(responseStr);
+            if (!jsonObject.containsKey("data")) {
+                throw new BusinessException("第三方请求结果格式不正确，缺少list字段");
+            }
+            List<XmlyTrack> xmlyTrackList = jsonObject.getJSONArray("data").toJavaList(XmlyTrack.class);
+            List<String> existTrackIds = xmlyTrackList.stream().map(xmlyTrack -> xmlyTrack.getOriginId().toString()).collect(Collectors.toList());
+            groupTrackId.removeAll(existTrackIds);
+            if (CollectionUtils.isNotEmpty(groupTrackId)) {
+                stringRedisTemplate.opsForSet().add("EFFECTIVE_TRACK_ID_LIST", groupTrackId.stream().toArray(String[]::new));
+            }
+        }
+        return effectiveTrackId;
+    }
+
+    public void alterXmlyRedisKey() {
+        if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(TMP_XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_LIST_CACHE_PREFIX))) {
+            stringRedisTemplate.rename(TMP_XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_LIST_CACHE_PREFIX, XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_LIST_CACHE_PREFIX);
+        }
+        Set<String> keys = stringRedisTemplate.keys(XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_TO_TRACK_ID_CACHE_PREFIX + "*");
+        Set<String> tmpKeys = stringRedisTemplate.keys(TMP_XIMALAYA_EXTEND_ORIGIN_CATEGORY_ID_TO_TRACK_ID_CACHE_PREFIX + "*");
+        if (CollectionUtils.isNotEmpty(keys) && CollectionUtils.isNotEmpty(tmpKeys)) {
+            keys.removeAll(tmpKeys);
+        }
+        if (CollectionUtils.isNotEmpty(keys)) {
+            stringRedisTemplate.delete(keys);
+        }
+        if (CollectionUtils.isNotEmpty(tmpKeys)) {
+            tmpKeys.forEach(s -> stringRedisTemplate.rename(s, s.replace(TMP + RISK, "")));
+        }
+    }
+
+    public String getEff() {
+        Set<String> members = stringRedisTemplate.opsForSet().members("EFFECTIVE_TRACK_ID_LIST");
+        String collect = members.stream().collect(Collectors.joining(","));
+        return collect;
     }
 }
