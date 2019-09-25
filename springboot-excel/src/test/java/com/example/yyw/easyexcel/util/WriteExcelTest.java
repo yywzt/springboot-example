@@ -56,4 +56,13 @@ public class WriteExcelTest {
         }
         return excelPropertyIndexModelList;
     }
+
+    @Test
+    public void test_2(){
+        try {
+            WriteExcelUtil.write(System.currentTimeMillis() + ".xlsx", getListModal(), ExcelPropertyIndexModel.class);
+        } catch (FileNotFoundException e) {
+            log.error("{}", e.getStackTrace());
+        }
+    }
 }
