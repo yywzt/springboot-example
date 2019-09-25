@@ -6,7 +6,7 @@ spring:
     name: springboot-jpa
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://139.199.179.164:3306/jpa_test?userUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=GMT%2B8&autoReconnect=true&autoReconnectForPools=true&failOverReadOnly=false
+    url: jdbc:mysql://127.0.0.1:3306/jpa_test?userUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=GMT%2B8&autoReconnect=true&autoReconnectForPools=true&failOverReadOnly=false
     username: root
     password: Root123
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -20,6 +20,20 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL55Dialect
 #        format_sql: true
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: 1
+        max-idle: 8
+        min-idle: 0
+    timeout: 5000
+    database: 0
+    password: root
+  jackson:
+    time-zone: GMT+8
 
 
 logging:
