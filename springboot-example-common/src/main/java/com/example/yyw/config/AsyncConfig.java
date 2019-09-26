@@ -21,17 +21,29 @@ import java.util.concurrent.Executor;
 @Slf4j
 public class AsyncConfig implements AsyncConfigurer {
 
-    /**当前线程池数*/
+    /**
+     * 当前线程池数
+     */
     private int corePoolSize = 10;
-    /**最大线程池数*/
+    /**
+     * 最大线程池数
+     */
     private int maxPoolSize = 10;
-    /**线程池所使用的缓冲队列*/
+    /**
+     * 线程池所使用的缓冲队列
+     */
     private int queueCapacity = 10;
-    /**等待任务在关机时完成--true表明等待所有线程执行完成再优雅停机*/
+    /**
+     * 等待任务在关机时完成--true表明等待所有线程执行完成再优雅停机
+     */
     private boolean waitForTasksToCompleteOnShutdown = true;
-    /**等待时间 （默认为0，此时立即停止），并等待xx秒后强制停止*/
+    /**
+     * 等待时间 （默认为0，此时立即停止），并等待xx秒后强制停止
+     */
     private int awaitTerminationSeconds = 30;
-    /**线程名称前缀*/
+    /**
+     * 线程名称前缀
+     */
     private String threadNamePrefix = "MyAsync-";
 
     @Override
@@ -54,21 +66,22 @@ public class AsyncConfig implements AsyncConfigurer {
 
     /**
      * 自定义异常处理类
-     * @author yanzt
      *
+     * @author yanzt
      */
     class MyAsyncExceptionHandler implements AsyncUncaughtExceptionHandler {
 
         //手动处理捕获的异常
         @Override
         public void handleUncaughtException(Throwable throwable, Method method, Object... obj) {
-            StringBuffer stringBuffer = new StringBuffer("-------------》》》捕获线程异常信息");
-            stringBuffer.append("Exception message - " + throwable.getMessage());
-            stringBuffer.append("Method name - " + method.getName());
-            for (Object param : obj) {
-                stringBuffer.append("Parameter value - " + param);
-            }
-            log.error(stringBuffer.toString());
+//            StringBuffer stringBuffer = new StringBuffer("-------------》》》捕获线程异常信息");
+//            stringBuffer.append("Exception message - " + throwable.getMessage());
+//            stringBuffer.append("Method name - " + method.getName());
+//            for (Object param : obj) {
+//                stringBuffer.append("Parameter value - " + param);
+//            }
+//            log.error(stringBuffer.toString());
+            log.error("Class: {}, Method: {}, Exception: {}", method.getDeclaringClass().getName(), method.getName(), throwable);
         }
 
     }

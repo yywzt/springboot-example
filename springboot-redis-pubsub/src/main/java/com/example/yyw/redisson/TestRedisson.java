@@ -1,7 +1,6 @@
 package com.example.yyw.redisson;
 
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,27 +12,33 @@ import java.util.concurrent.TimeUnit;
  * @date 2019/4/18 0:02
  * @describe
  */
+@Slf4j
 @RestController
 @RequestMapping("/redisson")
 public class TestRedisson {
 
     @Autowired
-    private RedissonClient redissonClient;
+    private RedissonUtils redissonUtils;
 
     @RequestMapping("/tryLock")
-    public String testTryLock(String key,long time){
+    public String testTryLock(String key, int time) {
         String s = "";
-        RLock lock = redissonClient.getLock(key);
         try {
-            if(lock.tryLock(1,time, TimeUnit.SECONDS)){
+            if (redissonUtils.tryLock(key, time, TimeUnit.SECONDS)) {
                 s = "tryLock success---";
-            }else{
+            } else {
                 s = "tryLock failure---";
             }
-            System.out.println(s);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.info(s);
+        } finally {
+            redissonUtils.unlock(key);
         }
         return s;
     }
+
+    @RequestMapping("/getConfig")
+    public String getConfig(){
+        return redissonUtils.getConfig();
+    }
+
 }
