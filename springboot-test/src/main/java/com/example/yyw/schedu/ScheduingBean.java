@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * @date 2019/8/27 16:46
  */
 @Slf4j
-@Component
+//@Component
 public class ScheduingBean {
 
     /**每五秒执行一次*/

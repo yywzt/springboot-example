@@ -1,5 +1,6 @@
 package com.example.yyw.file;
 
+import com.example.yyw.util.OkHttp3Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
@@ -27,7 +28,8 @@ public class FileUploadController {
 
     @RequestMapping("/upload")
     public void method_upload(MultipartFile file) throws IOException {
-        String url = "http://111.230.137.157:18082/rest/file/uploadFile";
+        String url = "http://127.0.0.1:18082/upload/file";
+//        String url = "http://111.230.137.157:18082/rest/file/uploadFile";
         // 获取文件名
         String fileName = file.getOriginalFilename();
 
@@ -49,4 +51,10 @@ public class FileUploadController {
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, requestEntity, String.class);
         System.out.println(responseEntity);
     }
+    @RequestMapping("/upload2")
+    public void method_upload2(MultipartFile file) {
+        String url = "http://127.0.0.1:18082/upload/file";
+        OkHttp3Util.postFormDataMultipartFile(url, file);
+    }
+
 }

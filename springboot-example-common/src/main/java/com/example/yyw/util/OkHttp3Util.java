@@ -3,6 +3,7 @@ package com.example.yyw.util;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -136,6 +137,34 @@ public class OkHttp3Util {
             MultipartBody multipartBody = new MultipartBody.Builder()
                     .addFormDataPart("file", file.getName(), RequestBody.create(file, FORMDATA_MEDIATYPE))
                     .addFormDataPart("path", File.separator + prefixPath)
+                    .setType(FORMDATA_MEDIATYPE)
+                    .build();
+
+            Request request = new Request.Builder()
+                    .url(url)
+                    .post(multipartBody)
+                    .build();
+
+            try (Response response = client.newCall(request).execute()) {
+                String result = Objects.requireNonNull(response.body()).string();
+                if (response.isSuccessful()) {
+                    log.info("OkHttp3Util post_form_data success。[URL: {}], [body: {}], [response: {}]", url, multipartBody, result);
+                } else {
+                    log.info("OkHttp3Util post_form_data failure。[URL: {}], [body: {}], [response: {}]", url, multipartBody, result);
+                }
+                return result;
+            }
+        } catch (Exception e) {
+            log.error("OkHttp3Util post_form_data error : {}", e.getMessage());
+            return "";
+        }
+    }
+    public static String postFormDataMultipartFile(String url, MultipartFile file){
+        try {
+            OkHttpClient client = initOkHttpClient();
+
+            MultipartBody multipartBody = new MultipartBody.Builder()
+                    .addFormDataPart("file", file.getOriginalFilename(), RequestBody.create(file.getBytes(), FORMDATA_MEDIATYPE))
                     .setType(FORMDATA_MEDIATYPE)
                     .build();
 
