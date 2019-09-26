@@ -1,6 +1,5 @@
 package com.example.yyw;
 
-import com.example.yyw.modal.ExcelPropertyIndexModel2;
 import com.example.yyw.util.BigDecimalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -12,9 +11,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
-
-import static com.example.yyw.easyexcel.util.ReadExcelUtil.read;
 
 /**
  * @author ywyw2424@foxmail.com

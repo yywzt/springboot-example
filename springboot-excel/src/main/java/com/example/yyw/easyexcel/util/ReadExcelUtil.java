@@ -6,6 +6,7 @@ import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.Sheet;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,9 +21,32 @@ import java.util.List;
 @Slf4j
 public class ReadExcelUtil {
 
-    public static List<Object> read(String fileName, Class<? extends BaseRowModel> clazz){
-        InputStream inputStream = FileUtil.getResourcesFileInputStream(fileName);
+    public static List<Object> read(String fileName, Class<? extends BaseRowModel> clazz) {
+        InputStream inputStream = null;
         try {
+            inputStream = FileUtil.getInputStream(fileName);
+            // 解析每行结果在listener中处理
+            ExcelListener listener = new ExcelListener();
+
+            ExcelReader excelReader = new ExcelReader(inputStream, null, listener);
+            excelReader.read(new Sheet(1,1,clazz));
+            return listener.getDatas();
+        } catch (Exception e) {
+            log.error("{}",e.getMessage());
+            return null;
+        } finally {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static List<Object> read(MultipartFile file, Class<? extends BaseRowModel> clazz) {
+        InputStream inputStream = null;
+        try {
+            inputStream = file.getInputStream();
             // 解析每行结果在listener中处理
             ExcelListener listener = new ExcelListener();
 
