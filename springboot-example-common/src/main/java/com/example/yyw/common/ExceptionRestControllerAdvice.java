@@ -1,5 +1,7 @@
 package com.example.yyw.common;
 
+import com.example.yyw.constant.ResponseData;
+import com.example.yyw.exception.DefaultException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -8,12 +10,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import com.example.yyw.constant.ResponseData;
-import com.example.yyw.exception.DefaultException;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -27,10 +26,9 @@ import java.util.List;
  * @author rico
  * @created 2017年7月4日 下午4:29:07
  */
-@ControllerAdvice   // 控制器增强
-@ResponseBody
+@RestControllerAdvice   // 控制器增强
 @Slf4j
-public class ExceptionAspect {
+public class ExceptionRestControllerAdvice {
 
     /**
      * 400 - Bad Request
