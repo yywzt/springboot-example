@@ -155,6 +155,9 @@ public class DateUtil {
      * @return
      */
     public static Date getLastHourOfDay(Date date) {
+        if(date == null){
+            return null;
+        }
         Calendar instance = Calendar.getInstance();
         instance.setTime(date);
         instance.set(Calendar.HOUR_OF_DAY, 23);
