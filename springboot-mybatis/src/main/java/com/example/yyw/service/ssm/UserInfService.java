@@ -36,4 +36,8 @@ public class UserInfService {
         String sortString = str.substring(0, str.length() - 1);
         return userInfMapper.findUserInfByUnameAndPasswdAndSort(1, sortString);
     }
+
+    public List<UserInf> findAll(){
+        return userInfMapper.selectAll();
+    }
 }

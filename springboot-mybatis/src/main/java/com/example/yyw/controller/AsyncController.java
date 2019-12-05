@@ -20,5 +20,15 @@ public class AsyncController {
     public String test1(){
         return asyncService.test1();
     }
+
+    @RequestMapping("/test2")
+    public void method_test2(){
+        asyncService.tes2();
+    }
+
+    @RequestMapping("/test3")
+    public void method_test3(){
+        asyncService.test3();
+    }
 }
 

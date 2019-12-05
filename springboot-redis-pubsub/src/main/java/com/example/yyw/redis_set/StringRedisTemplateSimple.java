@@ -1,5 +1,6 @@
 package com.example.yyw.redis_set;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,12 +10,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author ywyw2424@foxmail.com
  * @date 2019/6/13 15:36
  * @describe
  */
+@Slf4j
 @RestController
 @RequestMapping("/testSrtSet")
 public class StringRedisTemplateSimple {
@@ -30,6 +33,7 @@ public class StringRedisTemplateSimple {
         }
         return stringRedisTemplate.opsForSet().add(key, stringList.toArray(new String[stringList.size()]));
     }
+
     @RequestMapping("/addSet2")
     public Long addSet2(String key, String... value) {
         List<String> stringList = new ArrayList<>(100000);
@@ -53,6 +57,7 @@ public class StringRedisTemplateSimple {
     public long remove(String key, String... value) {
         return stringRedisTemplate.opsForSet().remove(key, value);
     }
+
     @RequestMapping("/remove2")
     public long remove2(String key, String... value) {
         List<Long> longs = new ArrayList<>();
@@ -106,20 +111,28 @@ public class StringRedisTemplateSimple {
     }
 
     @RequestMapping("/find")
-    public Set<String> find(String pattern){
+    public Set<String> find(String pattern) {
         Set<String> keys = stringRedisTemplate.keys(pattern);
         return keys;
     }
+
     @RequestMapping("/equal")
-    public boolean equal(String pattern){
+    public boolean equal(String pattern) {
         String keySet = "setEqual";
         Set<String> strings = new HashSet<>();
         strings.add("1");
         strings.add("2");
         strings.add("3");
-        stringRedisTemplate.opsForSet().add(keySet,strings.stream().toArray(String[]::new));
+        stringRedisTemplate.opsForSet().add(keySet, strings.stream().toArray(String[]::new));
         Set<String> members = stringRedisTemplate.opsForSet().members(keySet);
         return strings.equals(members);
+    }
+
+    @RequestMapping("/getExpire")
+    public void getExpire(String key) {
+        if(stringRedisTemplate.hasKey(key) && stringRedisTemplate.getExpire(key) == -1L) {
+            stringRedisTemplate.opsForValue().set(key, "哈哈哈哈哈", 2400L, TimeUnit.SECONDS);
+        }
     }
 
 }

@@ -2,6 +2,7 @@ package com.example.yyw.controller;
 
 import com.example.yyw.annotation.RepeatSubmit;
 import com.example.yyw.exception.DefaultException;
+import com.example.yyw.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -21,11 +22,12 @@ public class RepeatedSubmitController {
     @Autowired
     StringRedisTemplate stringRedisTemplate;
 
-    @RepeatSubmit(expireTime = 30, count = 1, message = "请勿重复提交")
+    @RepeatSubmit(expireTime = 3, count = 1, message = "请勿重复提交")
     @RequestMapping("/submit1")
-    public void methodSubmit1(String id, String type) throws InterruptedException {
+    public Object methodSubmit1(String id, String type) throws InterruptedException {
         log.info("id: {}, type: {}", id, type);
-        Thread.sleep(2000);
+        Thread.sleep(1500);
+        return ResultUtil.successResult();
     }
 
     @RequestMapping("/textException")

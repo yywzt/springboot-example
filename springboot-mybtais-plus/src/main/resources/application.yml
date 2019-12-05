@@ -6,7 +6,7 @@ spring:
     name: SpringBoot_Mybatis_Plus
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://139.199.179.164:3306/boot-example?userUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=GMT%2B8&autoReconnect=true&autoReconnectForPools=true&failOverReadOnly=false
+    url: jdbc:mysql://127.0.0.1:3306/boot-example?userUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=GMT%2B8&autoReconnect=true&autoReconnectForPools=true&failOverReadOnly=false
     username: root
     password: Root123
 

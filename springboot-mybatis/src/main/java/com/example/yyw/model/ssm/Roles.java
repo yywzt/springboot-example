@@ -1,6 +1,8 @@
 package com.example.yyw.model.ssm;
 
 import com.example.yyw.base.GenericModel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 
@@ -11,6 +13,7 @@ import java.io.Serializable;
  * @Author yanzt
  * @Date 2018-07-16 20:23:14
  */
+@Data
 public class Roles extends GenericModel<Long> implements Serializable {
     /**
      *  字段名称：角色名称

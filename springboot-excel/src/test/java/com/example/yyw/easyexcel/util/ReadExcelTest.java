@@ -65,7 +65,7 @@ public class ReadExcelTest {
 
     @Test
     public void test3(){
-        List<Object> read = read("AA1090-2019-05-21-14_45_46.xls", CarParkActiviti.class);
+        List<CarParkActiviti> read = (List<CarParkActiviti>) read("AA1090-2019-05-21-14_45_46.xls", CarParkActiviti.class);
         System.out.println(read);
         System.out.println(read.getClass());
         System.out.println(read.get(0));
@@ -74,7 +74,7 @@ public class ReadExcelTest {
 
     @Test
     public void test_4(){
-        List<Object> read = read("20190916.xlsx", ExcelPropertyIndexModel2.class);
+        List<ExcelPropertyIndexModel2> read = (List<ExcelPropertyIndexModel2>) read("20190916.xlsx", ExcelPropertyIndexModel2.class);
         System.out.println(read);
         System.out.println(read.getClass());
     }

@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Created by yanzhitao on 2018/7/16.
@@ -51,4 +52,21 @@ public class GenericModel<PK> implements Serializable {
      */
     protected Long enabledFlag = 1L;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GenericModel<?> that = (GenericModel<?>) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(createdBy, that.createdBy) &&
+                Objects.equals(creationDate, that.creationDate) &&
+                Objects.equals(updatedBy, that.updatedBy) &&
+                Objects.equals(updationDate, that.updationDate) &&
+                Objects.equals(enabledFlag, that.enabledFlag);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, createdBy, creationDate, updatedBy, updationDate, enabledFlag);
+    }
 }

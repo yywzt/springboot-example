@@ -1,6 +1,8 @@
 package com.example.yyw;
 
 import com.example.yyw.easyexcel.util.WriteExcelUtil;
+import com.example.yyw.mapper.HotelPolicy;
+import com.example.yyw.mapper.HotelPolicyMapper;
 import com.example.yyw.modal.ExcelPropertyIndexModel2;
 import com.example.yyw.util.BigDecimalUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -28,11 +30,8 @@ public class Test2 {
     @Test
     public void test_1() throws FileNotFoundException {
         double max = 99999D;
-        List<Object> read = read("20190916.xlsx", ExcelPropertyIndexModel2.class);
-        List<ExcelPropertyIndexModel2> collect = read.stream().map(o -> {
-            return (ExcelPropertyIndexModel2) o;
-        }).collect(Collectors.toList());
-        List<ArrayList<ExcelPropertyIndexModel2>> arrayLists = fairDivision(collect, max);
+        List<ExcelPropertyIndexModel2> read = (List<ExcelPropertyIndexModel2>) read("D:\\yw\\workspace\\yyw\\springboot-example\\springboot-excel\\src\\test\\resources\\20190916.xlsx", ExcelPropertyIndexModel2.class);
+        List<ArrayList<ExcelPropertyIndexModel2>> arrayLists = fairDivision(read, max);
         System.out.println(arrayLists);
         for(int i=0;i<arrayLists.size();i++){
             WriteExcelUtil.write("D:\\" + System.currentTimeMillis() + ".xlsx", arrayLists.get(i), ExcelPropertyIndexModel2.class);
@@ -113,4 +112,5 @@ public class Test2 {
         });
         return bigDecimal.get().doubleValue();
     }
+
 }

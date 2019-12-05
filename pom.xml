@@ -36,7 +36,7 @@
         <java.version>1.8</java.version>
         <spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
         <spring-boot.version>2.1.6.RELEASE</spring-boot.version>
-        <redisson.version>3.10.6</redisson.version>
+        <redisson.version>3.11.4</redisson.version>
         <mybatis.version>2.0.1</mybatis.version>
         <mybatis-plus.version>3.1.0</mybatis-plus.version>
         <tk.mybatis.mapper.version>2.1.5</tk.mybatis.mapper.version>
