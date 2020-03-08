@@ -1,0 +1,13 @@
+server:
+  port: 19001
+spring:
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    # \u865A\u62DF\u7A7A\u95F4\u5730\u5740
+    virtual-host: yyw-rabbitmq
+    # \u914D\u7F6E\u53D1\u5E03\u6D88\u606F\u786E\u8BA4\u56DE\u8C03
+    publisher-confirms: true
+    publisher-returns: true
