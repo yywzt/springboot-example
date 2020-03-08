@@ -12,5 +12,8 @@
 /springboot-rabbitmq/target/
 /springboot-redis-pubsub/target/
 /springboot-simple/target/
+/springboot-simple/springboot-simple-auth/target
+/springboot-simple/springboot-simple-redenvelope/target
+/springboot-simple/springboot-simple-xmly/target
 /springboot-test/target/
 /springboot-thymeleaf/target/
