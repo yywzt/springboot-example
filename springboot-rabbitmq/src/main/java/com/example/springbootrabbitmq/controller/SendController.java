@@ -1,5 +1,6 @@
 package com.example.springbootrabbitmq.controller;
 
+import com.example.springbootrabbitmq.listener.RegisterMessageListenerService;
 import com.example.springbootrabbitmq.producer.ProducerSimple;
 import com.example.yyw.constant.ResponseData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class SendController {
     @Autowired
     private ProducerSimple producerSimple;
 
+    @Autowired
+    private RegisterMessageListenerService registerMessageListenerService;
+
     @RequestMapping("/send1")
     public ResponseData send1(@RequestParam(defaultValue = "exchange") String exchange,
                         @RequestParam(defaultValue = "hello1") String routingKey,
@@ -27,4 +31,10 @@ public class SendController {
         producerSimple.send1(exchange, routingKey, queue, message);
         return ResponseData.success();
     }
+
+    @RequestMapping("/registerLIstener")
+    public void method(String queue){
+        registerMessageListenerService.createListener(queue);
+    }
+
 }

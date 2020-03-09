@@ -17,8 +17,8 @@ import java.io.IOException;
 //@Component
 public class ConsumeSimple {
 
-    @RabbitListener(queues = "hello1")
-    @RabbitHandler
+//    @RabbitListener(queues = "hello1")
+//    @RabbitHandler
     public void process(Message message, Channel channel) throws IOException {
         try {
             log.info("Receiver1 : " + message);
