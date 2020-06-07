@@ -31,6 +31,7 @@
         <module>springboot-elasticsearch</module>
         <module>springboot-kaptcha</module>
         <module>springboot-rabbitmq</module>
+        <module>simple-cat</module>
     </modules>
 
     <properties>
@@ -42,7 +43,19 @@
         <mybatis-plus.version>3.1.0</mybatis-plus.version>
         <tk.mybatis.mapper.version>2.1.5</tk.mybatis.mapper.version>
         <mybatis.plus.mapper.version>3.1.2</mybatis.plus.mapper.version>
+        <cat.version>3.0.0</cat.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>unidal.nexus</id>
+            <url>http://unidal.org/nexus/content/repositories/releases/</url>
+        </repository>
+        <repository>
+            <id>Aixuexi</id>
+            <url>http://maven.aixuexi.com:8081/nexus/content/repositories/releases/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -251,6 +264,12 @@
                 <groupId>com.ctrip.framework.apollo</groupId>
                 <artifactId>apollo-client</artifactId>
                 <version>1.1.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.dianping.cat</groupId>
+                <artifactId>cat-client</artifactId>
+                <version>${cat.version}</version>
             </dependency>
 
         </dependencies>
