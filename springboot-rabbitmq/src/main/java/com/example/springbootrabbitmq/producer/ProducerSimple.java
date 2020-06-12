@@ -44,4 +44,5 @@ public class ProducerSimple {
         //发送消息
         rabbitTemplate.convertAndSend(exchange, routingKey, message, new CorrelationData(UUID.randomUUID().toString()));
     }
+
 }

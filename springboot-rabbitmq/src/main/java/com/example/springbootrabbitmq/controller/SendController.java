@@ -25,15 +25,15 @@ public class SendController {
 
     @RequestMapping("/send1")
     public ResponseData send1(@RequestParam(defaultValue = "exchange") String exchange,
-                        @RequestParam(defaultValue = "hello1") String routingKey,
-                        @RequestParam(defaultValue = "hello1") String queue,
-                        @RequestParam String message){
+                              @RequestParam(defaultValue = "hello1") String routingKey,
+                              @RequestParam(defaultValue = "hello1") String queue,
+                              @RequestParam String message) {
         producerSimple.send1(exchange, routingKey, queue, message);
         return ResponseData.success();
     }
 
     @RequestMapping("/registerLIstener")
-    public void method(String queue){
+    public void method(String queue) {
         registerMessageListenerService.createListener(queue);
     }
 

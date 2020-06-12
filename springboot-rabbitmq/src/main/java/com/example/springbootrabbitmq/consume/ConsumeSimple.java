@@ -1,10 +1,14 @@
 package com.example.springbootrabbitmq.consume;
 
+import com.example.springbootrabbitmq.config.RabbitMqConfig;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.support.AmqpHeaders;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
@@ -14,15 +18,15 @@ import java.io.IOException;
  * @describe 消费者示例
  */
 @Slf4j
-//@Component
+@Component
 public class ConsumeSimple {
 
-//    @RabbitListener(queues = "hello1")
-//    @RabbitHandler
-    public void process(Message message, Channel channel) throws IOException {
+    @RabbitListener(queues = RabbitMqConfig.DEFAULT_QUEUE_NAME)
+    @RabbitHandler
+    public void process(Message message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException {
         try {
-            log.info("Receiver1 : " + message);
-            log.info("Receiver1.class : " + message.getClass());
+            log.info("Message : {}, Message.getClass: {}", message, message.getClass());
+            log.info("tag: {}, message: {}", tag, message.getPayload());
             /**
              * 第一个参数 deliveryTag：就是接受的消息的deliveryTag,可以通过msg.getMessageProperties().getDeliveryTag()获得
              * 第二个参数 multiple：如果为true，确认之前接受到的消息；如果为false，只确认当前消息。
@@ -53,7 +57,7 @@ public class ConsumeSimple {
              *
              */
             // 处理消息失败，将消息重新放回队列
-            channel.basicNack(message.getMessageProperties().getDeliveryTag(), false, true);
+            channel.basicNack(tag, false, true);
         }
     }
 }
