@@ -32,11 +32,13 @@
         <module>springboot-kaptcha</module>
         <module>springboot-rabbitmq</module>
         <module>simple-cat</module>
+        <module>springboot-rocketmq</module>
+        <module>springboot-drools</module>
     </modules>
 
     <properties>
         <java.version>1.8</java.version>
-        <spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
+        <spring-cloud.version>Greenwich.RELEASE</spring-cloud.version>
         <spring-boot.version>2.1.6.RELEASE</spring-boot.version>
         <redisson.version>3.11.4</redisson.version>
         <mybatis.version>2.0.1</mybatis.version>
@@ -44,6 +46,7 @@
         <tk.mybatis.mapper.version>2.1.5</tk.mybatis.mapper.version>
         <mybatis.plus.mapper.version>3.1.2</mybatis.plus.mapper.version>
         <cat.version>3.0.0</cat.version>
+        <spring-cloud-alibaba-dependencies.version>2.1.2.RELEASE</spring-cloud-alibaba-dependencies.version>
     </properties>
 
     <repositories>
@@ -109,6 +112,14 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
                 <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba-dependencies.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
