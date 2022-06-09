@@ -1,0 +1,40 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: stock-xa
+  cloud:
+    alibaba:
+      seata:
+        txServiceGroup: stock-xa-seata-service-group
+    nacos:
+      discovery:
+        server-addr: centos100:8848
+        group: SEATA_GROUP
+        username: nacos
+        password: nacos
+  datasource:
+    password: Root123456.
+    url: jdbc:mysql://centos100:3306/seata?useSSL=false&serverTimezone=UTC
+    username: root
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+seata:
+  config:
+    type: nacos
+    nacos:
+      server-addr: centos100:8848
+      group: "SEATA_GROUP"
+      namespace: ""
+      username: "nacos"
+      password: "nacos"
+      dataId: "seataServer.properties"
+  registry:
+    type: nacos
+    nacos:
+      application: seata-server
+      server-addr: centos100:8848
+      group: "SEATA_GROUP"
+      namespace: ""
+      username: "nacos"
+      password: "nacos"
